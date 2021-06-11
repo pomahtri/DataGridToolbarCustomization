@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>DevExtreme jQuery Example</title>
+
+    <link rel="stylesheet" type="text/css" href="artifacts/css/dx.light.css"/>
+
+    <script type="text/javascript" src="artifacts/js/jquery.js"></script>
+
+    <script type="text/javascript" src="artifacts/js/angular.js"></script>
+
+    <!--<script type="text/javascript" src="artifacts/js/cldr.js"></script>
+    <script type="text/javascript" src="artifacts/js/cldr/event.js"></script>
+    <script type="text/javascript" src="artifacts/js/cldr/supplemental.js"></script>
+    <script type="text/javascript" src="artifacts/js/cldr/unresolved.js"></script>
+    <script type="text/javascript" src="artifacts/js/globalize.js"></script>
+    <script type="text/javascript" src="artifacts/js/globalize/message.js"></script>
+    <script type="text/javascript" src="artifacts/js/globalize/number.js"></script>
+    <script type="text/javascript" src="artifacts/js/globalize/currency.js"></script>
+    <script type="text/javascript" src="artifacts/js/globalize/date.js"></script>-->
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/3.3.1/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.2/jszip.min.js"></script> -->
+
+    <script type="text/javascript" src="artifacts/js/dx.all.debug.js" charset="utf-8"></script>
+    <script type="text/javascript" src="demo/data.js" charset="utf-8"></script>
+</head>
+
+<body ng-app="DemoApp">
+    <div ng-controller="DemoController">
+        <div dx-data-grid="dataGridOptions"></div>
+        <div dx-button="buttonOptions"></div>
+    </div>
+
+    <script>
+        var DemoApp = angular.module('DemoApp', ['dx']);
+
+        DemoApp.controller('DemoController', function DemoController($scope) {
+            $scope.disabled = false;
+
+            let dataGrid;
+
+            $scope.buttonOptions = {
+                text: "toggle disabled",
+                onClick: () => {
+                    $scope.disabled = !$scope.disabled;
+                }
+            }
+
+            $scope.dataGridOptions = {
+                dataSource: employees,
+                editing: {
+                    mode: "batch",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    startEditAction: "click"
+                },
+                toolbar: {
+                    items: [
+                        "saveButton",
+                        {
+                            name: "revertButton",
+                            location: "after",
+                        },
+                        {
+                            location: "before",
+                            widget: "dxSelectBox",
+                            options: {
+                                width: 200,
+                                items: [{
+                                    value: "CustomerStoreState",
+                                    text: "Grouping by State"
+                                }, {
+                                    value: "Employee",
+                                    text: "Grouping by Employee"
+                                }],
+                                displayExpr: "text",
+                                valueExpr: "value",
+                                value: "CustomerStoreState",
+                                bindingOptions: {
+                                    "disabled": "disabled"
+                                },
+                            }
+                        }
+                    ]
+                },
+                onInitialized: ({component}) => {
+                    window.grid = component;
+                }
+            };
+        });
+    </script>
+</body>
+</html>
