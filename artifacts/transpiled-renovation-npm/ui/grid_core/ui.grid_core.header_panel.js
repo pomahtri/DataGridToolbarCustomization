@@ -82,7 +82,7 @@ var HeaderPanel = _uiGrid_core.ColumnsView.inherit({
         return button;
       }
 
-      return (0, _extend.extend)(button, defaultButtonsByNames[button.name]);
+      return (0, _extend.extend)(defaultButtonsByNames[button.name], button);
     }));
   },
   _renderCore: function _renderCore() {
