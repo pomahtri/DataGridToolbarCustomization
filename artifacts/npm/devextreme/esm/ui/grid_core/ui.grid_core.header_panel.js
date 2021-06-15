@@ -1,12 +1,11 @@
 /**
 * DevExtreme (esm/ui/grid_core/ui.grid_core.header_panel.js)
 * Version: 21.2.0
-* Build date: Fri Jun 11 2021
+* Build date: Tue Jun 15 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
-import _extends from "@babel/runtime/helpers/esm/extends";
 import $ from '../../core/renderer';
 import Toolbar from '../toolbar';
 import { ColumnsView } from './ui.grid_core.columns_view';
@@ -15,6 +14,7 @@ import { isDefined, isString } from '../../core/utils/type';
 import { triggerResizeEvent } from '../../events/visibility_change';
 import messageLocalization from '../../localization/message';
 import '../drop_down_menu';
+import { extend } from '../../core/utils/extend';
 var HEADER_PANEL_CLASS = 'header-panel';
 var TOOLBAR_BUTTON_CLASS = 'toolbar-button';
 var TOOLBAR_ARIA_LABEL = '-ariaToolbar';
@@ -64,7 +64,7 @@ var HeaderPanel = ColumnsView.inherit({
     items.forEach(button => {
       defaultButtonsByNames[button.name] = button;
     });
-    return userItems.map(button => {
+    return extend(true, [], userItems.map(button => {
       if (isString(button)) {
         button = {
           name: button
@@ -75,8 +75,8 @@ var HeaderPanel = ColumnsView.inherit({
         return button;
       }
 
-      return _extends({}, button, defaultButtonsByNames[button.name]);
-    });
+      return extend(button, defaultButtonsByNames[button.name]);
+    }));
   },
 
   _renderCore: function _renderCore() {
@@ -142,6 +142,12 @@ var HeaderPanel = ColumnsView.inherit({
       this._invalidate();
 
       args.handled = true;
+    }
+
+    if (args.name === 'toolbar') {
+      var toolbarOptionName = args.fullName.split('.').slice(1).join('.');
+
+      this._toolbar.option(toolbarOptionName, args.value);
     }
 
     this.callBase(args);

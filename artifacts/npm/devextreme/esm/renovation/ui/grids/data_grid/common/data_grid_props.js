@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/ui/grids/data_grid/common/data_grid_props.js)
 * Version: 21.2.0
-* Build date: Fri Jun 11 2021
+* Build date: Tue Jun 15 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -59,6 +59,7 @@ export var DataGridKeyboardNavigation = {};
 export var DataGridLoadPanel = {};
 export var DataGridExport = {};
 export var DataGridCommonColumnSettings = {};
+export var DataGridToolbar = {};
 export var DataGridProps = _extends({}, BaseWidgetProps, {
   editing: {
     mode: "row",

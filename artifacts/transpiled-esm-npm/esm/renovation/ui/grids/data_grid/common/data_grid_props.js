@@ -51,6 +51,7 @@ export var DataGridKeyboardNavigation = {};
 export var DataGridLoadPanel = {};
 export var DataGridExport = {};
 export var DataGridCommonColumnSettings = {};
+export var DataGridToolbar = {};
 export var DataGridProps = _extends({}, BaseWidgetProps, {
   editing: {
     mode: "row",

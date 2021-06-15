@@ -1,14 +1,14 @@
 /**
 * DevExtreme (cjs/renovation/ui/grids/data_grid/common/data_grid_props.js)
 * Version: 21.2.0
-* Build date: Fri Jun 11 2021
+* Build date: Tue Jun 15 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
 
-exports.DataGridProps = exports.DataGridCommonColumnSettings = exports.DataGridExport = exports.DataGridLoadPanel = exports.DataGridKeyboardNavigation = exports.DataGridHeaderFilter = exports.DataGridFilterRow = exports.DataGridFilterPanel = exports.DataGridStateStoring = exports.DataGridSorting = exports.DataGridSearchPanel = exports.DataGridColumnFixing = exports.DataGridColumnChooser = exports.DataGridRowDragging = exports.DataGridMasterDetail = exports.DataGridPager = exports.DataGridSummary = exports.DataGridSummaryTotalItem = exports.DataGridSummaryGroupItem = exports.DataGridGrouping = exports.DataGridGroupPanel = exports.DataGridSortByGroupSummaryInfoItem = exports.DataGridPaging = exports.DataGridSelection = exports.DataGridScrolling = exports.DataGridEditing = exports.DataGridEditingTexts = exports.DataGridColumn = exports.DataGridColumnLookup = exports.DataGridColumnHeaderFilter = exports.DataGridColumnButton = void 0;
+exports.DataGridProps = exports.DataGridToolbar = exports.DataGridCommonColumnSettings = exports.DataGridExport = exports.DataGridLoadPanel = exports.DataGridKeyboardNavigation = exports.DataGridHeaderFilter = exports.DataGridFilterRow = exports.DataGridFilterPanel = exports.DataGridStateStoring = exports.DataGridSorting = exports.DataGridSearchPanel = exports.DataGridColumnFixing = exports.DataGridColumnChooser = exports.DataGridRowDragging = exports.DataGridMasterDetail = exports.DataGridPager = exports.DataGridSummary = exports.DataGridSummaryTotalItem = exports.DataGridSummaryGroupItem = exports.DataGridGrouping = exports.DataGridGroupPanel = exports.DataGridSortByGroupSummaryInfoItem = exports.DataGridPaging = exports.DataGridSelection = exports.DataGridScrolling = exports.DataGridEditing = exports.DataGridEditingTexts = exports.DataGridColumn = exports.DataGridColumnLookup = exports.DataGridColumnHeaderFilter = exports.DataGridColumnButton = void 0;
 
 var _base_props = require("../../../common/base_props");
 
@@ -98,6 +98,8 @@ var DataGridExport = {};
 exports.DataGridExport = DataGridExport;
 var DataGridCommonColumnSettings = {};
 exports.DataGridCommonColumnSettings = DataGridCommonColumnSettings;
+var DataGridToolbar = {};
+exports.DataGridToolbar = DataGridToolbar;
 
 var DataGridProps = _extends({}, _base_props.BaseWidgetProps, {
   editing: {

@@ -18,9 +18,9 @@ var _message = _interopRequireDefault(require("../../localization/message"));
 
 require("../drop_down_menu");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _extend = require("../../core/utils/extend");
 
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var HEADER_PANEL_CLASS = 'header-panel';
 var TOOLBAR_BUTTON_CLASS = 'toolbar-button';
@@ -71,7 +71,7 @@ var HeaderPanel = _uiGrid_core.ColumnsView.inherit({
     items.forEach(function (button) {
       defaultButtonsByNames[button.name] = button;
     });
-    return userItems.map(function (button) {
+    return (0, _extend.extend)(true, [], userItems.map(function (button) {
       if ((0, _type.isString)(button)) {
         button = {
           name: button
@@ -82,8 +82,8 @@ var HeaderPanel = _uiGrid_core.ColumnsView.inherit({
         return button;
       }
 
-      return _extends({}, button, defaultButtonsByNames[button.name]);
-    });
+      return (0, _extend.extend)(button, defaultButtonsByNames[button.name]);
+    }));
   },
   _renderCore: function _renderCore() {
     if (!this._toolbar) {
@@ -150,6 +150,12 @@ var HeaderPanel = _uiGrid_core.ColumnsView.inherit({
       this._invalidate();
 
       args.handled = true;
+    }
+
+    if (args.name === 'toolbar') {
+      var toolbarOptionName = args.fullName.split('.').slice(1).join('.');
+
+      this._toolbar.option(toolbarOptionName, args.value);
     }
 
     this.callBase(args);
