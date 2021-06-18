@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/sankey/layout.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -147,7 +147,7 @@ var layout = {
       var y = 0;
       var nodesInCascade = Object.keys(cascade).length;
       var cascadeHeight = _this2._getWeightForCascade(cascades, cascadeIdx) / _this2._weightPerPixel + nodePadding * (nodesInCascade - 1);
-      var cascadeAlign = _ALIGNMENT_DEFAULT;
+      var cascadeAlign;
 
       if (Array.isArray(options.nodeAlign)) {
         cascadeAlign = cascadeIdx < options.nodeAlign.length ? options.nodeAlign[cascadeIdx] : _ALIGNMENT_DEFAULT;

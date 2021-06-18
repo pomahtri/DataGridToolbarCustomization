@@ -377,8 +377,8 @@ export default _extend({}, symbolPoint, {
     var maxValue = !rotated ? _max(that.minY, that.y) : _max(that.minX, that.x);
     var minValue = !rotated ? _min(that.minY, that.y) : _min(that.minX, that.x);
     var tmp;
-    var visibleTopMarker = true;
-    var visibleBottomMarker = true;
+    var visibleTopMarker;
+    var visibleBottomMarker;
     var visibleRangeArea = true;
     var visibleArgArea = that.series.getArgumentAxis().getVisibleArea();
     var visibleValArea = that.series.getValueAxis().getVisibleArea();

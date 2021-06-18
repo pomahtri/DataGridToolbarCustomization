@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/chart.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -588,15 +588,6 @@ var dxChart = AdvancedChart.inherit({
     axes.forEach(a => {
       a.resetApplyingAnimation(isFirstDrawing);
     });
-  },
-
-  // for async templates. Should be fixed
-  _cleanGroups() {
-    this._getAllAxes().forEach(a => a.beforeCleanGroups());
-
-    this.callBase();
-
-    this._getAllAxes().forEach(a => a.afterCleanGroups());
   },
 
   _axesBoundaryPositioning() {

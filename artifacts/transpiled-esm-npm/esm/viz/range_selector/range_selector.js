@@ -550,6 +550,10 @@ var dxRangeSelector = baseWidgetModule.inherit({
       'class': 'dxrs-scale',
       'clip-path': that._clipRect.id
     }).append(root);
+    var labelsAxesGroup = renderer.g().attr({
+      'class': 'dxrs-scale-elements',
+      'clip-path': that._clipRect.id
+    }).append(root);
     var scaleBreaksGroup = renderer.g().attr({
       'class': 'dxrs-scale-breaks'
     }).append(root);
@@ -560,6 +564,7 @@ var dxRangeSelector = baseWidgetModule.inherit({
       renderer: renderer,
       root: scaleGroup,
       scaleBreaksGroup: scaleBreaksGroup,
+      labelsAxesGroup: labelsAxesGroup,
       updateSelectedRange: function updateSelectedRange(range, e) {
         that.setValue(convertVisualRangeObject(range), e);
       },
@@ -1035,6 +1040,7 @@ function AxisWrapper(params) {
     renderer: params.renderer,
     axesContainerGroup: params.root,
     scaleBreaksGroup: params.scaleBreaksGroup,
+    labelsAxesGroup: params.labelsAxesGroup,
     incidentOccurred: params.incidentOccurred,
     // TODO: These dependencies should be statically resolved (not for every new instance)
     axisType: 'xyAxes',

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/axes/xy_axes.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -1336,6 +1336,7 @@ var _default = {
       }
 
       that._axisShift = shiftGroup(options.position, that._axisGroup);
+      shiftGroup(options.position, that._axisElementsGroup);
       (isHorizontal ? [TOP, BOTTOM] : [LEFT, RIGHT]).forEach(function (side) {
         shiftGroup(side, constantLinesGroups.above);
         shiftGroup(side, constantLinesGroups.under);

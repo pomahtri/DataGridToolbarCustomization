@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/axes/polar_axes.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -451,6 +451,11 @@ var circularAxes = {
   },
   shift: function shift(margins) {
     this._axisGroup.attr({
+      translateX: margins.right,
+      translateY: margins.bottom
+    });
+
+    this._axisElementsGroup.attr({
       translateX: margins.right,
       translateY: margins.bottom
     });

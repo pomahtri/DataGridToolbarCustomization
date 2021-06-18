@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/gauges/common.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,10 +70,14 @@ export var dxGauge = BaseGauge.inherit({
     that._scaleGroup = that._renderer.g().attr({
       'class': 'dxg-scale'
     }).linkOn(that._renderer.root, 'scale');
+    that._labelsAxesGroup = that._renderer.g().attr({
+      'class': 'dxg-scale-elements'
+    }).linkOn(that._renderer.root, 'scale-elements');
     that._scale = new Axis({
       incidentOccurred: that._incidentOccurred,
       renderer: that._renderer,
       axesContainerGroup: that._scaleGroup,
+      labelsAxesGroup: that._labelsAxesGroup,
       axisType: that._scaleTypes.type,
       drawingType: that._scaleTypes.drawingType,
       widgetClass: 'dxg',
@@ -90,13 +94,15 @@ export var dxGauge = BaseGauge.inherit({
 
     that._scaleGroup.linkOff();
 
+    that._labelsAxesGroup.linkOff();
+
     that._rangeContainer.dispose();
 
     that._disposeValueIndicators();
 
     that._subvalueIndicatorContainer.linkOff();
 
-    that._scale = that._scaleGroup = that._rangeContainer = null;
+    that._scale = that._scaleGroup = that._labelsAxesGroup = that._rangeContainer = null;
   },
   _disposeValueIndicators: function _disposeValueIndicators() {
     var that = this;
@@ -249,6 +255,8 @@ export var dxGauge = BaseGauge.inherit({
     that._updateScaleTickIndent(scaleOptions);
 
     that._scaleGroup.linkAppend();
+
+    that._labelsAxesGroup.linkAppend();
 
     that._scale.draw(extend({}, that._canvas));
   },

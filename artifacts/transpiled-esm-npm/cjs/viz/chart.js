@@ -622,18 +622,6 @@ var dxChart = _advanced_chart.AdvancedChart.inherit({
       a.resetApplyingAnimation(isFirstDrawing);
     });
   },
-  // for async templates. Should be fixed
-  _cleanGroups: function _cleanGroups() {
-    this._getAllAxes().forEach(function (a) {
-      return a.beforeCleanGroups();
-    });
-
-    this.callBase();
-
-    this._getAllAxes().forEach(function (a) {
-      return a.afterCleanGroups();
-    });
-  },
   _axesBoundaryPositioning: function _axesBoundaryPositioning() {
     var that = this;
 

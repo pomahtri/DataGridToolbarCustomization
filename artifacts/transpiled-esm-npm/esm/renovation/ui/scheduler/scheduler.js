@@ -25,6 +25,7 @@ export class Scheduler extends InfernoComponent {
     this.getComponentInstance = this.getComponentInstance.bind(this);
     this.addAppointment = this.addAppointment.bind(this);
     this.deleteAppointment = this.deleteAppointment.bind(this);
+    this.updateAppointment = this.updateAppointment.bind(this);
     this.getDataSource = this.getDataSource.bind(this);
     this.getEndViewDate = this.getEndViewDate.bind(this);
     this.getStartViewDate = this.getStartViewDate.bind(this);
@@ -34,7 +35,6 @@ export class Scheduler extends InfernoComponent {
     this.scrollToTime = this.scrollToTime.bind(this);
     this.showAppointmentPopup = this.showAppointmentPopup.bind(this);
     this.showAppointmentTooltip = this.showAppointmentTooltip.bind(this);
-    this.updateAppointment = this.updateAppointment.bind(this);
     this.dispose = this.dispose.bind(this);
   }
 
@@ -68,6 +68,10 @@ export class Scheduler extends InfernoComponent {
 
   deleteAppointment(appointment) {
     this.state.instance.deleteAppointment(appointment);
+  }
+
+  updateAppointment(target, appointment) {
+    this.state.instance.updateAppointment(target, appointment);
   }
 
   getDataSource() {
@@ -104,10 +108,6 @@ export class Scheduler extends InfernoComponent {
 
   showAppointmentTooltip(appointmentData, target, currentAppointmentData) {
     this.state.instance.showAppointmentTooltip(appointmentData, target, currentAppointmentData);
-  }
-
-  updateAppointment(target, appointment) {
-    this.state.instance.updateAppointment(target, appointment);
   }
 
   render() {

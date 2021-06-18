@@ -473,9 +473,11 @@ var AdvancedChart = _base_chart.BaseChart.inherit({
 
     that._axesGroup.linkAppend();
 
+    that._labelsAxesGroup.linkAppend();
+
     that._constantLinesGroup.linkAppend();
 
-    that._labelAxesGroup.linkAppend();
+    that._stripLabelAxesGroup.linkAppend();
 
     that._scaleBreaksGroup.linkAppend();
   },
@@ -650,10 +652,11 @@ var AdvancedChart = _base_chart.BaseChart.inherit({
       axisClass: isArgumentAxes ? 'arg' : 'val',
       widgetClass: 'dxc',
       stripsGroup: that._stripsGroup,
-      labelAxesGroup: that._labelAxesGroup,
+      stripLabelAxesGroup: that._stripLabelAxesGroup,
       constantLinesGroup: that._constantLinesGroup,
       scaleBreaksGroup: that._scaleBreaksGroup,
       axesContainerGroup: that._axesGroup,
+      labelsAxesGroup: that._labelsAxesGroup,
       gridGroup: that._gridGroup,
       isArgumentAxis: isArgumentAxes,
       getTemplate: function getTemplate(template) {

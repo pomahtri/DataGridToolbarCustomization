@@ -437,6 +437,11 @@ var circularAxes = {
       translateX: margins.right,
       translateY: margins.bottom
     });
+
+    this._axisElementsGroup.attr({
+      translateX: margins.right,
+      translateY: margins.bottom
+    });
   },
 
   getTranslatedAngle(angle) {

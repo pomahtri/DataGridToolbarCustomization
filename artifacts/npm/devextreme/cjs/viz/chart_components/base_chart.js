@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/chart_components/base_chart.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -464,7 +464,7 @@ var BaseChart = _base_widget.default.inherit({
       'class': 'dxc-axes-group'
     }).linkOn(root, 'axes'); // TODO: Must be created in the same place where used (advanced chart)
 
-    that._labelAxesGroup = renderer.g().attr({
+    that._stripLabelAxesGroup = renderer.g().attr({
       'class': 'dxc-strips-labels-group'
     }).linkOn(root, 'strips-labels'); // TODO: Must be created in the same place where used (advanced chart)
 
@@ -472,6 +472,9 @@ var BaseChart = _base_widget.default.inherit({
     that._seriesGroup = renderer.g().attr({
       'class': 'dxc-series-group'
     }).linkOn(root, 'series');
+    that._labelsAxesGroup = renderer.g().attr({
+      'class': 'dxc-elements-axes-group'
+    }).linkOn(root, 'elements');
     that._constantLinesGroup.above = createConstantLinesGroup();
     that._scaleBreaksGroup = renderer.g().attr({
       'class': 'dxc-scale-breaks'
@@ -528,8 +531,9 @@ var BaseChart = _base_widget.default.inherit({
     unlinkGroup('_stripsGroup');
     unlinkGroup('_gridGroup');
     unlinkGroup('_axesGroup');
+    unlinkGroup('_labelsAxesGroup');
     unlinkGroup('_constantLinesGroup');
-    unlinkGroup('_labelAxesGroup');
+    unlinkGroup('_stripLabelAxesGroup');
     unlinkGroup('_panesBorderGroup');
     unlinkGroup('_seriesGroup');
     unlinkGroup('_labelsGroup');
@@ -543,8 +547,9 @@ var BaseChart = _base_widget.default.inherit({
     disposeObject('_stripsGroup');
     disposeObject('_gridGroup');
     disposeObject('_axesGroup');
+    disposeObject('_labelsAxesGroup');
     disposeObject('_constantLinesGroup');
-    disposeObject('_labelAxesGroup');
+    disposeObject('_stripLabelAxesGroup');
     disposeObject('_panesBorderGroup');
     disposeObject('_seriesGroup');
     disposeObject('_labelsGroup');
@@ -919,7 +924,7 @@ var BaseChart = _base_widget.default.inherit({
     that._constantLinesGroup.above.clear(); // TODO: Must be removed in the same place where appended (advanced chart)
 
 
-    that._labelAxesGroup.linkRemove().clear(); // TODO: Must be removed in the same place where appended (advanced chart)
+    that._stripLabelAxesGroup.linkRemove().clear(); // TODO: Must be removed in the same place where appended (advanced chart)
     // that._seriesGroup.linkRemove().clear();
 
 

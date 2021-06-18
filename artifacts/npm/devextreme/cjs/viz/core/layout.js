@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/core/layout.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -266,19 +266,19 @@ function makeHeader(header, weakElement) {
           return;
         }
 
-        var weakRect = processBackwardHeaderRect(weakElement, fitRect, fitRect);
+        var weakRect = processBackwardHeaderRect(weakElement, fitRect);
         fitRect[2 + weakElement.primary] = weakRect[weakElement.primary];
-        var headerFitReact = processBackwardHeaderRect(header, fitRect, fitRect);
+        var headerFitReact = processBackwardHeaderRect(header, fitRect);
 
         if (fitRect[2 + weakElement.primary] < rect[2 + weakElement.primary] && header.size[header.primary] > rect[2 + header.primary] - rect[header.primary]) {
           rect[2 + weakElement.primary] = fitRect[2 + weakElement.primary];
         }
 
-        var headerRect = processBackwardHeaderRect(header, rect, rect);
+        var headerRect = processBackwardHeaderRect(header, rect);
 
         if (headerRect[2 + weakElement.primary] > fitRect[2 + weakElement.primary]) {
           rect[2 + weakElement.primary] = fitRect[2 + weakElement.primary];
-          headerRect = processBackwardHeaderRect(header, rect, rect);
+          headerRect = processBackwardHeaderRect(header, rect);
         }
 
         weakElement.element.move(weakRect);

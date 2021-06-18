@@ -56,6 +56,7 @@ var Scheduler = /*#__PURE__*/function (_InfernoComponent) {
     _this.getComponentInstance = _this.getComponentInstance.bind(_assertThisInitialized(_this));
     _this.addAppointment = _this.addAppointment.bind(_assertThisInitialized(_this));
     _this.deleteAppointment = _this.deleteAppointment.bind(_assertThisInitialized(_this));
+    _this.updateAppointment = _this.updateAppointment.bind(_assertThisInitialized(_this));
     _this.getDataSource = _this.getDataSource.bind(_assertThisInitialized(_this));
     _this.getEndViewDate = _this.getEndViewDate.bind(_assertThisInitialized(_this));
     _this.getStartViewDate = _this.getStartViewDate.bind(_assertThisInitialized(_this));
@@ -65,7 +66,6 @@ var Scheduler = /*#__PURE__*/function (_InfernoComponent) {
     _this.scrollToTime = _this.scrollToTime.bind(_assertThisInitialized(_this));
     _this.showAppointmentPopup = _this.showAppointmentPopup.bind(_assertThisInitialized(_this));
     _this.showAppointmentTooltip = _this.showAppointmentTooltip.bind(_assertThisInitialized(_this));
-    _this.updateAppointment = _this.updateAppointment.bind(_assertThisInitialized(_this));
     _this.dispose = _this.dispose.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -94,6 +94,10 @@ var Scheduler = /*#__PURE__*/function (_InfernoComponent) {
 
   _proto.deleteAppointment = function deleteAppointment(appointment) {
     this.state.instance.deleteAppointment(appointment);
+  };
+
+  _proto.updateAppointment = function updateAppointment(target, appointment) {
+    this.state.instance.updateAppointment(target, appointment);
   };
 
   _proto.getDataSource = function getDataSource() {
@@ -130,10 +134,6 @@ var Scheduler = /*#__PURE__*/function (_InfernoComponent) {
 
   _proto.showAppointmentTooltip = function showAppointmentTooltip(appointmentData, target, currentAppointmentData) {
     this.state.instance.showAppointmentTooltip(appointmentData, target, currentAppointmentData);
-  };
-
-  _proto.updateAppointment = function updateAppointment(target, appointment) {
-    this.state.instance.updateAppointment(target, appointment);
   };
 
   _proto.render = function render() {

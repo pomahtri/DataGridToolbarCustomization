@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/series/points/range_symbol_point.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -385,8 +385,8 @@ export default _extend({}, symbolPoint, {
     var maxValue = !rotated ? _max(that.minY, that.y) : _max(that.minX, that.x);
     var minValue = !rotated ? _min(that.minY, that.y) : _min(that.minX, that.x);
     var tmp;
-    var visibleTopMarker = true;
-    var visibleBottomMarker = true;
+    var visibleTopMarker;
+    var visibleBottomMarker;
     var visibleRangeArea = true;
     var visibleArgArea = that.series.getArgumentAxis().getVisibleArea();
     var visibleValArea = that.series.getValueAxis().getVisibleArea();

@@ -68,8 +68,8 @@ var ThemeManager = _base_theme_manager.BaseThemeManager.inherit(function () {
   var applyParticularAxisOptions = function applyParticularAxisOptions(name, userOptions, rotated) {
     var theme = this._theme;
     var position = !(rotated ^ name === 'valueAxis') ? 'horizontalAxis' : 'verticalAxis';
-    var processedUserOptions = processAxisOptions(userOptions, name);
-    var commonAxisSettings = processAxisOptions(this._userOptions['commonAxisSettings'], name);
+    var processedUserOptions = processAxisOptions(userOptions);
+    var commonAxisSettings = processAxisOptions(this._userOptions['commonAxisSettings']);
     var mergeOptions = (0, _extend.extend)(true, {}, theme.commonAxisSettings, theme[position], theme[name], commonAxisSettings, processedUserOptions);
     mergeOptions.workWeek = processedUserOptions.workWeek || theme[name].workWeek;
     mergeOptions.forceUserTickInterval |= (0, _type.isDefined)(processedUserOptions.tickInterval) && !(0, _type.isDefined)(processedUserOptions.axisDivisionFactor);

@@ -1753,7 +1753,6 @@ MapLayerCollection.prototype = {
   setOptions(options) {
     var that = this;
     var optionList = options ? _isArray(options) ? options : [options] : [];
-    var layerByName = that._layerByName;
     var layers = that._layers;
     var readyCallbacks = [];
     var needToCreateLayers = optionList.length !== layers.length || layers.some((l, i) => {
@@ -1766,7 +1765,7 @@ MapLayerCollection.prototype = {
 
       that._layers.forEach(l => l.dispose());
 
-      that._layerByName = layerByName = {};
+      var layerByName = that._layerByName = {};
       that._layers = layers = [];
 
       for (var i = 0, ii = optionList.length; i < ii; ++i) {

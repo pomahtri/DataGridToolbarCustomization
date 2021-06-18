@@ -245,7 +245,8 @@ export var Axis = function Axis(renderSettings) {
   that._incidentOccurred = renderSettings.incidentOccurred;
   that._eventTrigger = renderSettings.eventTrigger;
   that._stripsGroup = renderSettings.stripsGroup;
-  that._labelAxesGroup = renderSettings.labelAxesGroup;
+  that._stripLabelAxesGroup = renderSettings.stripLabelAxesGroup;
+  that._labelsAxesGroup = renderSettings.labelsAxesGroup;
   that._constantLinesGroup = renderSettings.constantLinesGroup;
   that._scaleBreaksGroup = renderSettings.scaleBreaksGroup;
   that._axesContainerGroup = renderSettings.axesContainerGroup;
@@ -667,7 +668,7 @@ Axis.prototype = {
     });
     that._axisElementsGroup = renderer.g().attr({
       'class': classSelector + 'elements'
-    }).linkOn(that._axisGroup, 'axisElements').linkAppend();
+    });
     that._axisLineGroup = renderer.g().attr({
       'class': classSelector + 'line'
     }).linkOn(that._axisGroup, 'axisLine').linkAppend();
@@ -699,7 +700,12 @@ Axis.prototype = {
 
     that._axisTitleGroup.clear();
 
-    (!that._options.label.template || !that.isRendered()) && that._axisElementsGroup.clear(); // for react async templates
+    if (!that._options.label.template || !that.isRendered()) {
+      // for react async templates
+      that._axisElementsGroup.remove();
+
+      that._axisElementsGroup.clear();
+    }
 
     that._axisLineGroup && that._axisLineGroup.clear();
     that._axisStripGroup && that._axisStripGroup.clear();
@@ -876,7 +882,7 @@ Axis.prototype = {
     that._axisStripGroup = that._axisConstantLineGroups = that._axisStripLabelGroup = that._axisBreaksGroup = null;
     that._axisLineGroup = that._axisElementsGroup = that._axisGridGroup = null;
     that._axisGroup = that._axisTitleGroup = null;
-    that._axesContainerGroup = that._stripsGroup = that._constantLinesGroup = null;
+    that._axesContainerGroup = that._stripsGroup = that._constantLinesGroup = that._labelsAxesGroup = null;
     that._renderer = that._options = that._textOptions = that._textFontStyles = null;
     that._translator = null;
     that._majorTicks = that._minorTicks = null;
@@ -1663,7 +1669,7 @@ Axis.prototype = {
 
       if (workWeek !== businessInterval && weekend < businessInterval) {
         var weekendsCount = Math.ceil(businessInterval / dateIntervals.week);
-        businessInterval = weekend >= businessInterval ? dateIntervals.day : businessInterval - weekend * weekendsCount;
+        businessInterval = businessInterval - weekend * weekendsCount;
       } else if (weekend >= businessInterval && businessInterval > dateIntervals.day) {
         businessInterval = dateIntervals.day;
       }
@@ -1971,9 +1977,10 @@ Axis.prototype = {
     callAction(that._outsideConstantLines.concat(that._insideConstantLines), 'draw');
     callAction(that._strips, 'draw');
     that._dateMarkers = that._drawDateMarkers() || [];
-    that._labelAxesGroup && that._axisStripLabelGroup.append(that._labelAxesGroup);
+    that._stripLabelAxesGroup && that._axisStripLabelGroup.append(that._stripLabelAxesGroup);
     that._gridContainerGroup && that._axisGridGroup.append(that._gridContainerGroup);
     that._stripsGroup && that._axisStripGroup.append(that._stripsGroup);
+    that._labelsAxesGroup && that._axisElementsGroup.append(that._labelsAxesGroup);
 
     if (that._constantLinesGroup) {
       that._axisConstantLineGroups.above.inside.append(that._constantLinesGroup.above);
@@ -2179,6 +2186,10 @@ Axis.prototype = {
     this._axisStripGroup.attr({
       'clip-path': elementsClipID
     });
+
+    this._axisElementsGroup.attr({
+      'clip-path': canvasClipID
+    });
   },
 
   _validateVisualRange(optionValue) {
@@ -2201,14 +2212,6 @@ Axis.prototype = {
     options.visualRange = options._customVisualRange = that._validateVisualRange(options._customVisualRange);
 
     that._setVisualRange(options._customVisualRange);
-  },
-
-  beforeCleanGroups() {
-    this._options.label.template && this._axisElementsGroup && this._axisElementsGroup.linkRemove();
-  },
-
-  afterCleanGroups() {
-    this._options.label.template && this._axisElementsGroup && this._axisElementsGroup.linkAppend();
   },
 
   validate() {

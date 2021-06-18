@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/data_grid.d.ts)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -63,7 +63,7 @@ import dxScrollable from './scroll_view/ui.scrollable';
 import dxSortable from './sortable';
 
 import {
-    dxToolbarOptions
+    dxToolbarOptions, dxToolbarItem
 } from './toolbar';
 
 import {
@@ -1038,6 +1038,12 @@ export interface GridBaseOptions<TComponent extends GridBase> extends WidgetOpti
      * @public
      */
     stateStoring?: StateStoring;
+    /**
+     * @docid
+     * @default undefined
+     * @public
+     */
+    toolbar?: Toolbar;
     /**
      * @docid
      * @default true
@@ -4114,6 +4120,10 @@ export interface SummaryTexts {
      * @default "Sum of {1} is {0}"
      */
     sumOtherColumn?: string
+}
+
+export interface Toolbar {
+  items?: (string | dxToolbarItem)[];
 }
 
 /**

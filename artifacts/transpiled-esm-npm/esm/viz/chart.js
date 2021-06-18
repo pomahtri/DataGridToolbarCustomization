@@ -582,15 +582,6 @@ var dxChart = AdvancedChart.inherit({
     });
   },
 
-  // for async templates. Should be fixed
-  _cleanGroups() {
-    this._getAllAxes().forEach(a => a.beforeCleanGroups());
-
-    this.callBase();
-
-    this._getAllAxes().forEach(a => a.afterCleanGroups());
-  },
-
   _axesBoundaryPositioning() {
     var that = this;
 

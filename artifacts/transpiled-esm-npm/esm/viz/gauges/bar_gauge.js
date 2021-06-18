@@ -368,7 +368,7 @@ export var dxBarGauge = BaseGauge.inherit({
 
     for (i = 0; i < ii; ++i) {
       value = list[i];
-      that._values[i] = value = _Number(_isFinite(value) ? value : that._values[i]);
+      that._values[i] = _Number(_isFinite(value) ? value : that._values[i]);
     }
 
     if (!that._resizing) {

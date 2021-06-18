@@ -1,7 +1,7 @@
 /**
 * DevExtreme (dx.all.d.ts)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -6892,6 +6892,12 @@ declare module DevExpress.ui {
        * [descr:dxDataGridOptions.summary.totalItems.valueFormat]
        */
       valueFormat?: format;
+    }
+    /**
+     * @deprecated Warning! This type is used for internal purposes. Do not import it directly.
+     */
+    export interface Toolbar {
+      items?: (string | dxToolbarItem)[];
     }
     export type ToolbarPreparingEvent =
       DevExpress.events.EventInfo<dxDataGrid> & ToolbarPreparingInfo;
@@ -15897,11 +15903,11 @@ declare module DevExpress.ui {
     /**
      * [descr:dxScheduler.addAppointment(appointment)]
      */
-    addAppointment(appointment: any): void;
+    addAppointment(appointment: dxSchedulerAppointment): void;
     /**
      * [descr:dxScheduler.deleteAppointment(appointment)]
      */
-    deleteAppointment(appointment: any): void;
+    deleteAppointment(appointment: dxSchedulerAppointment): void;
     getDataSource(): DevExpress.data.DataSource;
     /**
      * [descr:dxScheduler.getEndViewDate()]
@@ -15932,22 +15938,25 @@ declare module DevExpress.ui {
      * [descr:dxScheduler.showAppointmentPopup(appointmentData, createNewAppointment, currentAppointmentData)]
      */
     showAppointmentPopup(
-      appointmentData?: any,
+      appointmentData?: dxSchedulerAppointment,
       createNewAppointment?: boolean,
-      currentAppointmentData?: any
+      currentAppointmentData?: dxSchedulerAppointment
     ): void;
     /**
      * [descr:dxScheduler.showAppointmentTooltip(appointmentData, target, currentAppointmentData)]
      */
     showAppointmentTooltip(
-      appointmentData: any,
+      appointmentData: dxSchedulerAppointment,
       target: string | DevExpress.core.UserDefinedElement,
-      currentAppointmentData?: any
+      currentAppointmentData?: dxSchedulerAppointment
     ): void;
     /**
      * [descr:dxScheduler.updateAppointment(target, appointment)]
      */
-    updateAppointment(target: any, appointment: any): void;
+    updateAppointment(
+      target: dxSchedulerAppointment,
+      appointment: dxSchedulerAppointment
+    ): void;
   }
   module dxScheduler {
     export type AppointmentAddedEvent =
@@ -16072,8 +16081,8 @@ declare module DevExpress.ui {
      * @deprecated Warning! This type is used for internal purposes. Do not import it directly.
      */
     interface TargetedAppointmentInfo {
-      readonly appointmentData: any;
-      readonly targetedAppointmentData?: any;
+      readonly appointmentData: dxSchedulerAppointment;
+      readonly targetedAppointmentData?: dxSchedulerAppointment;
     }
   }
   /**
@@ -20889,6 +20898,10 @@ declare module DevExpress.ui {
      * [descr:GridBaseOptions.stateStoring]
      */
     stateStoring?: DevExpress.ui.dxDataGrid.StateStoring;
+    /**
+     * [descr:GridBaseOptions.toolbar]
+     */
+    toolbar?: DevExpress.ui.dxDataGrid.Toolbar;
     /**
      * [descr:GridBaseOptions.twoWayBindingEnabled]
      */

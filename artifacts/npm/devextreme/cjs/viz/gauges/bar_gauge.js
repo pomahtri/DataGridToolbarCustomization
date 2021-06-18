@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/gauges/bar_gauge.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -394,7 +394,7 @@ var dxBarGauge = _base_gauge.BaseGauge.inherit({
 
     for (i = 0; i < ii; ++i) {
       value = list[i];
-      that._values[i] = value = _Number(_isFinite(value) ? value : that._values[i]);
+      that._values[i] = _Number(_isFinite(value) ? value : that._values[i]);
     }
 
     if (!that._resizing) {

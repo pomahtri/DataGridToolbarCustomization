@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/chart_components/advanced_chart.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -471,9 +471,11 @@ export var AdvancedChart = BaseChart.inherit({
 
     that._axesGroup.linkAppend();
 
+    that._labelsAxesGroup.linkAppend();
+
     that._constantLinesGroup.linkAppend();
 
-    that._labelAxesGroup.linkAppend();
+    that._stripLabelAxesGroup.linkAppend();
 
     that._scaleBreaksGroup.linkAppend();
   },
@@ -639,10 +641,11 @@ export var AdvancedChart = BaseChart.inherit({
       axisClass: isArgumentAxes ? 'arg' : 'val',
       widgetClass: 'dxc',
       stripsGroup: that._stripsGroup,
-      labelAxesGroup: that._labelAxesGroup,
+      stripLabelAxesGroup: that._stripLabelAxesGroup,
       constantLinesGroup: that._constantLinesGroup,
       scaleBreaksGroup: that._scaleBreaksGroup,
       axesContainerGroup: that._axesGroup,
+      labelsAxesGroup: that._labelsAxesGroup,
       gridGroup: that._gridGroup,
       isArgumentAxis: isArgumentAxes,
 

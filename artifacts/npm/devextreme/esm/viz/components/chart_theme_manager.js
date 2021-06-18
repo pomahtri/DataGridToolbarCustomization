@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/components/chart_theme_manager.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -67,8 +67,8 @@ export var ThemeManager = BaseThemeManager.inherit(function () {
   var applyParticularAxisOptions = function applyParticularAxisOptions(name, userOptions, rotated) {
     var theme = this._theme;
     var position = !(rotated ^ name === 'valueAxis') ? 'horizontalAxis' : 'verticalAxis';
-    var processedUserOptions = processAxisOptions(userOptions, name);
-    var commonAxisSettings = processAxisOptions(this._userOptions['commonAxisSettings'], name);
+    var processedUserOptions = processAxisOptions(userOptions);
+    var commonAxisSettings = processAxisOptions(this._userOptions['commonAxisSettings']);
     var mergeOptions = extend(true, {}, theme.commonAxisSettings, theme[position], theme[name], commonAxisSettings, processedUserOptions);
     mergeOptions.workWeek = processedUserOptions.workWeek || theme[name].workWeek;
     mergeOptions.forceUserTickInterval |= _isDefined(processedUserOptions.tickInterval) && !_isDefined(processedUserOptions.axisDivisionFactor);

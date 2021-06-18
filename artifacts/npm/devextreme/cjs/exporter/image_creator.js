@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/exporter/image_creator.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -274,7 +274,7 @@ function parseUrl(urlString) {
 function setFontStyle(context, options) {
   var fontParams = [];
   options.fontSize = options.fontSize || DEFAULT_FONT_SIZE;
-  options.fontFamily || DEFAULT_FONT_FAMILY;
+  options.fontFamily = options.fontFamily || DEFAULT_FONT_FAMILY;
   options.fill = options.fill || DEFAULT_TEXT_COLOR;
   options.fontStyle && fontParams.push(options.fontStyle);
   options.fontWeight && fontParams.push(options.fontWeight);

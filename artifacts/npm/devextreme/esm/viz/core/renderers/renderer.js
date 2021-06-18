@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/core/renderers/renderer.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -955,7 +955,7 @@ function setMaxSize(maxWidth, maxHeight) {
       ellipsisMaxWidth -= ellipsisWidth;
     }
 
-    lines = applyOverflowRules(that.element, that._texts, maxWidth, ellipsisMaxWidth, options, maxHeight);
+    lines = applyOverflowRules(that.element, that._texts, maxWidth, ellipsisMaxWidth, options);
     lines = setMaxHeight(lines, ellipsisMaxWidth, options, maxHeight, parseFloat(this._getLineHeight()));
     this._texts = lines.reduce((texts, line) => {
       return texts.concat(line.parts);

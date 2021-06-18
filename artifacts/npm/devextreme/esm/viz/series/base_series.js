@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/series/base_series.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -538,8 +538,6 @@ Series.prototype = {
     that._legendCallback = legendCallback || that._legendCallback;
 
     if (!that._visible) {
-      animationEnabled = false;
-
       that._group.remove();
 
       return;

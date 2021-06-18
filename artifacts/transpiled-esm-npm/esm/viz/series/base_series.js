@@ -530,8 +530,6 @@ Series.prototype = {
     that._legendCallback = legendCallback || that._legendCallback;
 
     if (!that._visible) {
-      animationEnabled = false;
-
       that._group.remove();
 
       return;

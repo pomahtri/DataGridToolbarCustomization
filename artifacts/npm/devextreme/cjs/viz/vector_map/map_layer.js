@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/vector_map/map_layer.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -1767,7 +1767,6 @@ MapLayerCollection.prototype = {
   setOptions: function setOptions(options) {
     var that = this;
     var optionList = options ? _isArray(options) ? options : [options] : [];
-    var layerByName = that._layerByName;
     var layers = that._layers;
     var readyCallbacks = [];
     var needToCreateLayers = optionList.length !== layers.length || layers.some(function (l, i) {
@@ -1782,7 +1781,7 @@ MapLayerCollection.prototype = {
         return l.dispose();
       });
 
-      that._layerByName = layerByName = {};
+      var layerByName = that._layerByName = {};
       that._layers = layers = [];
 
       for (var i = 0, ii = optionList.length; i < ii; ++i) {

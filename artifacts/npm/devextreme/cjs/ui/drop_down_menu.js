@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/drop_down_menu.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -261,6 +261,7 @@ var DropDownMenu = _ui.default.inherit({
       height: this.option('buttonHeight'),
       useInkRipple: this.option('useInkRipple'),
       template: this.option('buttonTemplate'),
+      hoverStateEnabled: false,
       focusStateEnabled: false,
       onClick: function (e) {
         this.option('opened', !this.option('opened'));

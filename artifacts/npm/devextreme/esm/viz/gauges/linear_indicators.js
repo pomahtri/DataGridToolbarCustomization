@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/gauges/linear_indicators.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -229,7 +229,7 @@ var triangleMarker = SimpleIndicator.inherit({
     length > 20 || (length = 20);
 
     if (that.vertical) {
-      x1 = x2 = options.x;
+      x1 = options.x;
       x2 = x1 + (that._inverted ? length : -length);
       y1 = that._zeroPosition + width;
       y2 = that._zeroPosition - width;

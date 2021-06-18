@@ -74,10 +74,14 @@ var dxGauge = _base_gauge.BaseGauge.inherit({
     that._scaleGroup = that._renderer.g().attr({
       'class': 'dxg-scale'
     }).linkOn(that._renderer.root, 'scale');
+    that._labelsAxesGroup = that._renderer.g().attr({
+      'class': 'dxg-scale-elements'
+    }).linkOn(that._renderer.root, 'scale-elements');
     that._scale = new _base_axis.Axis({
       incidentOccurred: that._incidentOccurred,
       renderer: that._renderer,
       axesContainerGroup: that._scaleGroup,
+      labelsAxesGroup: that._labelsAxesGroup,
       axisType: that._scaleTypes.type,
       drawingType: that._scaleTypes.drawingType,
       widgetClass: 'dxg',
@@ -92,13 +96,15 @@ var dxGauge = _base_gauge.BaseGauge.inherit({
 
     that._scaleGroup.linkOff();
 
+    that._labelsAxesGroup.linkOff();
+
     that._rangeContainer.dispose();
 
     that._disposeValueIndicators();
 
     that._subvalueIndicatorContainer.linkOff();
 
-    that._scale = that._scaleGroup = that._rangeContainer = null;
+    that._scale = that._scaleGroup = that._labelsAxesGroup = that._rangeContainer = null;
   },
   _disposeValueIndicators: function _disposeValueIndicators() {
     var that = this;
@@ -251,6 +257,8 @@ var dxGauge = _base_gauge.BaseGauge.inherit({
     that._updateScaleTickIndent(scaleOptions);
 
     that._scaleGroup.linkAppend();
+
+    that._labelsAxesGroup.linkAppend();
 
     that._scale.draw((0, _extend2.extend)({}, that._canvas));
   },

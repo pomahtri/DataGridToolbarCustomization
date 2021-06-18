@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/axes/tick_generator.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -783,19 +783,19 @@ function dateGenerator(options) {
     value = correctDateWithUnitBeginning(value);
 
     if ('years' in intervalObject) {
-      value.setFullYear(floorNumber(value.getFullYear(), intervalObject.years, 0));
+      value.setFullYear(floorNumber(value.getFullYear(), intervalObject.years));
     } else if ('quarters' in intervalObject) {
       value = correctDateWithUnitBeginning(floorAtStartDate(value));
     } else if ('months' in intervalObject) {
-      value.setMonth(floorNumber(value.getMonth(), intervalObject.months, 0));
+      value.setMonth(floorNumber(value.getMonth(), intervalObject.months));
     } else if ('weeks' in intervalObject || 'days' in intervalObject) {
       value = correctDateWithUnitBeginning(floorAtStartDate(value));
     } else if ('hours' in intervalObject) {
-      value.setHours(floorNumber(value.getHours(), intervalObject.hours, 0));
+      value.setHours(floorNumber(value.getHours(), intervalObject.hours));
     } else if ('minutes' in intervalObject) {
-      value.setMinutes(floorNumber(value.getMinutes(), intervalObject.minutes, 0));
+      value.setMinutes(floorNumber(value.getMinutes(), intervalObject.minutes));
     } else if ('seconds' in intervalObject) {
-      value.setSeconds(floorNumber(value.getSeconds(), intervalObject.seconds, 0));
+      value.setSeconds(floorNumber(value.getSeconds(), intervalObject.seconds));
     } else if ('milliseconds' in intervalObject) {
       value = floorAtStartDate(value);
     }

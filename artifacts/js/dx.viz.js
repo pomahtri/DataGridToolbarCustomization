@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.viz.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -33745,7 +33745,7 @@ function setMaxSize(maxWidth, maxHeight) {
       ellipsisMaxWidth -= ellipsisWidth;
     }
 
-    lines = applyOverflowRules(that.element, that._texts, maxWidth, ellipsisMaxWidth, options, maxHeight);
+    lines = applyOverflowRules(that.element, that._texts, maxWidth, ellipsisMaxWidth, options);
     lines = setMaxHeight(lines, ellipsisMaxWidth, options, maxHeight, parseFloat(this._getLineHeight()));
     this._texts = lines.reduce(function (texts, line) {
       return texts.concat(line.parts);
@@ -46140,7 +46140,7 @@ function parseUrl(urlString) {
 function setFontStyle(context, options) {
   var fontParams = [];
   options.fontSize = options.fontSize || DEFAULT_FONT_SIZE;
-  options.fontFamily || DEFAULT_FONT_FAMILY;
+  options.fontFamily = options.fontFamily || DEFAULT_FONT_FAMILY;
   options.fill = options.fill || DEFAULT_TEXT_COLOR;
   options.fontStyle && fontParams.push(options.fontStyle);
   options.fontWeight && fontParams.push(options.fontWeight);
@@ -50319,7 +50319,7 @@ var BaseChart = _base_widget.default.inherit({
       'class': 'dxc-axes-group'
     }).linkOn(root, 'axes'); // TODO: Must be created in the same place where used (advanced chart)
 
-    that._labelAxesGroup = renderer.g().attr({
+    that._stripLabelAxesGroup = renderer.g().attr({
       'class': 'dxc-strips-labels-group'
     }).linkOn(root, 'strips-labels'); // TODO: Must be created in the same place where used (advanced chart)
 
@@ -50327,6 +50327,9 @@ var BaseChart = _base_widget.default.inherit({
     that._seriesGroup = renderer.g().attr({
       'class': 'dxc-series-group'
     }).linkOn(root, 'series');
+    that._labelsAxesGroup = renderer.g().attr({
+      'class': 'dxc-elements-axes-group'
+    }).linkOn(root, 'elements');
     that._constantLinesGroup.above = createConstantLinesGroup();
     that._scaleBreaksGroup = renderer.g().attr({
       'class': 'dxc-scale-breaks'
@@ -50383,8 +50386,9 @@ var BaseChart = _base_widget.default.inherit({
     unlinkGroup('_stripsGroup');
     unlinkGroup('_gridGroup');
     unlinkGroup('_axesGroup');
+    unlinkGroup('_labelsAxesGroup');
     unlinkGroup('_constantLinesGroup');
-    unlinkGroup('_labelAxesGroup');
+    unlinkGroup('_stripLabelAxesGroup');
     unlinkGroup('_panesBorderGroup');
     unlinkGroup('_seriesGroup');
     unlinkGroup('_labelsGroup');
@@ -50398,8 +50402,9 @@ var BaseChart = _base_widget.default.inherit({
     disposeObject('_stripsGroup');
     disposeObject('_gridGroup');
     disposeObject('_axesGroup');
+    disposeObject('_labelsAxesGroup');
     disposeObject('_constantLinesGroup');
-    disposeObject('_labelAxesGroup');
+    disposeObject('_stripLabelAxesGroup');
     disposeObject('_panesBorderGroup');
     disposeObject('_seriesGroup');
     disposeObject('_labelsGroup');
@@ -50774,7 +50779,7 @@ var BaseChart = _base_widget.default.inherit({
     that._constantLinesGroup.above.clear(); // TODO: Must be removed in the same place where appended (advanced chart)
 
 
-    that._labelAxesGroup.linkRemove().clear(); // TODO: Must be removed in the same place where appended (advanced chart)
+    that._stripLabelAxesGroup.linkRemove().clear(); // TODO: Must be removed in the same place where appended (advanced chart)
     // that._seriesGroup.linkRemove().clear();
 
 
@@ -52742,8 +52747,6 @@ Series.prototype = {
     that._legendCallback = legendCallback || that._legendCallback;
 
     if (!that._visible) {
-      animationEnabled = false;
-
       that._group.remove();
 
       return;
@@ -54296,7 +54299,8 @@ var Axis = function Axis(renderSettings) {
   that._incidentOccurred = renderSettings.incidentOccurred;
   that._eventTrigger = renderSettings.eventTrigger;
   that._stripsGroup = renderSettings.stripsGroup;
-  that._labelAxesGroup = renderSettings.labelAxesGroup;
+  that._stripLabelAxesGroup = renderSettings.stripLabelAxesGroup;
+  that._labelsAxesGroup = renderSettings.labelsAxesGroup;
   that._constantLinesGroup = renderSettings.constantLinesGroup;
   that._scaleBreaksGroup = renderSettings.scaleBreaksGroup;
   that._axesContainerGroup = renderSettings.axesContainerGroup;
@@ -54709,7 +54713,7 @@ Axis.prototype = {
     });
     that._axisElementsGroup = renderer.g().attr({
       'class': classSelector + 'elements'
-    }).linkOn(that._axisGroup, 'axisElements').linkAppend();
+    });
     that._axisLineGroup = renderer.g().attr({
       'class': classSelector + 'line'
     }).linkOn(that._axisGroup, 'axisLine').linkAppend();
@@ -54741,7 +54745,12 @@ Axis.prototype = {
 
     that._axisTitleGroup.clear();
 
-    (!that._options.label.template || !that.isRendered()) && that._axisElementsGroup.clear(); // for react async templates
+    if (!that._options.label.template || !that.isRendered()) {
+      // for react async templates
+      that._axisElementsGroup.remove();
+
+      that._axisElementsGroup.clear();
+    }
 
     that._axisLineGroup && that._axisLineGroup.clear();
     that._axisStripGroup && that._axisStripGroup.clear();
@@ -54915,7 +54924,7 @@ Axis.prototype = {
     that._axisStripGroup = that._axisConstantLineGroups = that._axisStripLabelGroup = that._axisBreaksGroup = null;
     that._axisLineGroup = that._axisElementsGroup = that._axisGridGroup = null;
     that._axisGroup = that._axisTitleGroup = null;
-    that._axesContainerGroup = that._stripsGroup = that._constantLinesGroup = null;
+    that._axesContainerGroup = that._stripsGroup = that._constantLinesGroup = that._labelsAxesGroup = null;
     that._renderer = that._options = that._textOptions = that._textFontStyles = null;
     that._translator = null;
     that._majorTicks = that._minorTicks = null;
@@ -55681,7 +55690,7 @@ Axis.prototype = {
 
       if (workWeek !== businessInterval && weekend < businessInterval) {
         var weekendsCount = Math.ceil(businessInterval / dateIntervals.week);
-        businessInterval = weekend >= businessInterval ? dateIntervals.day : businessInterval - weekend * weekendsCount;
+        businessInterval = businessInterval - weekend * weekendsCount;
       } else if (weekend >= businessInterval && businessInterval > dateIntervals.day) {
         businessInterval = dateIntervals.day;
       }
@@ -55993,9 +56002,10 @@ Axis.prototype = {
     callAction(that._outsideConstantLines.concat(that._insideConstantLines), 'draw');
     callAction(that._strips, 'draw');
     that._dateMarkers = that._drawDateMarkers() || [];
-    that._labelAxesGroup && that._axisStripLabelGroup.append(that._labelAxesGroup);
+    that._stripLabelAxesGroup && that._axisStripLabelGroup.append(that._stripLabelAxesGroup);
     that._gridContainerGroup && that._axisGridGroup.append(that._gridContainerGroup);
     that._stripsGroup && that._axisStripGroup.append(that._stripsGroup);
+    that._labelsAxesGroup && that._axisElementsGroup.append(that._labelsAxesGroup);
 
     if (that._constantLinesGroup) {
       that._axisConstantLineGroups.above.inside.append(that._constantLinesGroup.above);
@@ -56196,6 +56206,10 @@ Axis.prototype = {
     this._axisStripGroup.attr({
       'clip-path': elementsClipID
     });
+
+    this._axisElementsGroup.attr({
+      'clip-path': canvasClipID
+    });
   },
   _validateVisualRange: function _validateVisualRange(optionValue) {
     var range = (0, _utils.getVizRangeObject)(optionValue);
@@ -56216,12 +56230,6 @@ Axis.prototype = {
     options.visualRange = options._customVisualRange = that._validateVisualRange(options._customVisualRange);
 
     that._setVisualRange(options._customVisualRange);
-  },
-  beforeCleanGroups: function beforeCleanGroups() {
-    this._options.label.template && this._axisElementsGroup && this._axisElementsGroup.linkRemove();
-  },
-  afterCleanGroups: function afterCleanGroups() {
-    this._options.label.template && this._axisElementsGroup && this._axisElementsGroup.linkAppend();
   },
   validate: function validate() {
     var that = this;
@@ -57081,7 +57089,7 @@ _Translator2d.prototype = {
           script = _category_translator.default;
           that._categories = categories;
           canvasOptions.interval = that._getDiscreteInterval(options.addSpiderCategory ? categoriesLength + 1 : categoriesLength, canvasOptions);
-          that._categoriesToPoints = makeCategoriesToPoints(categories, canvasOptions.invert);
+          that._categoriesToPoints = makeCategoriesToPoints(categories);
 
           if (categoriesLength) {
             canvasOptions.startPointIndex = that._categoriesToPoints[visibleCategories[0].valueOf()];
@@ -74186,8 +74194,8 @@ var _default = _extend({}, _symbol_point.default, {
     var maxValue = !rotated ? _max(that.minY, that.y) : _max(that.minX, that.x);
     var minValue = !rotated ? _min(that.minY, that.y) : _min(that.minX, that.x);
     var tmp;
-    var visibleTopMarker = true;
-    var visibleBottomMarker = true;
+    var visibleTopMarker;
+    var visibleBottomMarker;
     var visibleRangeArea = true;
     var visibleArgArea = that.series.getArgumentAxis().getVisibleArea();
     var visibleValArea = that.series.getValueAxis().getVisibleArea();
@@ -74855,8 +74863,8 @@ var ThemeManager = _base_theme_manager.BaseThemeManager.inherit(function () {
   var applyParticularAxisOptions = function applyParticularAxisOptions(name, userOptions, rotated) {
     var theme = this._theme;
     var position = !(rotated ^ name === 'valueAxis') ? 'horizontalAxis' : 'verticalAxis';
-    var processedUserOptions = processAxisOptions(userOptions, name);
-    var commonAxisSettings = processAxisOptions(this._userOptions['commonAxisSettings'], name);
+    var processedUserOptions = processAxisOptions(userOptions);
+    var commonAxisSettings = processAxisOptions(this._userOptions['commonAxisSettings']);
     var mergeOptions = (0, _extend.extend)(true, {}, theme.commonAxisSettings, theme[position], theme[name], commonAxisSettings, processedUserOptions);
     mergeOptions.workWeek = processedUserOptions.workWeek || theme[name].workWeek;
     mergeOptions.forceUserTickInterval |= (0, _type.isDefined)(processedUserOptions.tickInterval) && !(0, _type.isDefined)(processedUserOptions.axisDivisionFactor);
@@ -76285,9 +76293,11 @@ var AdvancedChart = _base_chart.BaseChart.inherit({
 
     that._axesGroup.linkAppend();
 
+    that._labelsAxesGroup.linkAppend();
+
     that._constantLinesGroup.linkAppend();
 
-    that._labelAxesGroup.linkAppend();
+    that._stripLabelAxesGroup.linkAppend();
 
     that._scaleBreaksGroup.linkAppend();
   },
@@ -76462,10 +76472,11 @@ var AdvancedChart = _base_chart.BaseChart.inherit({
       axisClass: isArgumentAxes ? 'arg' : 'val',
       widgetClass: 'dxc',
       stripsGroup: that._stripsGroup,
-      labelAxesGroup: that._labelAxesGroup,
+      stripLabelAxesGroup: that._stripLabelAxesGroup,
       constantLinesGroup: that._constantLinesGroup,
       scaleBreaksGroup: that._scaleBreaksGroup,
       axesContainerGroup: that._axesGroup,
+      labelsAxesGroup: that._labelsAxesGroup,
       gridGroup: that._gridGroup,
       isArgumentAxis: isArgumentAxes,
       getTemplate: function getTemplate(template) {
@@ -77926,19 +77937,19 @@ function dateGenerator(options) {
     value = correctDateWithUnitBeginning(value);
 
     if ('years' in intervalObject) {
-      value.setFullYear(floorNumber(value.getFullYear(), intervalObject.years, 0));
+      value.setFullYear(floorNumber(value.getFullYear(), intervalObject.years));
     } else if ('quarters' in intervalObject) {
       value = correctDateWithUnitBeginning(floorAtStartDate(value));
     } else if ('months' in intervalObject) {
-      value.setMonth(floorNumber(value.getMonth(), intervalObject.months, 0));
+      value.setMonth(floorNumber(value.getMonth(), intervalObject.months));
     } else if ('weeks' in intervalObject || 'days' in intervalObject) {
       value = correctDateWithUnitBeginning(floorAtStartDate(value));
     } else if ('hours' in intervalObject) {
-      value.setHours(floorNumber(value.getHours(), intervalObject.hours, 0));
+      value.setHours(floorNumber(value.getHours(), intervalObject.hours));
     } else if ('minutes' in intervalObject) {
-      value.setMinutes(floorNumber(value.getMinutes(), intervalObject.minutes, 0));
+      value.setMinutes(floorNumber(value.getMinutes(), intervalObject.minutes));
     } else if ('seconds' in intervalObject) {
-      value.setSeconds(floorNumber(value.getSeconds(), intervalObject.seconds, 0));
+      value.setSeconds(floorNumber(value.getSeconds(), intervalObject.seconds));
     } else if ('milliseconds' in intervalObject) {
       value = floorAtStartDate(value);
     }
@@ -79642,6 +79653,7 @@ var _default = {
       }
 
       that._axisShift = shiftGroup(options.position, that._axisGroup);
+      shiftGroup(options.position, that._axisElementsGroup);
       (isHorizontal ? [TOP, BOTTOM] : [LEFT, RIGHT]).forEach(function (side) {
         shiftGroup(side, constantLinesGroups.above);
         shiftGroup(side, constantLinesGroups.under);
@@ -80995,10 +81007,14 @@ var dxGauge = _base_gauge.BaseGauge.inherit({
     that._scaleGroup = that._renderer.g().attr({
       'class': 'dxg-scale'
     }).linkOn(that._renderer.root, 'scale');
+    that._labelsAxesGroup = that._renderer.g().attr({
+      'class': 'dxg-scale-elements'
+    }).linkOn(that._renderer.root, 'scale-elements');
     that._scale = new _base_axis.Axis({
       incidentOccurred: that._incidentOccurred,
       renderer: that._renderer,
       axesContainerGroup: that._scaleGroup,
+      labelsAxesGroup: that._labelsAxesGroup,
       axisType: that._scaleTypes.type,
       drawingType: that._scaleTypes.drawingType,
       widgetClass: 'dxg',
@@ -81013,13 +81029,15 @@ var dxGauge = _base_gauge.BaseGauge.inherit({
 
     that._scaleGroup.linkOff();
 
+    that._labelsAxesGroup.linkOff();
+
     that._rangeContainer.dispose();
 
     that._disposeValueIndicators();
 
     that._subvalueIndicatorContainer.linkOff();
 
-    that._scale = that._scaleGroup = that._rangeContainer = null;
+    that._scale = that._scaleGroup = that._labelsAxesGroup = that._rangeContainer = null;
   },
   _disposeValueIndicators: function _disposeValueIndicators() {
     var that = this;
@@ -81172,6 +81190,8 @@ var dxGauge = _base_gauge.BaseGauge.inherit({
     that._updateScaleTickIndent(scaleOptions);
 
     that._scaleGroup.linkAppend();
+
+    that._labelsAxesGroup.linkAppend();
 
     that._scale.draw((0, _extend2.extend)({}, that._canvas));
   },
@@ -85872,18 +85892,6 @@ var dxChart = _advanced_chart.AdvancedChart.inherit({
     var axes = (0, _type.isDefined)(isHorizontal) ? isHorizontal ^ this._isRotated() ? this._argumentAxes : this._valueAxes : this._getAllAxes();
     axes.forEach(function (a) {
       a.resetApplyingAnimation(isFirstDrawing);
-    });
-  },
-  // for async templates. Should be fixed
-  _cleanGroups: function _cleanGroups() {
-    this._getAllAxes().forEach(function (a) {
-      return a.beforeCleanGroups();
-    });
-
-    this.callBase();
-
-    this._getAllAxes().forEach(function (a) {
-      return a.afterCleanGroups();
     });
   },
   _axesBoundaryPositioning: function _axesBoundaryPositioning() {
@@ -91092,19 +91100,19 @@ function makeHeader(header, weakElement) {
           return;
         }
 
-        var weakRect = processBackwardHeaderRect(weakElement, fitRect, fitRect);
+        var weakRect = processBackwardHeaderRect(weakElement, fitRect);
         fitRect[2 + weakElement.primary] = weakRect[weakElement.primary];
-        var headerFitReact = processBackwardHeaderRect(header, fitRect, fitRect);
+        var headerFitReact = processBackwardHeaderRect(header, fitRect);
 
         if (fitRect[2 + weakElement.primary] < rect[2 + weakElement.primary] && header.size[header.primary] > rect[2 + header.primary] - rect[header.primary]) {
           rect[2 + weakElement.primary] = fitRect[2 + weakElement.primary];
         }
 
-        var headerRect = processBackwardHeaderRect(header, rect, rect);
+        var headerRect = processBackwardHeaderRect(header, rect);
 
         if (headerRect[2 + weakElement.primary] > fitRect[2 + weakElement.primary]) {
           rect[2 + weakElement.primary] = fitRect[2 + weakElement.primary];
-          headerRect = processBackwardHeaderRect(header, rect, rect);
+          headerRect = processBackwardHeaderRect(header, rect);
         }
 
         weakElement.element.move(weakRect);
@@ -95771,6 +95779,11 @@ var circularAxes = {
       translateX: margins.right,
       translateY: margins.bottom
     });
+
+    this._axisElementsGroup.attr({
+      translateX: margins.right,
+      translateY: margins.bottom
+    });
   },
   getTranslatedAngle: function getTranslatedAngle(angle) {
     var startAngle = this.getAngles()[0];
@@ -99029,7 +99042,7 @@ var triangleMarker = SimpleIndicator.inherit({
     length > 20 || (length = 20);
 
     if (that.vertical) {
-      x1 = x2 = options.x;
+      x1 = options.x;
       x2 = x1 + (that._inverted ? length : -length);
       y1 = that._zeroPosition + width;
       y2 = that._zeroPosition - width;
@@ -100527,7 +100540,7 @@ var dxBarGauge = _base_gauge.BaseGauge.inherit({
 
     for (i = 0; i < ii; ++i) {
       value = list[i];
-      that._values[i] = value = _Number(_isFinite(value) ? value : that._values[i]);
+      that._values[i] = _Number(_isFinite(value) ? value : that._values[i]);
     }
 
     if (!that._resizing) {
@@ -101512,6 +101525,10 @@ var dxRangeSelector = _base_widget.default.inherit({
       'class': 'dxrs-scale',
       'clip-path': that._clipRect.id
     }).append(root);
+    var labelsAxesGroup = renderer.g().attr({
+      'class': 'dxrs-scale-elements',
+      'clip-path': that._clipRect.id
+    }).append(root);
     var scaleBreaksGroup = renderer.g().attr({
       'class': 'dxrs-scale-breaks'
     }).append(root);
@@ -101522,6 +101539,7 @@ var dxRangeSelector = _base_widget.default.inherit({
       renderer: renderer,
       root: scaleGroup,
       scaleBreaksGroup: scaleBreaksGroup,
+      labelsAxesGroup: labelsAxesGroup,
       updateSelectedRange: function updateSelectedRange(range, e) {
         that.setValue((0, _utils.convertVisualRangeObject)(range), e);
       },
@@ -101993,6 +102011,7 @@ function AxisWrapper(params) {
     renderer: params.renderer,
     axesContainerGroup: params.root,
     scaleBreaksGroup: params.scaleBreaksGroup,
+    labelsAxesGroup: params.labelsAxesGroup,
     incidentOccurred: params.incidentOccurred,
     // TODO: These dependencies should be statically resolved (not for every new instance)
     axisType: 'xyAxes',
@@ -107852,7 +107871,6 @@ MapLayerCollection.prototype = {
   setOptions: function setOptions(options) {
     var that = this;
     var optionList = options ? _isArray(options) ? options : [options] : [];
-    var layerByName = that._layerByName;
     var layers = that._layers;
     var readyCallbacks = [];
     var needToCreateLayers = optionList.length !== layers.length || layers.some(function (l, i) {
@@ -107867,7 +107885,7 @@ MapLayerCollection.prototype = {
         return l.dispose();
       });
 
-      that._layerByName = layerByName = {};
+      var layerByName = that._layerByName = {};
       that._layers = layers = [];
 
       for (var i = 0, ii = optionList.length; i < ii; ++i) {
@@ -110969,7 +110987,7 @@ var layout = {
       var y = 0;
       var nodesInCascade = Object.keys(cascade).length;
       var cascadeHeight = _this2._getWeightForCascade(cascades, cascadeIdx) / _this2._weightPerPixel + nodePadding * (nodesInCascade - 1);
-      var cascadeAlign = _ALIGNMENT_DEFAULT;
+      var cascadeAlign;
 
       if (Array.isArray(options.nodeAlign)) {
         cascadeAlign = cascadeIdx < options.nodeAlign.length ? options.nodeAlign[cascadeIdx] : _ALIGNMENT_DEFAULT;

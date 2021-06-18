@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/viz/range_selector/range_selector.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -558,6 +558,10 @@ var dxRangeSelector = baseWidgetModule.inherit({
       'class': 'dxrs-scale',
       'clip-path': that._clipRect.id
     }).append(root);
+    var labelsAxesGroup = renderer.g().attr({
+      'class': 'dxrs-scale-elements',
+      'clip-path': that._clipRect.id
+    }).append(root);
     var scaleBreaksGroup = renderer.g().attr({
       'class': 'dxrs-scale-breaks'
     }).append(root);
@@ -568,6 +572,7 @@ var dxRangeSelector = baseWidgetModule.inherit({
       renderer: renderer,
       root: scaleGroup,
       scaleBreaksGroup: scaleBreaksGroup,
+      labelsAxesGroup: labelsAxesGroup,
       updateSelectedRange: function updateSelectedRange(range, e) {
         that.setValue(convertVisualRangeObject(range), e);
       },
@@ -1043,6 +1048,7 @@ function AxisWrapper(params) {
     renderer: params.renderer,
     axesContainerGroup: params.root,
     scaleBreaksGroup: params.scaleBreaksGroup,
+    labelsAxesGroup: params.labelsAxesGroup,
     incidentOccurred: params.incidentOccurred,
     // TODO: These dependencies should be statically resolved (not for every new instance)
     axisType: 'xyAxes',

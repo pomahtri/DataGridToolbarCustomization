@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/chart.js)
 * Version: 21.2.0
-* Build date: Tue Jun 15 2021
+* Build date: Fri Jun 18 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -628,18 +628,6 @@ var dxChart = _advanced_chart.AdvancedChart.inherit({
     var axes = (0, _type.isDefined)(isHorizontal) ? isHorizontal ^ this._isRotated() ? this._argumentAxes : this._valueAxes : this._getAllAxes();
     axes.forEach(function (a) {
       a.resetApplyingAnimation(isFirstDrawing);
-    });
-  },
-  // for async templates. Should be fixed
-  _cleanGroups: function _cleanGroups() {
-    this._getAllAxes().forEach(function (a) {
-      return a.beforeCleanGroups();
-    });
-
-    this.callBase();
-
-    this._getAllAxes().forEach(function (a) {
-      return a.afterCleanGroups();
     });
   },
   _axesBoundaryPositioning: function _axesBoundaryPositioning() {
