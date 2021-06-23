@@ -7,6 +7,7 @@ import { triggerResizeEvent } from '../../events/visibility_change';
 import messageLocalization from '../../localization/message';
 import '../drop_down_menu';
 import { extend } from '../../core/utils/extend';
+import { getPathParts } from '../../core/utils/data';
 var HEADER_PANEL_CLASS = 'header-panel';
 var TOOLBAR_BUTTON_CLASS = 'toolbar-button';
 var TOOLBAR_ARIA_LABEL = '-ariaToolbar';
@@ -137,9 +138,20 @@ var HeaderPanel = ColumnsView.inherit({
     }
 
     if (args.name === 'toolbar') {
-      var toolbarOptionName = args.fullName.split('.').slice(1).join('.');
+      debugger;
+      var parts = getPathParts(args.fullName);
 
-      this._toolbar.option(toolbarOptionName, args.value);
+      if (parts.length === 1 || parts.length === 2 && parts[1] === 'items') {
+        var toolbarOptions = this._getToolbarOptions();
+
+        this._toolbar.option(toolbarOptions);
+      } else if (parts.length === 3 && parts[1] === 'items') {
+        var _toolbarOptions = this._getToolbarOptions();
+
+        this._toolbar.option(_toolbarOptions);
+      } else if (parts.length >= 4 && parts[1] === 'items') {
+        this._toolbar.option(parts.slice(1).join('.'), args.value);
+      }
     }
 
     this.callBase(args);

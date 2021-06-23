@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/ui/scheduler/workspaces/base/date_table/table_body.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -53,7 +53,9 @@ export var viewFunction = _ref => {
           groups,
           index: cellIndex,
           isFirstGroupCell,
+          isFocused,
           isLastGroupCell,
+          isSelected,
           key,
           otherMonth,
           startDate,
@@ -73,7 +75,9 @@ export var viewFunction = _ref => {
           text: text,
           today: today,
           otherMonth: otherMonth,
-          firstDayOfMonth: firstDayOfMonth
+          firstDayOfMonth: firstDayOfMonth,
+          isSelected: isSelected,
+          isFocused: isFocused
         });
       })
     }, cellsRow[0].key - viewData.leftVirtualCellCount))], 0, getKeyByGroup(groupIndex, groupOrientation));

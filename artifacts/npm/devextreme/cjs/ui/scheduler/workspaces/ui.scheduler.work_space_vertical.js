@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.work_space_vertical.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -53,10 +53,10 @@ var SchedulerWorkspaceVertical = /*#__PURE__*/function (_SchedulerWorkSpaceIn) {
 
     var options = _SchedulerWorkSpaceIn.prototype.generateRenderOptions.call(this);
 
-    options.cellDataGetters.push(function (_, rowIndex, cellIndex) {
+    options.cellDataGetters.push(function (_, rowIndex, columnIndex) {
       return {
         value: {
-          text: _getTimeText(rowIndex, cellIndex)
+          text: _getTimeText(rowIndex, columnIndex)
         }
       };
     });

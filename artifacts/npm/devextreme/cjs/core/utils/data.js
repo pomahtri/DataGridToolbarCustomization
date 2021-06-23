@@ -1,14 +1,14 @@
 /**
 * DevExtreme (cjs/core/utils/data.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
 
-exports.toComparable = exports.compileSetter = exports.compileGetter = void 0;
+exports.toComparable = exports.compileSetter = exports.compileGetter = exports.getPathParts = void 0;
 
 var _errors = _interopRequireDefault(require("../errors"));
 
@@ -31,6 +31,12 @@ var assign = _variable_wrapper.default.assign;
 var bracketsToDots = function bracketsToDots(expr) {
   return expr.replace(/\[/g, '.').replace(/\]/g, '');
 };
+
+var getPathParts = function getPathParts(name) {
+  return bracketsToDots(name).split('.');
+};
+
+exports.getPathParts = getPathParts;
 
 var readPropValue = function readPropValue(obj, propName, options) {
   options = options || {};
@@ -78,8 +84,7 @@ var compileGetter = function compileGetter(expr) {
   }
 
   if (typeof expr === 'string') {
-    expr = bracketsToDots(expr);
-    var path = expr.split('.');
+    var path = getPathParts(expr);
     return function (obj, options) {
       options = prepareOptions(options);
       var functionAsIs = options.functionsAsIs;
@@ -173,7 +178,7 @@ var ensurePropValueDefined = function ensurePropValueDefined(obj, propName, valu
 };
 
 var compileSetter = function compileSetter(expr) {
-  expr = bracketsToDots(expr || 'this').split('.');
+  expr = getPathParts(expr || 'this');
   var lastLevelIndex = expr.length - 1;
   return function (obj, value, options) {
     options = prepareOptions(options);

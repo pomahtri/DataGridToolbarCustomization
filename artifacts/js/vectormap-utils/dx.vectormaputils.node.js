@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.vectormaputils.node.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -582,7 +582,7 @@ var DBF_FIELD_PARSERS = {
     },
     'N': function(stream, length) {
         var str = getAsciiString(stream, length);
-        return parseFloat(str, 10);
+        return parseFloat(str);
     },
     'D': function(stream, length) {
         var str = getAsciiString(stream, length);

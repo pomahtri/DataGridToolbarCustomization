@@ -6,6 +6,8 @@ var _component_registrator = _interopRequireDefault(require("../../../core/compo
 
 var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.work_space_vertical"));
 
+var _day = require("./utils/day");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
@@ -35,19 +37,17 @@ var SchedulerWorkSpaceDay = /*#__PURE__*/function (_SchedulerWorkSpaceVe) {
     return this.option('intervalCount');
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    this._firstViewDate = this._getViewStartByOptions();
-
-    this._setStartDayHour(this._firstViewDate);
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _day.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration());
   };
 
   _proto._getDateByIndex = function _getDateByIndex(headerIndex) {
     if (this.option('intervalCount') === 1) {
-      return this._firstViewDate;
+      return this._startViewDate;
     }
 
-    var resultDate = new Date(this._firstViewDate);
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex);
+    var resultDate = new Date(this._startViewDate);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex);
     return resultDate;
   };
 

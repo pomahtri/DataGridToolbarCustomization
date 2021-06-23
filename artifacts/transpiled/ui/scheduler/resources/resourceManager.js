@@ -1,6 +1,6 @@
 "use strict";
 
-exports.removeResourceManager = exports.getResourceManager = exports.createResourceManager = exports.ResourceManager = void 0;
+exports.ResourceManager = void 0;
 
 var _array = require("../../../core/utils/array");
 
@@ -701,23 +701,3 @@ var ResourceManager = /*#__PURE__*/function () {
 }();
 
 exports.ResourceManager = ResourceManager;
-var resourceManagers = {};
-
-var createResourceManager = function createResourceManager(key, resources) {
-  var validKey = key || 0;
-  resourceManagers[validKey] = new ResourceManager(resources);
-};
-
-exports.createResourceManager = createResourceManager;
-
-var getResourceManager = function getResourceManager(key) {
-  return resourceManagers[key];
-};
-
-exports.getResourceManager = getResourceManager;
-
-var removeResourceManager = function removeResourceManager(key) {
-  return resourceManagers[key] = null;
-};
-
-exports.removeResourceManager = removeResourceManager;

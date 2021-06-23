@@ -1,7 +1,7 @@
 /**
 * DevExtreme (renovation/ui/scheduler/workspaces/types.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -20,6 +20,8 @@ export interface ViewCellData {
   isLastGroupCell: boolean;
   key: number;
   firstDayOfMonth?: boolean;
+  isSelected?: boolean;
+  isFocused?: boolean;
 }
 
 export interface DateHeaderCellData extends ViewCellData {

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (renovation/ui/common/widget.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -301,9 +301,7 @@ var Widget = /*#__PURE__*/function (_InfernoWrapperCompon) {
           });
         });
         onHoverStart === null || onHoverStart === void 0 ? void 0 : onHoverStart(event);
-      }, function (_ref4) {
-        var event = _ref4.event;
-
+      }, function (event) {
         _this5.setState(function (state) {
           return _extends({}, state, {
             hovered: false

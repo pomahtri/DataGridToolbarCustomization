@@ -69,6 +69,8 @@ var getMousePosition = function getMousePosition(event) {
 };
 
 var GESTURE_COVER_CLASS = 'dx-gesture-cover';
+var OVERLAY_WRAPPER_CLASS = 'dx-overlay-wrapper';
+var OVERLAY_CONTENT_CLASS = 'dx-overlay-content';
 
 var ScrollHelper = /*#__PURE__*/function () {
   function ScrollHelper(orientation, component) {
@@ -101,13 +103,18 @@ var ScrollHelper = /*#__PURE__*/function () {
   var _proto = ScrollHelper.prototype;
 
   _proto.updateScrollable = function updateScrollable(elements, mousePosition) {
-    var that = this;
+    var _this = this;
 
-    if (!elements.some(function (element) {
-      return that._trySetScrollable(element, mousePosition);
-    })) {
-      that._$scrollableAtPointer = null;
-      that._scrollSpeed = 0;
+    var needResetScrollable = !elements.some(function (element) {
+      var $element = (0, _renderer.default)(element);
+      var isTargetOverOverlayWrapper = $element.hasClass(OVERLAY_WRAPPER_CLASS);
+      var isTargetOverOverlayContent = $element.hasClass(OVERLAY_CONTENT_CLASS);
+      return isTargetOverOverlayWrapper || isTargetOverOverlayContent || _this._trySetScrollable(element, mousePosition);
+    });
+
+    if (needResetScrollable) {
+      this._$scrollableAtPointer = null;
+      this._scrollSpeed = 0;
     }
   };
 
@@ -420,7 +427,7 @@ var Draggable = _dom_component.default.inherit({
     return $wrapper.length ? $wrapper : $element;
   },
   _attachEventHandlers: function _attachEventHandlers() {
-    var _this = this;
+    var _this2 = this;
 
     if (this.option('disabled')) {
       return;
@@ -435,13 +442,13 @@ var Draggable = _dom_component.default.inherit({
       direction: this.option('dragDirection'),
       immediate: this.option('immediate'),
       checkDropTarget: function checkDropTarget($target, event) {
-        var targetGroup = _this.option('group');
+        var targetGroup = _this2.option('group');
 
-        var sourceGroup = _this._getSourceDraggable().option('group');
+        var sourceGroup = _this2._getSourceDraggable().option('group');
 
-        var $scrollable = _this._getScrollable($target);
+        var $scrollable = _this2._getScrollable($target);
 
-        if (_this._verticalScrollHelper.isOutsideScrollable($scrollable, event) || _this._horizontalScrollHelper.isOutsideScrollable($scrollable, event)) {
+        if (_this2._verticalScrollHelper.isOutsideScrollable($scrollable, event) || _this2._horizontalScrollHelper.isOutsideScrollable($scrollable, event)) {
           return false;
         }
 
@@ -751,13 +758,13 @@ var Draggable = _dom_component.default.inherit({
     }
   },
   _getScrollable: function _getScrollable($element) {
-    var _this2 = this;
+    var _this3 = this;
 
     var $scrollable;
     $element.parents().toArray().some(function (parent) {
       var $parent = (0, _renderer.default)(parent);
 
-      if (_this2._horizontalScrollHelper.isScrollable($parent) || _this2._verticalScrollHelper.isScrollable($parent)) {
+      if (_this3._horizontalScrollHelper.isScrollable($parent) || _this3._verticalScrollHelper.isScrollable($parent)) {
         $scrollable = $parent;
         return true;
       }
@@ -804,7 +811,7 @@ var Draggable = _dom_component.default.inherit({
     !this._dragElementIsCloned() && this._move(this._initialLocate, this._$sourceElement);
   },
   _dragEndHandler: function _dragEndHandler(e) {
-    var _this3 = this;
+    var _this4 = this;
 
     var d = new _deferred.Deferred();
 
@@ -821,7 +828,7 @@ var Draggable = _dom_component.default.inherit({
     } finally {
       (0, _deferred.when)((0, _deferred.fromPromise)(dragEndEventArgs.cancel)).done(function (cancel) {
         if (!cancel) {
-          if (targetDraggable !== _this3) {
+          if (targetDraggable !== _this4) {
             targetDraggable._getAction('onDrop')(dropEventArgs);
           }
 
@@ -836,31 +843,31 @@ var Draggable = _dom_component.default.inherit({
       }).fail(d.resolve);
       d.done(function () {
         if (needRevertPosition) {
-          _this3._revertItemToInitialPosition();
+          _this4._revertItemToInitialPosition();
         }
 
-        _this3.reset();
+        _this4.reset();
 
         targetDraggable.reset();
 
-        _this3._stopAnimator();
+        _this4._stopAnimator();
 
-        _this3._horizontalScrollHelper.reset();
+        _this4._horizontalScrollHelper.reset();
 
-        _this3._verticalScrollHelper.reset();
+        _this4._verticalScrollHelper.reset();
 
-        _this3._resetDragElement();
+        _this4._resetDragElement();
 
-        _this3._resetSourceElement();
+        _this4._resetSourceElement();
 
-        _this3._resetTargetDraggable();
+        _this4._resetTargetDraggable();
 
-        _this3._resetSourceDraggable();
+        _this4._resetSourceDraggable();
       });
     }
   },
   _isTargetOverAnotherDraggable: function _isTargetOverAnotherDraggable(e) {
-    var _this4 = this;
+    var _this5 = this;
 
     var sourceDraggable = this._getSourceDraggable();
 
@@ -876,7 +883,7 @@ var Draggable = _dom_component.default.inherit({
     var firstWidgetElement = elements.filter(function (element) {
       var $element = (0, _renderer.default)(element);
 
-      if ($element.hasClass(_this4._addWidgetPrefix())) {
+      if ($element.hasClass(_this5._addWidgetPrefix())) {
         return !$element.closest($dragElement).length;
       }
     })[0];

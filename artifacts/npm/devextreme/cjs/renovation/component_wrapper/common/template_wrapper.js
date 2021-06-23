@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/component_wrapper/common/template_wrapper.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -14,6 +14,8 @@ var _vdom = require("@devextreme/vdom");
 
 var _inferno = require("inferno");
 
+var _shallow_equals = require("../../utils/shallow_equals");
+
 var _dom = require("../../../core/utils/dom");
 
 var _renderer = _interopRequireDefault(require("../../../core/renderer"));
@@ -25,6 +27,8 @@ var _element = require("../../../core/element");
 var _utils = require("../utils/utils");
 
 var _number = _interopRequireDefault(require("../../../core/polyfills/number"));
+
+var _type = require("../../../core/utils/type");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50,45 +54,61 @@ var TemplateWrapper = /*#__PURE__*/function (_InfernoComponent) {
   var _proto = TemplateWrapper.prototype;
 
   _proto.renderTemplate = function renderTemplate() {
+    var _this$props$model;
+
     var node = (0, _inferno.findDOMfromVNode)(this.$LI, true);
+    var parentNode = node.parentNode;
+    var $parent = (0, _renderer.default)(parentNode);
+    var $children = $parent.contents();
 
-    if (node) {
-      var parentNode = node.parentNode;
+    var _ref = (_this$props$model = this.props.model) !== null && _this$props$model !== void 0 ? _this$props$model : {
+      data: {}
+    },
+        data = _ref.data,
+        index = _ref.index;
 
-      if (parentNode) {
-        var _this$props$model;
-
-        var $parent = (0, _renderer.default)(parentNode);
-        var $children = $parent.contents();
-
-        var _ref = (_this$props$model = this.props.model) !== null && _this$props$model !== void 0 ? _this$props$model : {
-          data: {}
-        },
-            data = _ref.data,
-            index = _ref.index;
-
-        Object.keys(data).forEach(function (name) {
-          if (data[name] && _dom_adapter.default.isNode(data[name])) {
-            data[name] = (0, _element.getPublicElement)((0, _renderer.default)(data[name]));
-          }
-        });
-        var $result = (0, _renderer.default)(this.props.template.render(_extends({
-          container: (0, _element.getPublicElement)($parent),
-          transclude: this.props.transclude
-        }, !this.props.transclude ? {
-          model: data
-        } : {}, !this.props.transclude && _number.default.isFinite(index) ? {
-          index: index
-        } : {})));
-        (0, _dom.replaceWith)((0, _renderer.default)(node), $result);
-        return function () {
-          (0, _utils.removeDifferentElements)($children, $parent.contents());
-          parentNode.appendChild(node);
-        };
+    Object.keys(data).forEach(function (name) {
+      if (data[name] && _dom_adapter.default.isNode(data[name])) {
+        data[name] = (0, _element.getPublicElement)((0, _renderer.default)(data[name]));
       }
+    });
+    var $result = (0, _renderer.default)(this.props.template.render(_extends({
+      container: (0, _element.getPublicElement)($parent),
+      transclude: this.props.transclude
+    }, !this.props.transclude ? {
+      model: data
+    } : {}, !this.props.transclude && _number.default.isFinite(index) ? {
+      index: index
+    } : {})));
+    (0, _dom.replaceWith)((0, _renderer.default)(node), $result);
+    return function () {
+      (0, _utils.removeDifferentElements)($children, $parent.contents());
+      parentNode.appendChild(node);
+    };
+  };
+
+  _proto.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
+    var _this$props = this.props,
+        model = _this$props.model,
+        template = _this$props.template;
+    var nextModel = nextProps.model,
+        nextTemplate = nextProps.template;
+    var sameTemplate = template === nextTemplate;
+
+    if (!sameTemplate) {
+      return true;
     }
 
-    return undefined;
+    if ((0, _type.isDefined)(model) && (0, _type.isDefined)(nextModel)) {
+      var data = model.data,
+          index = model.index;
+      var nextData = nextModel.data,
+          nextIndex = nextModel.index;
+      return index !== nextIndex || !(0, _shallow_equals.shallowEquals)(data, nextData);
+    }
+
+    var sameModel = model === nextModel;
+    return !sameModel;
   };
 
   _proto.createEffects = function createEffects() {

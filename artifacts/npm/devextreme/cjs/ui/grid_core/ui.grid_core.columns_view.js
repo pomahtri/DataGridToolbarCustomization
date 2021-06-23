@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/grid_core/ui.grid_core.columns_view.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -698,7 +698,7 @@ var ColumnsView = _uiGrid_core.default.View.inherit(_uiGrid_core3.default).inher
 
         if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
           if (row) {
-            updateFunc(newValue, oldValue);
+            updateFunc(newValue, row);
           }
 
           oldValue = newValue;

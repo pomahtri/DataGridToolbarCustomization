@@ -3,7 +3,7 @@ import { DIRECTION_VERTICAL } from "../common/consts";
 export function getElementLocationInternal(element, offset, direction, containerElement) {
   var prop = direction === DIRECTION_VERTICAL ? "top" : "left";
   var dimension = direction === DIRECTION_VERTICAL ? "Height" : "Width";
-  var relativeLocation = containerElement["scroll".concat(titleize(prop))] + element.getBoundingClientRect()[prop] - containerElement.getBoundingClientRect()[prop];
+  var relativeLocation = containerElement["scroll".concat(titleize(prop))] - containerElement.getBoundingClientRect()[prop] + element.getBoundingClientRect()[prop];
   var containerLocation = containerElement["scroll".concat(titleize(prop))];
   var scrollBarSize = containerElement["offset".concat(dimension)] - containerElement["client".concat(dimension)];
   var containerSize = containerElement["offset".concat(dimension)];

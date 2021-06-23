@@ -20,6 +20,8 @@ require("../drop_down_menu");
 
 var _extend = require("../../core/utils/extend");
 
+var _data = require("../../core/utils/data");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var HEADER_PANEL_CLASS = 'header-panel';
@@ -153,9 +155,20 @@ var HeaderPanel = _uiGrid_core.ColumnsView.inherit({
     }
 
     if (args.name === 'toolbar') {
-      var toolbarOptionName = args.fullName.split('.').slice(1).join('.');
+      debugger;
+      var parts = (0, _data.getPathParts)(args.fullName);
 
-      this._toolbar.option(toolbarOptionName, args.value);
+      if (parts.length === 1 || parts.length === 2 && parts[1] === 'items') {
+        var toolbarOptions = this._getToolbarOptions();
+
+        this._toolbar.option(toolbarOptions);
+      } else if (parts.length === 3 && parts[1] === 'items') {
+        var _toolbarOptions = this._getToolbarOptions();
+
+        this._toolbar.option(_toolbarOptions);
+      } else if (parts.length >= 4 && parts[1] === 'items') {
+        this._toolbar.option(parts.slice(1).join('.'), args.value);
+      }
     }
 
     this.callBase(args);

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/ui/scheduler/workspaces/base/date_table/all_day_panel/table_body.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -27,7 +27,9 @@ export var viewFunction = viewModel => createComponentVNode(2, Row, {
       groups,
       index: cellIndex,
       isFirstGroupCell,
+      isFocused,
       isLastGroupCell,
+      isSelected,
       key,
       startDate
     } = _ref;
@@ -39,7 +41,9 @@ export var viewFunction = viewModel => createComponentVNode(2, Row, {
       "groups": groups,
       "groupIndex": cellGroupIndex,
       "index": cellIndex,
-      "dataCellTemplate": viewModel.props.dataCellTemplate
+      "dataCellTemplate": viewModel.props.dataCellTemplate,
+      "isSelected": isSelected,
+      "isFocused": isFocused
     }, key);
   })
 });

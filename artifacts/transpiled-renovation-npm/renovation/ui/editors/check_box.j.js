@@ -55,7 +55,7 @@ var CheckBox = /*#__PURE__*/function (_BaseComponent) {
         allowNull: ["validationError", "validationErrors", "defaultValue", "value"],
         elements: [],
         templates: [],
-        props: ["activeStateEnabled", "hoverStateEnabled", "validationError", "validationErrors", "text", "validationMessageMode", "validationStatus", "name", "readOnly", "isValid", "useInkRipple", "onFocusIn", "saveValueChangeEvent", "defaultValue", "valueChange", "className", "accessKey", "disabled", "focusStateEnabled", "height", "hint", "onClick", "onKeyDown", "rtlEnabled", "tabIndex", "visible", "width", "value"]
+        props: ["activeStateEnabled", "hoverStateEnabled", "validationError", "validationErrors", "text", "validationMessageMode", "validationStatus", "name", "readOnly", "isValid", "onFocusIn", "saveValueChangeEvent", "defaultValue", "valueChange", "className", "accessKey", "disabled", "focusStateEnabled", "height", "hint", "onClick", "onKeyDown", "rtlEnabled", "tabIndex", "visible", "width", "value"]
       };
     }
   }, {

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/core/component.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -19,6 +19,7 @@ import { name as publicComponentName } from './utils/public_component';
 import { PostponedOperations } from './postponed_operations';
 import { isFunction, isPlainObject, isDefined } from './utils/type';
 import { noop } from './utils/common';
+import { getPathParts } from './utils/data';
 
 var getEventName = actionName => {
   return actionName.charAt(2).toLowerCase() + actionName.substr(3);
@@ -253,7 +254,7 @@ export var Component = Class.inherit({
       for (var i = 0; i < optionNames.length; i++) {
         var name = optionNames[i];
         var args = {
-          name: name.split(/[.[]/)[0],
+          name: getPathParts(name)[0],
           fullName: name,
           value: value,
           previousValue: previousValue

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/core/options/index.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -10,6 +10,7 @@ import { isFunction, isObject, type } from '../utils/type';
 import { equalByValue, noop } from '../utils/common';
 import { OptionManager } from './option_manager';
 import { clone } from '../utils/object';
+import { getPathParts } from '../utils/data';
 import { getFieldName, getParentName, convertRulesToOptions, getNestedOptionValue } from './utils';
 import { extend } from '../utils/extend';
 export class Options {
@@ -196,7 +197,7 @@ export class Options {
 
   reset(name) {
     if (name) {
-      var fullPath = name.replace(/\[([^\]])\]/g, '.$1').split('.');
+      var fullPath = getPathParts(name);
       var value = fullPath.reduce((value, field) => value ? value[field] : this.initial(field), null);
       var defaultValue = isObject(value) ? clone(value) : value;
 

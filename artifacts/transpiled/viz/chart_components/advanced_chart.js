@@ -133,6 +133,12 @@ var AdvancedChart = _base_chart.BaseChart.inherit({
     disposeObjectsInArray.call(panesClipRects, 'base');
     disposeObjectsInArray.call(panesClipRects, 'wide');
     this._panesClipRects = null;
+
+    this._labelsAxesGroup.linkOff();
+
+    this._labelsAxesGroup.dispose();
+
+    this._labelsAxesGroup = null;
   },
   _dispose: function _dispose() {
     var that = this;

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/workspaces/ui.scheduler.work_space.grouped.strategy.horizontal.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -21,30 +21,30 @@ class HorizontalGroupedStrategy {
     if (!groupByDay) {
       return {
         rowIndex: cellCoordinates.rowIndex,
-        cellIndex: cellCoordinates.cellIndex + groupIndex * this._workSpace._getCellCount()
+        columnIndex: cellCoordinates.columnIndex + groupIndex * this._workSpace._getCellCount()
       };
     } else {
       return {
         rowIndex: cellCoordinates.rowIndex,
-        cellIndex: cellCoordinates.cellIndex * this._workSpace._getGroupCount() + groupIndex
+        columnIndex: cellCoordinates.columnIndex * this._workSpace._getGroupCount() + groupIndex
       };
     }
   }
 
-  calculateCellIndex(rowIndex, cellIndex) {
-    cellIndex = cellIndex % this._workSpace._getCellCount();
-    return this._workSpace._getRowCount() * cellIndex + rowIndex;
+  calculateCellIndex(rowIndex, columnIndex) {
+    columnIndex = columnIndex % this._workSpace._getCellCount();
+    return this._workSpace._getRowCount() * columnIndex + rowIndex;
   }
 
-  getGroupIndex(rowIndex, cellIndex) {
+  getGroupIndex(rowIndex, columnIndex) {
     var groupByDay = this._workSpace.isGroupedByDate();
 
     var groupCount = this._workSpace._getGroupCount();
 
     if (groupByDay) {
-      return cellIndex % groupCount;
+      return columnIndex % groupCount;
     } else {
-      return Math.floor(cellIndex / this._workSpace._getCellCount());
+      return Math.floor(columnIndex / this._workSpace._getCellCount());
     }
   }
 
@@ -182,8 +182,8 @@ class HorizontalGroupedStrategy {
       var groupRowLength = currentCellGroup[0].length;
       var groupStartPosition = currentCellGroup[0][0].position;
       var groupEndPosition = currentCellGroup[0][groupRowLength - 1].position;
-      startCell = $cells.eq(groupStartPosition.cellIndex);
-      endCell = $cells.eq(groupEndPosition.cellIndex);
+      startCell = $cells.eq(groupStartPosition.columnIndex);
+      endCell = $cells.eq(groupEndPosition.columnIndex);
     }
 
     return this._createGroupBoundOffset(startCell, endCell, cellWidth);

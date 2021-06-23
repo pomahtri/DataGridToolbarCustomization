@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/resources/resourceManager.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -661,10 +661,3 @@ export class ResourceManager {
   }
 
 }
-var resourceManagers = {};
-export var createResourceManager = (key, resources) => {
-  var validKey = key || 0;
-  resourceManagers[validKey] = new ResourceManager(resources);
-};
-export var getResourceManager = key => resourceManagers[key];
-export var removeResourceManager = key => resourceManagers[key] = null;

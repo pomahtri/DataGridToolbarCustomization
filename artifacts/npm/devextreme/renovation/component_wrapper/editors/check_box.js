@@ -1,7 +1,7 @@
 /**
 * DevExtreme (renovation/component_wrapper/editors/check_box.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -36,10 +36,9 @@ var CheckBox = /*#__PURE__*/function (_Editor) {
   _proto._optionChanged = function _optionChanged(option) {
     var _this$_valueChangeAct;
 
-    var _ref = option || {},
-        name = _ref.name,
-        previousValue = _ref.previousValue,
-        value = _ref.value;
+    var name = option.name,
+        previousValue = option.previousValue,
+        value = option.value;
 
     switch (name) {
       case "value":

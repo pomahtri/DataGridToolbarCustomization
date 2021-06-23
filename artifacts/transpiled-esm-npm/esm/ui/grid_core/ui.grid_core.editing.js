@@ -290,6 +290,14 @@ var EditingController = modules.ViewController.inherit(function () {
         column: options.column
       }) : visible;
     },
+    _isButtonDisabled: function _isButtonDisabled(button, options) {
+      var disabled = button.disabled;
+      return isFunction(disabled) ? disabled.call(button, {
+        component: options.component,
+        row: options.row,
+        column: options.column
+      }) : !!disabled;
+    },
     _getButtonConfig: function _getButtonConfig(button, options) {
       var config = isObject(button) ? button : {};
       var buttonName = getButtonName(button);
@@ -1980,14 +1988,19 @@ var EditingController = modules.ViewController.inherit(function () {
           $button.attr('title', button.hint);
         }
 
-        eventsEngine.on($button, addNamespace('click', EDITING_NAMESPACE), this.createAction(function (e) {
-          button.onClick.call(button, extend({}, e, {
-            row: options.row,
-            column: options.column
+        if (this._isButtonDisabled(button, options)) {
+          $button.addClass('dx-state-disabled');
+        } else {
+          eventsEngine.on($button, addNamespace('click', EDITING_NAMESPACE), this.createAction(function (e) {
+            button.onClick.call(button, extend({}, e, {
+              row: options.row,
+              column: options.column
+            }));
+            e.event.preventDefault();
+            e.event.stopPropagation();
           }));
-          e.event.preventDefault();
-          e.event.stopPropagation();
-        }));
+        }
+
         $container.append($button, '&nbsp;');
       }
     },

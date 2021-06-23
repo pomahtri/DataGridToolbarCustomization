@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/cells_selection_state.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -104,7 +104,7 @@ var CellsSelectionState = /*#__PURE__*/function () {
   };
 
   _proto.getSelectedCells = function getSelectedCells() {
-    return this._selectedCells || this._prevSelectedCells;
+    return this._selectedCells;
   };
 
   _proto.releaseSelectedAndFocusedCells = function releaseSelectedAndFocusedCells() {
@@ -114,6 +114,7 @@ var CellsSelectionState = /*#__PURE__*/function () {
 
   _proto.releaseSelectedCells = function releaseSelectedCells() {
     this._prevSelectedCells = this._selectedCells;
+    this._prevFirstSelectedCell = this._firstSelectedCell;
     this._selectedCells = null;
     this._firstSelectedCell = null;
   };
@@ -121,6 +122,15 @@ var CellsSelectionState = /*#__PURE__*/function () {
   _proto.releaseFocusedCell = function releaseFocusedCell() {
     this._prevFocusedCell = this._focusedCell;
     this._focusedCell = null;
+  };
+
+  _proto.restoreSelectedAndFocusedCells = function restoreSelectedAndFocusedCells() {
+    this._selectedCells = this._selectedCells || this._prevSelectedCells;
+    this._focusedCell = this._focusedCell || this._prevFocusedCell;
+    this._firstSelectedCell = this._firstSelectedCell || this._prevFirstSelectedCell;
+    this._prevSelectedCells = null;
+    this._prevFirstSelectedCell = null;
+    this._prevFocusedCell = null;
   };
 
   _proto.clearSelectedAndFocusedCells = function clearSelectedAndFocusedCells() {
@@ -192,7 +202,7 @@ var CellsSelectionState = /*#__PURE__*/function () {
   }, {
     key: "focusedCell",
     get: function get() {
-      var focusedCell = this._focusedCell || this._prevFocusedCell;
+      var focusedCell = this._focusedCell;
 
       if (!focusedCell) {
         return undefined;

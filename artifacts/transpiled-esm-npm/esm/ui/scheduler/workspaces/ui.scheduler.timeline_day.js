@@ -1,5 +1,6 @@
 import registerComponent from '../../../core/component_registrator';
 import SchedulerTimeline from './ui.scheduler.timeline';
+import { calculateStartViewDate } from './utils/day';
 var TIMELINE_CLASS = 'dx-scheduler-timeline-day';
 
 class SchedulerTimelineDay extends SchedulerTimeline {
@@ -7,10 +8,8 @@ class SchedulerTimelineDay extends SchedulerTimeline {
     return TIMELINE_CLASS;
   }
 
-  _setFirstViewDate() {
-    this._firstViewDate = this.option('currentDate');
-
-    this._setStartDayHour(this._firstViewDate);
+  _calculateStartViewDate() {
+    return calculateStartViewDate(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration());
   }
 
   _needRenderWeekHeader() {

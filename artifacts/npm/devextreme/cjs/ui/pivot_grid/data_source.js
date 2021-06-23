@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/pivot_grid/data_source.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -1063,7 +1063,9 @@ var _default = _class.default.inherit(function () {
       return this._paginate && this._store && this._store.supportPaging();
     },
     isEmpty: function isEmpty() {
-      var dataFields = this.getAreaFields('data');
+      var dataFields = this.getAreaFields('data').filter(function (f) {
+        return f.visible !== false;
+      });
       var data = this.getData();
       return !dataFields.length || !data.values.length;
     },

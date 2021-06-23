@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/axes/tick.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -76,8 +76,10 @@ function createTick(axis, renderer, tickOptions, gridOptions, skippedCategory, s
         this._storedLabelsCoords = this.templateContainer ? this._getTemplateCoords() : this.labelCoords;
       },
       resetCoordinates: function resetCoordinates() {
-        this._storedCoords = this._lastStoredCoordinates.coords;
-        this._storedLabelsCoords = this._lastStoredCoordinates.labelCoords;
+        if (this._lastStoredCoordinates) {
+          this._storedCoords = this._lastStoredCoordinates.coords;
+          this._storedLabelsCoords = this._lastStoredCoordinates.labelCoords;
+        }
       },
       drawMark: function drawMark(options) {
         if (!tickOptions.visible || skippedCategory === value) {
@@ -180,7 +182,7 @@ function createTick(axis, renderer, tickOptions, gridOptions, skippedCategory, s
             onRendered: function onRendered() {
               _this.updateLabelPosition();
 
-              _this._templateDef.resolve();
+              _this._templateDef && _this._templateDef.resolve();
             }
           });
         } else {

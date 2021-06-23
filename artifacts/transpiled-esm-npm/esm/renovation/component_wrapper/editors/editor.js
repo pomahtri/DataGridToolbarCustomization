@@ -73,7 +73,7 @@ export default class Editor extends Component {
       value
     } = option;
 
-    if (name && this._getActionConfigs()[name]) {
+    if (name && this._getActionConfigs()[name] !== undefined) {
       this._addAction(name);
     }
 

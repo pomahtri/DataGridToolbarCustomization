@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/overlay.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -272,7 +272,9 @@ export default class dxOverlay<TProperties> extends Widget<TProperties> {
  */
 export function baseZIndex(zIndex: number): void;
 
-type Properties = dxOverlayOptions<dxOverlay<Properties>>;
+interface OverlayInstance extends dxOverlay<Properties> { }
+
+type Properties = dxOverlayOptions<OverlayInstance>;
 
 export type Options = Properties;
 export type IOptions = Properties;

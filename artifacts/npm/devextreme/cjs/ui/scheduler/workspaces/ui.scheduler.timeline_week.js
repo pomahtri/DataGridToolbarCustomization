@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.timeline_week.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -15,6 +15,8 @@ var _component_registrator = _interopRequireDefault(require("../../../core/compo
 var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.timeline"));
 
 var _position = require("../../../core/utils/position");
+
+var _week = require("./utils/week");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55,6 +57,10 @@ var SchedulerTimelineWeek = /*#__PURE__*/function (_SchedulerTimeline) {
 
   _proto._incrementDate = function _incrementDate(date) {
     date.setDate(date.getDate() + 1);
+  };
+
+  _proto._getIntervalDuration = function _getIntervalDuration() {
+    return (0, _week.getIntervalDuration)(this.option('intervalCount'));
   };
 
   return SchedulerTimelineWeek;

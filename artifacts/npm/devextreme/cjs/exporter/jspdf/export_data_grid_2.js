@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/exporter/jspdf/export_data_grid_2.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -63,7 +63,22 @@ function exportDataGrid(doc, dataGrid, options) {
               pdfCell.colSpan = cellMerging.colspan;
             }
           } else if (rowType === 'group') {
-            pdfCell.colSpan = columns.length - 1;
+            pdfCell.drawLeftBorder = false;
+            pdfCell.drawRightBorder = false;
+
+            if (cellIndex > 0) {
+              var isEmptyCellsExceptFirst = currentRow.slice(1).reduce(function (accumulate, pdfCell) {
+                return accumulate && !(0, _type.isDefined)(pdfCell.text);
+              }, true);
+
+              if (!(0, _type.isDefined)(pdfCell.text) && isEmptyCellsExceptFirst) {
+                for (var i = 0; i < currentRow.length; i++) {
+                  currentRow[i].colSpan = currentRow.length;
+                }
+
+                pdfCell.colSpan = currentRow.length;
+              }
+            }
           }
 
           if (options.onCellExporting) {
@@ -76,6 +91,20 @@ function exportDataGrid(doc, dataGrid, options) {
           }
 
           currentRow.push(pdfCell);
+        }
+
+        if (rowType === 'group') {
+          currentRow[0].drawLeftBorder = true;
+
+          if (currentRow[0].colSpan === currentRow.length - 1) {
+            currentRow[0].drawRightBorder = true;
+          }
+
+          var lastCell = currentRow[currentRow.length - 1];
+
+          if (!(0, _type.isDefined)(lastCell.colSpan)) {
+            lastCell.drawRightBorder = true;
+          }
         }
 
         rowsIndents.push(groupLevel * options.indent);

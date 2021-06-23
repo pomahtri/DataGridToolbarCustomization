@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/grid_core/ui.grid_core.editing.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -361,6 +361,14 @@ var EditingController = _uiGrid_core.default.ViewController.inherit(function () 
         row: options.row,
         column: options.column
       }) : visible;
+    },
+    _isButtonDisabled: function _isButtonDisabled(button, options) {
+      var disabled = button.disabled;
+      return (0, _type.isFunction)(disabled) ? disabled.call(button, {
+        component: options.component,
+        row: options.row,
+        column: options.column
+      }) : !!disabled;
     },
     _getButtonConfig: function _getButtonConfig(button, options) {
       var _this3 = this;
@@ -2119,14 +2127,18 @@ var EditingController = _uiGrid_core.default.ViewController.inherit(function () 
           $button.attr('title', button.hint);
         }
 
-        _events_engine.default.on($button, (0, _index.addNamespace)('click', EDITING_NAMESPACE), this.createAction(function (e) {
-          button.onClick.call(button, (0, _extend.extend)({}, e, {
-            row: options.row,
-            column: options.column
+        if (this._isButtonDisabled(button, options)) {
+          $button.addClass('dx-state-disabled');
+        } else {
+          _events_engine.default.on($button, (0, _index.addNamespace)('click', EDITING_NAMESPACE), this.createAction(function (e) {
+            button.onClick.call(button, (0, _extend.extend)({}, e, {
+              row: options.row,
+              column: options.column
+            }));
+            e.event.preventDefault();
+            e.event.stopPropagation();
           }));
-          e.event.preventDefault();
-          e.event.stopPropagation();
-        }));
+        }
 
         $container.append($button, '&nbsp;');
       }

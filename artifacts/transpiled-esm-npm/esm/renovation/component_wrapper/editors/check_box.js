@@ -12,7 +12,7 @@ export default class CheckBox extends Editor {
       name,
       previousValue,
       value
-    } = option || {};
+    } = option;
 
     switch (name) {
       case "value":

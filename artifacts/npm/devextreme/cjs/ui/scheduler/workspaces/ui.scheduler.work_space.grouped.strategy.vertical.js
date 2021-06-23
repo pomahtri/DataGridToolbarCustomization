@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.work_space.grouped.strategy.vertical.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -40,13 +40,13 @@ var VerticalGroupedStrategy = /*#__PURE__*/function () {
 
     return {
       rowIndex: rowIndex,
-      cellIndex: cellCoordinates.cellIndex
+      columnIndex: cellCoordinates.columnIndex
     };
   };
 
-  _proto.calculateCellIndex = function calculateCellIndex(rowIndex, cellIndex) {
+  _proto.calculateCellIndex = function calculateCellIndex(rowIndex, columnIndex) {
     rowIndex = rowIndex % this._workSpace._getRowCount();
-    return this._workSpace._getRowCount() * cellIndex + rowIndex;
+    return this._workSpace._getRowCount() * columnIndex + rowIndex;
   };
 
   _proto.getGroupIndex = function getGroupIndex(rowIndex) {

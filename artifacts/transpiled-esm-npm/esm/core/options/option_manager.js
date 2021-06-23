@@ -1,4 +1,4 @@
-import { compileGetter, compileSetter } from '../utils/data';
+import { compileGetter, compileSetter, getPathParts } from '../utils/data';
 import { noop } from '../utils/common';
 import { equals } from '../utils/comparator';
 import { extend } from '../utils/extend';
@@ -29,7 +29,7 @@ export class OptionManager {
     var previousValue = this.get(this._options, name, false);
 
     if (!equals(previousValue, value)) {
-      var path = name.split(/[.[]/);
+      var path = getPathParts(name);
       !silent && this._changingCallback(name, previousValue, value);
       cachedSetters[name] = cachedSetters[name] || compileSetter(name);
       cachedSetters[name](this._options, value, {

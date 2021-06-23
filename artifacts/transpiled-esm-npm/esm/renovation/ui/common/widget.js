@@ -232,10 +232,7 @@ export class Widget extends InfernoWrapperComponent {
           hovered: true
         }));
         onHoverStart === null || onHoverStart === void 0 ? void 0 : onHoverStart(event);
-      }, _ref4 => {
-        var {
-          event
-        } = _ref4;
+      }, event => {
         this.setState(state => _extends({}, state, {
           hovered: false
         }));

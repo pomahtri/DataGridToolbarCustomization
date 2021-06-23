@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/view_model/view_data_generator.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -153,8 +153,8 @@ var ViewDataGenerator = /*#__PURE__*/function () {
       var isAllDay = row[0].allDay;
       var keyBase = (rowIndex - allDayPanelsCount) * totalColumnCount;
       var currentAllDayPanelsCount = isAllDay ? allDayPanelsCount + 1 : allDayPanelsCount;
-      currentViewDataMap[rowIndex].forEach(function (cell, cellIndex) {
-        cell.key = keyBase + cellIndex;
+      currentViewDataMap[rowIndex].forEach(function (cell, columnIndex) {
+        cell.key = keyBase + columnIndex;
       });
       return {
         allDayPanelsCount: currentAllDayPanelsCount,
@@ -283,12 +283,12 @@ var ViewDataGenerator = /*#__PURE__*/function () {
     var startRowIndex = options.startRowIndex;
 
     var sliceCells = function sliceCells(row, rowIndex, startIndex, count) {
-      return row.slice(startIndex, startIndex + count).map(function (cellData, cellIndex) {
+      return row.slice(startIndex, startIndex + count).map(function (cellData, columnIndex) {
         return {
           cellData: cellData,
           position: {
             rowIndex: rowIndex,
-            cellIndex: cellIndex
+            columnIndex: columnIndex
           }
         };
       });
@@ -645,6 +645,59 @@ var ViewDataGenerator = /*#__PURE__*/function () {
     }
 
     return (rowIndex + 1) % rowCountInGroup === 0;
+  };
+
+  _proto.markSelectedAndFocusedCells = function markSelectedAndFocusedCells(viewDataMap, renderOptions) {
+    var _this2 = this;
+
+    var selectedCells = renderOptions.selectedCells,
+        focusedCell = renderOptions.focusedCell;
+
+    if (!selectedCells && !focusedCell) {
+      return viewDataMap;
+    }
+
+    var allDayPanelMap = viewDataMap.allDayPanelMap,
+        dateTableMap = viewDataMap.dateTableMap;
+    var nextDateTableMap = dateTableMap.map(function (row) {
+      return _this2._markSelectedAndFocusedCellsInRow(row, selectedCells, focusedCell);
+    });
+
+    var nextAllDayMap = this._markSelectedAndFocusedCellsInRow(allDayPanelMap, selectedCells, focusedCell);
+
+    return {
+      allDayPanelMap: nextAllDayMap,
+      dateTableMap: nextDateTableMap
+    };
+  };
+
+  _proto._markSelectedAndFocusedCellsInRow = function _markSelectedAndFocusedCellsInRow(dataRow, selectedCells, focusedCell) {
+    return dataRow.map(function (cell) {
+      var _cell$cellData = cell.cellData,
+          index = _cell$cellData.index,
+          groupIndex = _cell$cellData.groupIndex,
+          allDay = _cell$cellData.allDay,
+          startDate = _cell$cellData.startDate;
+      var indexInSelectedCells = selectedCells.findIndex(function (_ref7) {
+        var selectedCellIndex = _ref7.index,
+            selectedCellGroupIndex = _ref7.groupIndex,
+            selectedCellAllDay = _ref7.allDay,
+            selectedCellStartDate = _ref7.startDate;
+        return groupIndex === selectedCellGroupIndex && (index === selectedCellIndex || selectedCellIndex === undefined && startDate.getTime() === selectedCellStartDate.getTime()) && !!allDay === !!selectedCellAllDay;
+      });
+      var isFocused = !!focusedCell && index === focusedCell.cellData.index && groupIndex === focusedCell.cellData.groupIndex && allDay === focusedCell.cellData.allDay;
+
+      if (!isFocused && indexInSelectedCells === -1) {
+        return cell;
+      }
+
+      return _extends({}, cell, {
+        cellData: _extends({}, cell.cellData, {
+          isSelected: indexInSelectedCells > -1,
+          isFocused: isFocused
+        })
+      });
+    });
   };
 
   return ViewDataGenerator;

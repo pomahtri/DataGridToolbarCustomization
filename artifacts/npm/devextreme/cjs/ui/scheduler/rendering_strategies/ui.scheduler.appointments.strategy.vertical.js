@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/rendering_strategies/ui.scheduler.appointments.strategy.vertical.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -211,7 +211,7 @@ var VerticalRenderingStrategy = /*#__PURE__*/function (_BaseAppointmentsStra) {
         width: width,
         appointmentReduced: 'tail',
         rowIndex: 0,
-        cellIndex: appointmentSettings.cellIndex + cellsDiff
+        columnIndex: appointmentSettings.columnIndex + cellsDiff
       }));
     }
 

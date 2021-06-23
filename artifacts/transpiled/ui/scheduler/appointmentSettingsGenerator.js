@@ -12,6 +12,8 @@ var _recurrence = require("./recurrence");
 
 var _utilsTimeZone = _interopRequireDefault(require("./utils.timeZone.js"));
 
+var _instanceFactory = require("./instanceFactory");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -66,6 +68,8 @@ exports.AppointmentSettingsGenerator = AppointmentSettingsGenerator;
 var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
   function AppointmentSettingsGeneratorBaseStrategy(scheduler) {
     this.scheduler = scheduler;
+    this.key = this.scheduler.key;
+    this.timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key);
   }
 
   var _proto2 = AppointmentSettingsGeneratorBaseStrategy.prototype;
@@ -476,11 +480,6 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
   };
 
   _createClass(AppointmentSettingsGeneratorBaseStrategy, [{
-    key: "timeZoneCalculator",
-    get: function get() {
-      return this.scheduler.timeZoneCalculator;
-    }
-  }, {
     key: "workspace",
     get: function get() {
       return this.scheduler.getWorkSpace();

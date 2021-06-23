@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/workspaces/ui.scheduler.timeline.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -106,7 +106,7 @@ class SchedulerTimeline extends SchedulerWorkSpace {
 
     var result = this._getDateByIndexCore(firstViewDate, index);
 
-    if (timeZoneUtils.isTimezoneChangeInDate(this._firstViewDate)) {
+    if (timeZoneUtils.isTimezoneChangeInDate(this._startViewDate)) {
       result.setDate(result.getDate() - 1);
     }
 
@@ -117,14 +117,14 @@ class SchedulerTimeline extends SchedulerWorkSpace {
     return 'shorttime';
   }
 
-  _calculateHiddenInterval(rowIndex, cellIndex) {
-    var dayIndex = Math.floor(cellIndex / this._getCellCountInDay());
+  _calculateHiddenInterval(rowIndex, columnIndex) {
+    var dayIndex = Math.floor(columnIndex / this._getCellCountInDay());
     return dayIndex * this._getHiddenInterval();
   }
 
-  _getMillisecondsOffset(rowIndex, cellIndex) {
-    cellIndex = this._calculateCellIndex(rowIndex, cellIndex);
-    return this._getInterval() * cellIndex + this._calculateHiddenInterval(rowIndex, cellIndex);
+  _getMillisecondsOffset(rowIndex, columnIndex) {
+    columnIndex = this._calculateCellIndex(rowIndex, columnIndex);
+    return this._getInterval() * columnIndex + this._calculateHiddenInterval(rowIndex, columnIndex);
   }
 
   _createWorkSpaceElements() {
@@ -204,7 +204,7 @@ class SchedulerTimeline extends SchedulerWorkSpace {
     var $headerRow = super._renderDateHeader();
 
     if (this._needRenderWeekHeader()) {
-      var firstViewDate = new Date(this._firstViewDate);
+      var firstViewDate = new Date(this._startViewDate);
       var currentDate = new Date(firstViewDate);
       var $cells = [];
 
@@ -265,8 +265,7 @@ class SchedulerTimeline extends SchedulerWorkSpace {
   }
 
   _renderView() {
-    this._setFirstViewDate();
-
+    this._startViewDate = this._calculateStartViewDate();
     var groupCellTemplates;
 
     if (!this.isRenovatedRender()) {
@@ -424,7 +423,7 @@ class SchedulerTimeline extends SchedulerWorkSpace {
 
   _getCellCoordinatesByIndex(index) {
     return {
-      cellIndex: index % this._getCellCount(),
+      columnIndex: index % this._getCellCount(),
       rowIndex: 0
     };
   }
@@ -432,7 +431,7 @@ class SchedulerTimeline extends SchedulerWorkSpace {
   _getCellByCoordinates(cellCoordinates, groupIndex) {
     var indexes = this._groupedStrategy.prepareCellIndexes(cellCoordinates, groupIndex);
 
-    return this._$dateTable.find('tr').eq(indexes.rowIndex).find('td').eq(indexes.cellIndex);
+    return this._$dateTable.find('tr').eq(indexes.rowIndex).find('td').eq(indexes.columnIndex);
   }
 
   _getWorkSpaceWidth() {
@@ -440,7 +439,7 @@ class SchedulerTimeline extends SchedulerWorkSpace {
   }
 
   _getIndicationFirstViewDate() {
-    return dateUtils.trimTime(new Date(this._firstViewDate));
+    return dateUtils.trimTime(new Date(this._startViewDate));
   }
 
   _getIntervalBetween(currentDate, allDay) {
@@ -605,15 +604,15 @@ class SchedulerTimeline extends SchedulerWorkSpace {
     var index = this.getCellIndexByDate(today);
 
     var {
-      cellIndex: currentTimeCellIndex
+      columnIndex: currentTimeColumnIndex
     } = this._getCellCoordinatesByIndex(index);
 
-    if (currentTimeCellIndex === undefined) {
+    if (currentTimeColumnIndex === undefined) {
       return [];
     }
 
     var horizontalGroupCount = this._isHorizontalGroupedWorkSpace() && !this.isGroupedByDate() ? this._getGroupCount() : 1;
-    return [...new Array(horizontalGroupCount)].map((_, groupIndex) => columnCountPerGroup * groupIndex + currentTimeCellIndex);
+    return [...new Array(horizontalGroupCount)].map((_, groupIndex) => columnCountPerGroup * groupIndex + currentTimeColumnIndex);
   }
 
   renderRAllDayPanel() {}

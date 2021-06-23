@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/axes/polar_axes.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -446,7 +446,7 @@ var circularAxes = {
     }
 
     if (_axes_constants.default.areLabelsOverlap(boxes[0], boxes[lastVisibleLabelIndex], labelOpt.minSpacing, _axes_constants.default.center)) {
-      labelOpt.hideFirstOrLast === 'first' ? majorTicks[0].label.remove() : majorTicks[lastVisibleLabelIndex].label.remove();
+      labelOpt.hideFirstOrLast === 'first' ? majorTicks[0].removeLabel() : majorTicks[lastVisibleLabelIndex].removeLabel();
     }
   },
   shift: function shift(margins) {

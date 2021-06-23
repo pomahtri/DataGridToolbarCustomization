@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/grid_core/ui.grid_core.column_fixing.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -31,6 +31,8 @@ var _browser = _interopRequireDefault(require("../../core/utils/browser"));
 var _position = require("../../core/utils/position");
 
 var _translator = require("../../animation/translator");
+
+var _ui = _interopRequireDefault(require("../scroll_view/ui.scrollable"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -637,8 +639,18 @@ var RowsViewFixedColumnsExtender = (0, _extend.extend)({}, baseFixedColumns, {
 
         _events_engine.default.on($content, _wheel.name, function (e) {
           var $nearestScrollable = (0, _renderer.default)(e.target).closest('.dx-scrollable');
+          var shouldScroll = false;
 
           if (scrollable && scrollable.$element().is($nearestScrollable)) {
+            shouldScroll = true;
+          } else {
+            var nearestScrollableInstance = $nearestScrollable.length && _ui.default.getInstance($nearestScrollable.get(0));
+
+            var nearestScrollableHasVerticalScrollbar = nearestScrollableInstance && nearestScrollableInstance.scrollHeight() - nearestScrollableInstance.clientHeight() > 0;
+            shouldScroll = nearestScrollableInstance && !nearestScrollableHasVerticalScrollbar;
+          }
+
+          if (shouldScroll) {
             scrollTop = scrollable.scrollTop();
             scrollable.scrollTo({
               y: scrollTop - e.delta

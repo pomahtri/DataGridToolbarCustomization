@@ -9,6 +9,7 @@ import { each } from '../../core/utils/iterator';
 import browser from '../../core/utils/browser';
 import { getBoundingRect } from '../../core/utils/position';
 import { move } from '../../animation/translator';
+import Scrollable from '../scroll_view/ui.scrollable';
 var CONTENT_CLASS = 'content';
 var CONTENT_FIXED_CLASS = 'content-fixed';
 var MASTER_DETAIL_CELL_CLASS = 'dx-master-detail-cell';
@@ -606,8 +607,17 @@ var RowsViewFixedColumnsExtender = extend({}, baseFixedColumns, {
         });
         eventsEngine.on($content, wheelEventName, function (e) {
           var $nearestScrollable = $(e.target).closest('.dx-scrollable');
+          var shouldScroll = false;
 
           if (scrollable && scrollable.$element().is($nearestScrollable)) {
+            shouldScroll = true;
+          } else {
+            var nearestScrollableInstance = $nearestScrollable.length && Scrollable.getInstance($nearestScrollable.get(0));
+            var nearestScrollableHasVerticalScrollbar = nearestScrollableInstance && nearestScrollableInstance.scrollHeight() - nearestScrollableInstance.clientHeight() > 0;
+            shouldScroll = nearestScrollableInstance && !nearestScrollableHasVerticalScrollbar;
+          }
+
+          if (shouldScroll) {
             scrollTop = scrollable.scrollTop();
             scrollable.scrollTo({
               y: scrollTop - e.delta

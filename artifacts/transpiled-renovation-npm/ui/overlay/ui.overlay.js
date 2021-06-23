@@ -64,6 +64,8 @@ var _swatch_container = _interopRequireDefault(require("../widget/swatch_contain
 
 var _ui = _interopRequireDefault(require("../widget/ui.widget"));
 
+var _browser = _interopRequireDefault(require("../../core/utils/browser"));
+
 var zIndexPool = _interopRequireWildcard(require("./z_index"));
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -129,10 +131,6 @@ var POSITION_ALIASES = {
     at: 'left top'
   }
 };
-
-var realDevice = _devices.default.real();
-
-var iOS = realDevice.platform === 'ios';
 
 var getElement = function getElement(value) {
   if ((0, _type.isEvent)(value)) {
@@ -545,7 +543,7 @@ var Overlay = _ui.default.inherit({
 
           that._actions.onShown();
 
-          that._toggleSafariScrolling(false);
+          that._toggleSafariScrolling();
 
           deferred.resolve();
         }, function () {
@@ -603,7 +601,7 @@ var Overlay = _ui.default.inherit({
     } else {
       this._actions.onHiding(hidingArgs);
 
-      that._toggleSafariScrolling(true);
+      that._toggleSafariScrolling();
 
       if (hidingArgs.cancel) {
         this._isHidingActionCanceled = true;
@@ -1177,17 +1175,25 @@ var Overlay = _ui.default.inherit({
   _isContainerWindow: function _isContainerWindow() {
     var $container = this._getContainer();
 
-    return this._isWindow($container);
+    return this._isWindow($container) || !($container !== null && $container !== void 0 && $container.get(0));
   },
   _isAllWindowCovered: function _isAllWindowCovered() {
     return this._isContainerWindow() && this.option('shading');
   },
-  _toggleSafariScrolling: function _toggleSafariScrolling(scrollingEnabled) {
+  _toggleSafariScrolling: function _toggleSafariScrolling() {
+    var visible = this.option('visible');
     var $body = (0, _renderer.default)(_dom_adapter.default.getBody());
-    var shouldPreventScrolling = this.option('visible') && !$body.hasClass(PREVENT_SAFARI_SCROLLING_CLASS);
 
-    if (iOS && this._isAllWindowCovered()) {
-      if (scrollingEnabled) {
+    var isIosSafari = _devices.default.real().platform === 'ios' && _browser.default.safari;
+
+    var isAllWindowCovered = this._isAllWindowCovered();
+
+    var isScrollingPrevented = $body.hasClass(PREVENT_SAFARI_SCROLLING_CLASS);
+    var shouldPreventScrolling = !isScrollingPrevented && visible && isAllWindowCovered;
+    var shouldEnableScrolling = isScrollingPrevented && (!visible || !isAllWindowCovered || this._disposed);
+
+    if (isIosSafari) {
+      if (shouldEnableScrolling) {
         $body.removeClass(PREVENT_SAFARI_SCROLLING_CLASS);
         window.scrollTo(0, this._cachedBodyScrollTop);
         this._cachedBodyScrollTop = undefined;
@@ -1218,7 +1224,7 @@ var Overlay = _ui.default.inherit({
 
     var documentElement = _dom_adapter.default.getDocumentElement();
 
-    wrapperWidth = isWindow ? documentElement.clientWidth : $container.outerWidth(), wrapperHeight = isWindow ? documentElement.clientHeight : $container.outerHeight();
+    wrapperWidth = isWindow ? documentElement.clientWidth : $container.outerWidth(), wrapperHeight = isWindow ? window.innerHeight : $container.outerHeight();
 
     this._$wrapper.css({
       width: wrapperWidth,
@@ -1358,10 +1364,11 @@ var Overlay = _ui.default.inherit({
 
     this._toggleTabTerminator(false);
 
-    this._toggleSafariScrolling(true);
-
     this._actions = null;
     this.callBase();
+
+    this._toggleSafariScrolling();
+
     zIndexPool.remove(this._zIndex);
 
     this._$wrapper.remove();
@@ -1403,6 +1410,12 @@ var Overlay = _ui.default.inherit({
         break;
 
       case 'shading':
+        this._toggleShading(this.option('visible'));
+
+        this._toggleSafariScrolling();
+
+        break;
+
       case 'shadingColor':
         this._toggleShading(this.option('visible'));
 
@@ -1423,6 +1436,8 @@ var Overlay = _ui.default.inherit({
         this._positionChangeHandled = false;
 
         this._renderGeometry();
+
+        this._toggleSafariScrolling();
 
         break;
 
@@ -1448,6 +1463,8 @@ var Overlay = _ui.default.inherit({
         this._initContainer(value);
 
         this._invalidate();
+
+        this._toggleSafariScrolling();
 
         break;
 

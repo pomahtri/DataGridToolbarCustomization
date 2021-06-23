@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/grid_core/ui.grid_core.grid_view.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -79,6 +79,8 @@ var ResizingController = modules.ViewController.inherit({
         } else if (changeType === 'update' && e.changeTypes) {
           if ((items.length > 1 || e.changeTypes[0] !== 'insert') && !(items.length === 0 && e.changeTypes[0] === 'remove') && !e.needUpdateDimensions) {
             deferUpdate(function () {
+              that._setScrollerSpacing(that._hasHeight);
+
               that._rowsView.resize();
             });
           } else {

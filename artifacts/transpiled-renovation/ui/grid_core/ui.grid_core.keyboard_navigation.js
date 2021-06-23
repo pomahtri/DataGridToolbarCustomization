@@ -1254,7 +1254,7 @@ var KeyboardNavigationController = _uiGrid_core.default.ViewController.inherit({
       var editingController = _this6._editingController;
       var isCellEditMode = editingController.getEditMode() === EDIT_MODE_CELL;
 
-      if (!_this6.option('repaintChangesOnly') && isCellEditMode && editingController.hasChanges()) {
+      if (isCellEditMode && editingController.hasChanges()) {
         editingController._focusEditingCell();
 
         return;

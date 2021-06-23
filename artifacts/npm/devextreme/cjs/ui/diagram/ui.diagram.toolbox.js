@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/diagram/ui.diagram.toolbox.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -313,7 +313,7 @@ var DiagramToolbox = /*#__PURE__*/function (_DiagramFloatingPanel) {
       var title = $target.attr('title');
 
       if (title) {
-        var $tooltip = (0, _renderer.default)('<div>').html(title).appendTo($container);
+        var $tooltip = (0, _renderer.default)('<div>').text(title).appendTo($container);
 
         _this3._createComponent($tooltip, _tooltip.default, {
           target: $target.get(0),

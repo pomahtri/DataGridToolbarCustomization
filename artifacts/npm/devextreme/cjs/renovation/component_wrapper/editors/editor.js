@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/component_wrapper/editors/editor.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -111,7 +111,7 @@ var Editor = /*#__PURE__*/function (_Component) {
         previousValue = option.previousValue,
         value = option.value;
 
-    if (name && this._getActionConfigs()[name]) {
+    if (name && this._getActionConfigs()[name] !== undefined) {
       this._addAction(name);
     }
 

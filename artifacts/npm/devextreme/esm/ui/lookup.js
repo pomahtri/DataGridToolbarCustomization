@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/lookup.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -15,7 +15,6 @@ import { noop } from '../core/utils/common';
 import { getPublicElement } from '../core/element';
 import { each } from '../core/utils/iterator';
 import { extend } from '../core/utils/extend';
-import { render } from './widget/utils.ink_ripple';
 import messageLocalization from '../localization/message';
 import devices from '../core/devices';
 import registerComponent from '../core/component_registrator';
@@ -257,8 +256,7 @@ var Lookup = DropDownList.inherit({
           },
           height: 'auto'
         },
-        usePopover: true,
-        useInkRipple: false
+        usePopover: true
       }
     }, {
       device: function device() {
@@ -360,39 +358,17 @@ var Lookup = DropDownList.inherit({
     });
     var $arrow = $('<div>').addClass(LOOKUP_ARROW_CLASS);
     this._$fieldWrapper = $('<div>').addClass(LOOKUP_FIELD_WRAPPER_CLASS).append(this._$field).append($arrow).appendTo(this.$element());
-    this.option('useInkRipple') && this._renderInkRipple();
   },
 
   _getInputContainer() {
     return this._$fieldWrapper;
   },
 
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = render();
-  },
   _toggleOpenState: function _toggleOpenState() {
     this.callBase();
 
     if (!this.option('dropDownOptions.fullScreen') && this.option('_scrollToSelectedItemEnabled')) {
       this._setPopupPosition();
-    }
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase(...arguments);
-
-    if (!this._inkRipple) {
-      return;
-    }
-
-    var config = {
-      element: this._inputWrapper(),
-      event: e
-    };
-
-    if (value) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
     }
   },
   _renderField: function _renderField() {
@@ -948,7 +924,6 @@ var Lookup = DropDownList.inherit({
     this._$fieldWrapper.remove();
 
     this._$searchBox = null;
-    delete this._inkRipple;
     this.callBase();
   },
   _setDeprecatedOptions: function _setDeprecatedOptions() {

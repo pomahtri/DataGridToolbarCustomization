@@ -503,7 +503,9 @@ var Button = /*#__PURE__*/function (_Widget) {
     var $element = this.$element();
     ['contained', 'text', 'outlined'].map(function (mode) {
       return "dx-button-mode-".concat(mode);
-    }).forEach($element.removeClass.bind($element));
+    }).forEach(function (className) {
+      $element.removeClass(className);
+    });
 
     this._renderStylingMode();
   };
@@ -512,7 +514,9 @@ var Button = /*#__PURE__*/function (_Widget) {
     var $element = this.$element();
     ['back', 'danger', 'default', 'normal', 'success'].map(function (type) {
       return "dx-button-".concat(type);
-    }).forEach($element.removeClass.bind($element));
+    }).forEach(function (className) {
+      $element.removeClass(className);
+    });
 
     this._renderType();
   };

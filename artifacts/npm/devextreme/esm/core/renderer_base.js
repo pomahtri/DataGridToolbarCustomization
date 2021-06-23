@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/core/renderer_base.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -11,7 +11,7 @@ import domAdapter from './dom_adapter';
 import { getWindow } from './utils/window';
 import { isObject, isWindow, isPlainObject, isString, isNumeric, isDefined, isFunction, type } from './utils/type';
 import { styleProp, normalizeStyleProp } from './utils/style';
-import { getSize, getElementBoxParams } from './utils/size';
+import { getOffset, getWindowByElement, elementSize } from './utils/size';
 import { parseHTML, isTablePart } from './utils/html_parser';
 var window = getWindow();
 var renderer;
@@ -186,63 +186,32 @@ initRender.prototype.toggleClass = function (className, value) {
 };
 
 ['width', 'height', 'outerWidth', 'outerHeight', 'innerWidth', 'innerHeight'].forEach(function (methodName) {
-  var partialName = methodName.toLowerCase().indexOf('width') >= 0 ? 'Width' : 'Height';
-  var propName = partialName.toLowerCase();
-  var isOuter = methodName.indexOf('outer') === 0;
-  var isInner = methodName.indexOf('inner') === 0;
-
   initRender.prototype[methodName] = function (value) {
-    if (this.length > 1 && arguments.length > 0) {
+    var hasValueArg = arguments.length > 0;
+    var isValueBool = typeof value === 'boolean';
+    var element = this[0];
+
+    if (hasValueArg && this.length > 1) {
       return repeatMethod.call(this, methodName, arguments);
     }
 
-    var element = this[0];
+    if (element) {
+      if (!hasValueArg) {
+        return elementSize(element, methodName);
+      }
 
-    if (!element) {
-      return;
-    }
+      if (isValueBool) {
+        return elementSize(element, methodName, value);
+      }
 
-    if (isWindow(element)) {
-      return isOuter ? element['inner' + partialName] : domAdapter.getDocumentElement()['client' + partialName];
-    }
+      if (isDefined(value)) {
+        elementSize(element, methodName, value);
+      }
 
-    if (domAdapter.isDocument(element)) {
-      var documentElement = domAdapter.getDocumentElement();
-      var body = domAdapter.getBody();
-      return Math.max(body['scroll' + partialName], body['offset' + partialName], documentElement['scroll' + partialName], documentElement['offset' + partialName], documentElement['client' + partialName]);
-    }
-
-    if (arguments.length === 0 || typeof value === 'boolean') {
-      var include = {
-        paddings: isInner || isOuter,
-        borders: isOuter,
-        margins: value
-      };
-      return getSize(element, propName, include);
-    }
-
-    if (value === undefined || value === null) {
       return this;
     }
 
-    if (isNumeric(value)) {
-      var elementStyles = window.getComputedStyle(element);
-      var sizeAdjustment = getElementBoxParams(propName, elementStyles);
-      var isBorderBox = elementStyles.boxSizing === 'border-box';
-      value = Number(value);
-
-      if (isOuter) {
-        value -= isBorderBox ? 0 : sizeAdjustment.border + sizeAdjustment.padding;
-      } else if (isInner) {
-        value += isBorderBox ? sizeAdjustment.border : -sizeAdjustment.padding;
-      } else if (isBorderBox) {
-        value += sizeAdjustment.border + sizeAdjustment.padding;
-      }
-    }
-
-    value += isNumeric(value) ? 'px' : '';
-    domAdapter.setStyle(element, propName, value);
-    return this;
+    return null;
   };
 });
 
@@ -766,27 +735,9 @@ initRender.prototype.toArray = function () {
   return emptyArray.slice.call(this);
 };
 
-var getWindowByElement = function getWindowByElement(element) {
-  return isWindow(element) ? element : element.defaultView;
-};
-
 initRender.prototype.offset = function () {
   if (!this[0]) return;
-
-  if (!this[0].getClientRects().length) {
-    return {
-      top: 0,
-      left: 0
-    };
-  }
-
-  var rect = this[0].getBoundingClientRect();
-  var win = getWindowByElement(this[0].ownerDocument);
-  var docElem = this[0].ownerDocument.documentElement;
-  return {
-    top: rect.top + win.pageYOffset - docElem.clientTop,
-    left: rect.left + win.pageXOffset - docElem.clientLeft
-  };
+  return getOffset(this[0]);
 };
 
 initRender.prototype.offsetParent = function () {

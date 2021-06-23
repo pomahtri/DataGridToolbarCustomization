@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/toolbar/ui.toolbar.strategy.drop_down_menu.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -44,18 +44,26 @@ var DropDownMenuStrategy = _uiToolbar.default.inherit({
       this._menu.close();
     }
   },
-  _menuWidgetClass: function _menuWidgetClass() {
+  _menuWidget: function _menuWidget() {
     return _drop_down_menu.default;
   },
   _widgetOptions: function _widgetOptions() {
-    var that = this;
+    var _this = this;
+
     return (0, _extend.extend)(this.callBase(), {
       deferRendering: true,
-      container: that._toolbar.option('menuContainer'),
+      container: this._toolbar.option('menuContainer'),
       menuWidget: _uiToolbar2.default,
-      onOptionChanged: function onOptionChanged(e) {
-        if (e.name === 'items') {
-          that._updateMenuVisibility(e.value);
+      onOptionChanged: function onOptionChanged(_ref) {
+        var name = _ref.name,
+            value = _ref.value;
+
+        if (name === 'opened') {
+          _this._toolbar.option('overflowMenuVisible', value);
+        }
+
+        if (name === 'items') {
+          _this._updateMenuVisibility(value);
         }
       },
       popupPosition: {

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/chart.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -780,6 +780,9 @@ var dxChart = _advanced_chart.AdvancedChart.inherit({
       that._scrollBar && that._scrollBar.dispose();
       that._scrollBar = null;
     }
+  },
+  _executeAppendAfterSeries: function _executeAppendAfterSeries(append) {
+    append();
   },
   _prepareToRender: function _prepareToRender(drawOptions) {
     var panesBorderOptions = this._createPanesBorderOptions();

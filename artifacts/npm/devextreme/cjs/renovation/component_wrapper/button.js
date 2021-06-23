@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/component_wrapper/button.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -63,7 +63,7 @@ var ButtonWrapper = /*#__PURE__*/function (_Component) {
       if (needValidate) {
         var validationGroup = _this._validationGroupConfig;
 
-        if (validationGroup) {
+        if (validationGroup !== undefined && validationGroup !== "") {
           var _validationGroup$vali = validationGroup.validate(),
               complete = _validationGroup$vali.complete,
               status = _validationGroup$vali.status;
@@ -129,7 +129,8 @@ var ButtonWrapper = /*#__PURE__*/function (_Component) {
 
   _proto._findGroup = function _findGroup() {
     var $element = this.$element();
-    return this.option("validationGroup") || _validation_engine.default.findGroup($element, this._modelByElement($element));
+    var validationGroup = this.option("validationGroup");
+    return validationGroup !== undefined && validationGroup !== "" ? validationGroup : _validation_engine.default.findGroup($element, this._modelByElement($element));
   };
 
   _createClass(ButtonWrapper, [{

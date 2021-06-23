@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/appointmentSettingsGenerator.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -12,6 +12,7 @@ import { isEmptyObject } from '../../core/utils/type';
 import { extend } from '../../core/utils/extend';
 import { getRecurrenceProcessor } from './recurrence';
 import timeZoneUtils from './utils.timeZone.js';
+import { getTimeZoneCalculator } from './instanceFactory';
 var toMs = dateUtils.dateToMilliseconds;
 export class AppointmentSettingsGenerator {
   constructor(scheduler) {
@@ -27,10 +28,8 @@ export class AppointmentSettingsGenerator {
 export class AppointmentSettingsGeneratorBaseStrategy {
   constructor(scheduler) {
     this.scheduler = scheduler;
-  }
-
-  get timeZoneCalculator() {
-    return this.scheduler.timeZoneCalculator;
+    this.key = this.scheduler.key;
+    this.timeZoneCalculator = getTimeZoneCalculator(this.key);
   }
 
   get workspace() {

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.work_space_day.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -13,6 +13,8 @@ exports.default = void 0;
 var _component_registrator = _interopRequireDefault(require("../../../core/component_registrator"));
 
 var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.work_space_vertical"));
+
+var _day = require("./utils/day");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43,19 +45,17 @@ var SchedulerWorkSpaceDay = /*#__PURE__*/function (_SchedulerWorkSpaceVe) {
     return this.option('intervalCount');
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    this._firstViewDate = this._getViewStartByOptions();
-
-    this._setStartDayHour(this._firstViewDate);
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _day.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration());
   };
 
   _proto._getDateByIndex = function _getDateByIndex(headerIndex) {
     if (this.option('intervalCount') === 1) {
-      return this._firstViewDate;
+      return this._startViewDate;
     }
 
-    var resultDate = new Date(this._firstViewDate);
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex);
+    var resultDate = new Date(this._startViewDate);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex);
     return resultDate;
   };
 

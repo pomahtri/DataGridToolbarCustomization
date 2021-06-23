@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.work_space.indicator.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -25,6 +25,8 @@ var _position = require("../../../core/utils/position");
 var _window = require("../../../core/utils/window");
 
 var _classes = require("../classes");
+
+var _instanceFactory = require("../instanceFactory");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -58,7 +60,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
   var _proto = SchedulerWorkSpaceIndicator.prototype;
 
   _proto._getTimeZoneCalculator = function _getTimeZoneCalculator() {
-    return this.invoke('getTimeZoneCalculator');
+    return (0, _instanceFactory.getTimeZoneCalculator)(this.option('key'));
   };
 
   _proto._getToday = function _getToday() {
@@ -77,7 +79,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
 
       var endViewDate = _date.default.trimTime(this.getEndViewDate());
 
-      return _date.default.dateInRange(today, this._firstViewDate, new Date(endViewDate.getTime() + toMs('day')));
+      return _date.default.dateInRange(today, this._startViewDate, new Date(endViewDate.getTime() + toMs('day')));
     }
 
     return false;
@@ -194,7 +196,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
   _proto._getIndicatorDuration = function _getIndicatorDuration() {
     var today = this._getToday();
 
-    var firstViewDate = new Date(this._firstViewDate);
+    var firstViewDate = new Date(this._startViewDate);
     var timeDiff = today.getTime() - firstViewDate.getTime();
 
     if (this.option('type') === 'workWeek') {
@@ -208,7 +210,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
     var today = this._getToday();
 
     var cellHeight = this.getCellHeight();
-    var date = new Date(this._firstViewDate);
+    var date = new Date(this._startViewDate);
 
     if (this.isIndicationOnView()) {
       date.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());

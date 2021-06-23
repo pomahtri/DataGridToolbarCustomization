@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/viz/common/tooltip.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -102,6 +102,7 @@ var viewFunction = function viewFunction(_ref) {
       cssClassName = _ref.cssClassName,
       customizedOptions = _ref.customizedOptions,
       filterId = _ref.filterId,
+      fontStyles = _ref.fontStyles,
       htmlRef = _ref.htmlRef,
       isEmptyContainer = _ref.isEmptyContainer,
       pointerEvents = _ref.pointerEvents,
@@ -169,14 +170,9 @@ var viewFunction = function viewFunction(_ref) {
         "rotateY": correctedCoordinates.y
       }), customizedOptions.html || TooltipTemplate ? null : (0, _inferno.createVNode)(32, "g", null, (0, _inferno.createComponentVNode)(2, _svg_text.TextSvgElement, {
         "text": customizedOptions.text,
-        "styles": {
-          fill: customizedOptions.fontColor,
-          fontFamily: font.family,
-          fontSize: font.size,
-          fontWeight: font.weight,
-          opacity: font.opacity,
+        "styles": _extends({}, fontStyles, {
           pointerEvents: pointerEvents
-        }
+        })
       }), 2, {
         "text-anchor": "middle",
         "transform": "translate(".concat(correctedCoordinates.x, ", ").concat(correctedCoordinates.y - textSize.height / 2 - textSize.y, ")")
@@ -436,6 +432,7 @@ var Tooltip = /*#__PURE__*/function (_InfernoComponent) {
       margins: this.margins,
       pointerEvents: this.pointerEvents,
       cssClassName: this.cssClassName,
+      fontStyles: this.fontStyles,
       correctedCoordinates: this.correctedCoordinates,
       calculateContentSize: this.calculateContentSize,
       calculateCloudSize: this.calculateCloudSize,
@@ -536,6 +533,18 @@ var Tooltip = /*#__PURE__*/function (_InfernoComponent) {
       var classesMap = _defineProperty({}, String(className), !!className);
 
       return (0, _combine_classes.combineClasses)(classesMap);
+    }
+  }, {
+    key: "fontStyles",
+    get: function get() {
+      var font = this.props.font;
+      var result = {};
+      font.family !== undefined && (result.fontFamily = font.family);
+      font.size !== undefined && (result.fontSize = String(font.size));
+      font.weight !== undefined && (result.fontWeight = String(font.weight));
+      font.opacity !== undefined && (result.opacity = String(font.opacity));
+      this.customizedOptions.fontColor !== undefined && (result.fill = this.customizedOptions.fontColor);
+      return result;
     }
   }, {
     key: "correctedCoordinates",

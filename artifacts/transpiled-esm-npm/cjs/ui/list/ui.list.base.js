@@ -1023,6 +1023,9 @@ var ListBase = _uiCollection_widget.default.inherit({
     var $item = this._editStrategy.getItemElement(itemElement);
 
     this._scrollView.scrollToElement($item);
+  },
+  _dimensionChanged: function _dimensionChanged() {
+    this.updateDimensions();
   }
 }).include(_grouped_data_converter_mixin.default);
 

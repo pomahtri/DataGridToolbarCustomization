@@ -690,7 +690,7 @@ var ColumnsView = _uiGrid_core.default.View.inherit(_uiGrid_core3.default).inher
 
         if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
           if (row) {
-            updateFunc(newValue, oldValue);
+            updateFunc(newValue, row);
           }
 
           oldValue = newValue;

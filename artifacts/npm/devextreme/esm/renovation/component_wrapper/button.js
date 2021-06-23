@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/component_wrapper/button.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -47,7 +47,7 @@ export default class ButtonWrapper extends Component {
       if (needValidate) {
         var validationGroup = this._validationGroupConfig;
 
-        if (validationGroup) {
+        if (validationGroup !== undefined && validationGroup !== "") {
           var {
             complete,
             status
@@ -103,7 +103,8 @@ export default class ButtonWrapper extends Component {
 
   _findGroup() {
     var $element = this.$element();
-    return this.option("validationGroup") || ValidationEngine.findGroup($element, this._modelByElement($element));
+    var validationGroup = this.option("validationGroup");
+    return validationGroup !== undefined && validationGroup !== "" ? validationGroup : ValidationEngine.findGroup($element, this._modelByElement($element));
   }
 
 }

@@ -35,7 +35,7 @@ function addInfoHeader(css, version, isDartCompiler) {
     if (source.startsWith(encoding)) {
         return `${encoding}\n${header}${source.replace(`${encoding}\n`, '')}`;
     }
-    return header + css;
+    return `${header}${css}`;
 }
 exports.addInfoHeader = addInfoHeader;
 function cleanCss(css) {

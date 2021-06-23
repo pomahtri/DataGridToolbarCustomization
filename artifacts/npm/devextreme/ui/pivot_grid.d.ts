@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/pivot_grid.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -204,7 +204,7 @@ export interface dxPivotGridOptions extends WidgetOptions<dxPivotGrid> {
       layout?: 0 | 1 | 2,
       /**
        * @docid
-       * @default searchTimeout
+       * @default 500
        */
       searchTimeout?: number,
       /**
@@ -326,7 +326,7 @@ export interface dxPivotGridOptions extends WidgetOptions<dxPivotGrid> {
       height?: number,
       /**
        * @docid
-       * @default searchTimeout
+       * @default 500
        */
       searchTimeout?: number,
       /**

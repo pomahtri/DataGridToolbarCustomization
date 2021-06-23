@@ -10,6 +10,8 @@ var _object = require("../../core/utils/object");
 
 var _recurrence = require("./recurrence");
 
+var _instanceFactory = require("./instanceFactory");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -176,7 +178,7 @@ var AppointmentAdapter = /*#__PURE__*/function () {
   }, {
     key: "timeZoneCalculator",
     get: function get() {
-      return this.options.getTimeZoneCalculator();
+      return (0, _instanceFactory.getTimeZoneCalculator)(this.options.key);
     }
   }, {
     key: "isRecurrent",

@@ -738,7 +738,7 @@ var Popup = _ui.default.inherit({
       case 'fullScreen':
         this._toggleFullScreenClass(args.value);
 
-        this._toggleSafariScrolling(!args.value);
+        this._toggleSafariScrolling();
 
         this._renderGeometry();
 

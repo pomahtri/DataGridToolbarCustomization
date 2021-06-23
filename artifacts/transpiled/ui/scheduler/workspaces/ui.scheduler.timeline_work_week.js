@@ -8,7 +8,7 @@ var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.timeline_week"
 
 var _date = _interopRequireDefault(require("../../../core/utils/date"));
 
-var _utils = _interopRequireDefault(require("./utils.work_week"));
+var _work_week = require("./utils/work_week");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,8 +31,8 @@ var SchedulerTimelineWorkWeek = /*#__PURE__*/function (_SchedulerTimelineWee) {
     }
 
     _this = _SchedulerTimelineWee.call.apply(_SchedulerTimelineWee, [this].concat(args)) || this;
-    _this._getWeekendsCount = _utils.default.getWeekendsCount;
-    _this._isSkippedData = _utils.default.isDataOnWeekend;
+    _this._getWeekendsCount = _work_week.getWeekendsCount;
+    _this._isSkippedData = _work_week.isDataOnWeekend;
     return _this;
   }
 
@@ -47,11 +47,11 @@ var SchedulerTimelineWorkWeek = /*#__PURE__*/function (_SchedulerTimelineWee) {
   };
 
   _proto._firstDayOfWeek = function _firstDayOfWeek() {
-    return _utils.default.getFirstDayOfWeek(this.option('firstDayOfWeek'));
+    return (0, _work_week.getFirstDayOfWeek)(this.option('firstDayOfWeek'));
   };
 
   _proto._isSkippedData = function _isSkippedData() {
-    return _utils.default.isDataOnWeekend;
+    return _work_week.isDataOnWeekend;
   };
 
   _proto._incrementDate = function _incrementDate(date) {
@@ -69,10 +69,8 @@ var SchedulerTimelineWorkWeek = /*#__PURE__*/function (_SchedulerTimelineWee) {
     return toMs('day') * weekendCount * 2;
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    this._firstViewDate = _utils.default.getFirstViewDate(this.option('currentDate'), this._firstDayOfWeek());
-
-    this._setStartDayHour(this._firstViewDate);
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _work_week.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration(), this.option('firstDayOfWeek'));
   };
 
   return SchedulerTimelineWorkWeek;

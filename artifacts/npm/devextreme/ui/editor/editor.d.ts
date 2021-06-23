@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/editor/editor.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -106,4 +106,6 @@ export default class Editor<TProperties = Properties> extends Widget<TProperties
     reset(): void;
 }
 
-type Properties = EditorOptions<Editor<Properties>>;
+interface EditorInstance extends Editor<Properties> { }
+
+type Properties = EditorOptions<EditorInstance>;

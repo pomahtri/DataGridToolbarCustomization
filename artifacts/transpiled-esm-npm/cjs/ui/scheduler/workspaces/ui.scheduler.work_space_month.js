@@ -18,6 +18,10 @@ var _date2 = _interopRequireDefault(require("../../../localization/date"));
 
 var _layout = _interopRequireDefault(require("../../../renovation/ui/scheduler/workspaces/month/date_table/layout.j"));
 
+var _month = require("./utils/month");
+
+var _base = require("./utils/base");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -64,8 +68,8 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
   };
 
   _proto._getDateByIndex = function _getDateByIndex(headerIndex) {
-    var resultDate = new Date(this._firstViewDate);
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex);
+    var resultDate = new Date(this._startViewDate);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex);
     return resultDate;
   };
 
@@ -73,14 +77,14 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
     return this._formatWeekday;
   };
 
-  _proto._calculateCellIndex = function _calculateCellIndex(rowIndex, cellIndex) {
+  _proto._calculateCellIndex = function _calculateCellIndex(rowIndex, columnIndex) {
     if (this._isVerticalGroupedWorkSpace()) {
       rowIndex = rowIndex % this._getRowCount();
     } else {
-      cellIndex = cellIndex % this._getCellCount();
+      columnIndex = columnIndex % this._getCellCount();
     }
 
-    return rowIndex * this._getCellCount() + cellIndex;
+    return rowIndex * this._getCellCount() + columnIndex;
   };
 
   _proto._getInterval = function _getInterval() {
@@ -95,12 +99,10 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
     return currentDate.getTime() - (firstViewDate.getTime() - this.option('startDayHour') * 3600000) - timeZoneOffset;
   };
 
-  _proto._getDateByCellIndexes = function _getDateByCellIndexes(rowIndex, cellIndex) {
-    var date = _SchedulerWorkSpace.prototype._getDateByCellIndexes.call(this, rowIndex, cellIndex);
+  _proto._getDateByCellIndexes = function _getDateByCellIndexes(rowIndex, columnIndex) {
+    var date = _SchedulerWorkSpace.prototype._getDateByCellIndexes.call(this, rowIndex, columnIndex);
 
-    this._setStartDayHour(date);
-
-    return date;
+    return (0, _base.setStartDayHour)(date, this.option('startDayHour'));
   } // TODO: temporary fix, in the future, if we replace table layout on div layout, getCellWidth method need remove. Details in T712431
   // TODO: there is a test for this bug, when changing the layout, the test will also be useless
   ;
@@ -131,10 +133,10 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
 
   _proto._getCellCoordinatesByIndex = function _getCellCoordinatesByIndex(index) {
     var rowIndex = Math.floor(index / this._getCellCount());
-    var cellIndex = index - this._getCellCount() * rowIndex;
+    var columnIndex = index - this._getCellCount() * rowIndex;
     return {
       rowIndex: rowIndex,
-      cellIndex: cellIndex
+      columnIndex: columnIndex
     };
   };
 
@@ -170,49 +172,19 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
     return (0, _common.noop)();
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    var firstMonthDate = _date.default.getFirstMonthDate(this._getViewStartByOptions());
-
-    var firstDayOfWeek = this._getCalculatedFirstDayOfWeek();
-
-    this._firstViewDate = _date.default.getFirstWeekDate(firstMonthDate, firstDayOfWeek);
-
-    this._setStartDayHour(this._firstViewDate);
-
+  _proto._setVisibilityDates = function _setVisibilityDates() {
     var date = this._getViewStartByOptions();
 
     this._minVisibleDate = new Date(date.setDate(1));
     this._maxVisibleDate = new Date(new Date(date.setMonth(date.getMonth() + this.option('intervalCount'))).setDate(0));
   };
 
-  _proto._getViewStartByOptions = function _getViewStartByOptions() {
-    if (!this.option('startDate')) {
-      return new Date(this.option('currentDate').getTime());
-    } else {
-      var startDate = this._getStartViewDate();
-
-      var currentDate = this.option('currentDate');
-      var diff = startDate.getTime() <= currentDate.getTime() ? 1 : -1;
-      var endDate = new Date(new Date(this._getStartViewDate().setMonth(this._getStartViewDate().getMonth() + diff * this.option('intervalCount'))));
-
-      while (!this._dateInRange(currentDate, startDate, endDate, diff)) {
-        startDate = new Date(endDate);
-
-        if (diff > 0) {
-          startDate.setDate(1);
-        }
-
-        endDate = new Date(new Date(endDate.setMonth(endDate.getMonth() + diff * this.option('intervalCount'))));
-      }
-
-      return diff > 0 ? startDate : endDate;
-    }
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _month.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this.option('intervalCount'), this.option('firstDayOfWeek'));
   };
 
-  _proto._getStartViewDate = function _getStartViewDate() {
-    var firstMonthDate = _date.default.getFirstMonthDate(this.option('startDate'));
-
-    return firstMonthDate;
+  _proto._getViewStartByOptions = function _getViewStartByOptions() {
+    return (0, _month.getViewStartByOptions)(this.option('startDate'), this.option('currentDate'), this.option('intervalCount'), _date.default.getFirstMonthDate(this.option('startDate')));
   };
 
   _proto._renderTableBody = function _renderTableBody(options) {
@@ -222,14 +194,14 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
     _SchedulerWorkSpace.prototype._renderTableBody.call(this, options);
   };
 
-  _proto._getCellText = function _getCellText(rowIndex, cellIndex) {
+  _proto._getCellText = function _getCellText(rowIndex, columnIndex) {
     if (this.isGroupedByDate()) {
-      cellIndex = Math.floor(cellIndex / this._getGroupCount());
+      columnIndex = Math.floor(columnIndex / this._getGroupCount());
     } else {
-      cellIndex = cellIndex % this._getCellCount();
+      columnIndex = columnIndex % this._getCellCount();
     }
 
-    var date = this._getDate(rowIndex, cellIndex);
+    var date = this._getDate(rowIndex, columnIndex);
 
     if (this._isWorkSpaceWithCount() && this._isFirstDayOfMonth(date)) {
       return this._formatMonthAndDay(date);
@@ -245,7 +217,7 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
   };
 
   _proto._getDate = function _getDate(week, day) {
-    var result = new Date(this._firstViewDate);
+    var result = new Date(this._startViewDate);
 
     var lastRowInDay = this._getRowCount();
 
@@ -257,8 +229,8 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
     return index;
   };
 
-  _proto._prepareCellData = function _prepareCellData(rowIndex, cellIndex, cell) {
-    var data = _SchedulerWorkSpace.prototype._prepareCellData.call(this, rowIndex, cellIndex, cell);
+  _proto._prepareCellData = function _prepareCellData(rowIndex, columnIndex, cell) {
+    var data = _SchedulerWorkSpace.prototype._prepareCellData.call(this, rowIndex, columnIndex, cell);
 
     var $cell = (0, _renderer.default)(cell);
     $cell.toggleClass(DATE_TABLE_CURRENT_DATE_CLASS, this._isCurrentDate(data.startDate)).toggleClass(DATE_TABLE_FIRST_OF_MONTH_CLASS, this._isFirstDayOfMonth(data.startDate)).toggleClass(DATE_TABLE_OTHER_MONTH_DATE_CLASS, this._isOtherMonth(data.startDate));
@@ -380,15 +352,15 @@ var SchedulerWorkSpaceMonth = /*#__PURE__*/function (_SchedulerWorkSpace) {
 
     var options = _SchedulerWorkSpace.prototype.generateRenderOptions.call(this);
 
-    options.cellDataGetters.push(function (_, rowIndex, cellIndex) {
+    options.cellDataGetters.push(function (_, rowIndex, columnIndex) {
       return {
         value: {
-          text: _this2._getCellText(rowIndex, cellIndex)
+          text: _this2._getCellText(rowIndex, columnIndex)
         }
       };
     });
 
-    var getCellMetaData = function getCellMetaData(_, rowIndex, cellIndex, groupIndex, startDate) {
+    var getCellMetaData = function getCellMetaData(_, rowIndex, columnIndex, groupIndex, startDate) {
       return {
         value: {
           today: _this2._isCurrentDate(startDate),

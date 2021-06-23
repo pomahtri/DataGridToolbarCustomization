@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/core/component.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -35,6 +35,8 @@ var _postponed_operations = require("./postponed_operations");
 var _type = require("./utils/type");
 
 var _common = require("./utils/common");
+
+var _data = require("./utils/data");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -258,7 +260,7 @@ var Component = _class.default.inherit({
       for (var i = 0; i < optionNames.length; i++) {
         var name = optionNames[i];
         var args = {
-          name: name.split(/[.[]/)[0],
+          name: (0, _data.getPathParts)(name)[0],
           fullName: name,
           value: value,
           previousValue: previousValue

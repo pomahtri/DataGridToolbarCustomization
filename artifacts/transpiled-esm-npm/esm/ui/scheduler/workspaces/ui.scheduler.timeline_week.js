@@ -1,6 +1,7 @@
 import registerComponent from '../../../core/component_registrator';
 import SchedulerTimeline from './ui.scheduler.timeline';
 import { getBoundingRect } from '../../../core/utils/position';
+import { getIntervalDuration } from './utils/week';
 var TIMELINE_CLASS = 'dx-scheduler-timeline-week';
 export default class SchedulerTimelineWeek extends SchedulerTimeline {
   _getElementClass() {
@@ -25,6 +26,10 @@ export default class SchedulerTimelineWeek extends SchedulerTimeline {
 
   _incrementDate(date) {
     date.setDate(date.getDate() + 1);
+  }
+
+  _getIntervalDuration() {
+    return getIntervalDuration(this.option('intervalCount'));
   }
 
 }

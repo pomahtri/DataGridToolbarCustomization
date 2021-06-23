@@ -1,6 +1,6 @@
 import { camelize } from './inflector';
 import callOnce from './call_once';
-import { isNumeric } from './type';
+import { isNumeric, isString } from './type';
 import domAdapter from '../dom_adapter';
 var jsPrefixes = ['', 'Webkit', 'Moz', 'O', 'Ms'];
 var cssPrefixes = {
@@ -65,6 +65,16 @@ var stylePropPrefix = function stylePropPrefix(prop) {
 
 var pxExceptions = ['fillOpacity', 'columnCount', 'flexGrow', 'flexShrink', 'fontWeight', 'lineHeight', 'opacity', 'zIndex', 'zoom'];
 
+var parsePixelValue = function parsePixelValue(value) {
+  if (isNumeric(value)) {
+    return value;
+  } else if (isString(value)) {
+    return Number(value.replace('px', ''));
+  }
+
+  return NaN;
+};
+
 var normalizeStyleProp = function normalizeStyleProp(prop, value) {
   if (isNumeric(value) && pxExceptions.indexOf(prop) === -1) {
     value += 'px';
@@ -91,4 +101,4 @@ var setHeight = function setHeight(elements, value) {
   setDimensionProperty(elements, 'height', value);
 };
 
-export { styleProp, stylePropPrefix, normalizeStyleProp, setWidth, setHeight };
+export { styleProp, stylePropPrefix, normalizeStyleProp, parsePixelValue, setWidth, setHeight };

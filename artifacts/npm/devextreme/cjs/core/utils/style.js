@@ -1,14 +1,14 @@
 /**
 * DevExtreme (cjs/core/utils/style.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
 
-exports.setHeight = exports.setWidth = exports.normalizeStyleProp = exports.stylePropPrefix = exports.styleProp = void 0;
+exports.setHeight = exports.setWidth = exports.parsePixelValue = exports.normalizeStyleProp = exports.stylePropPrefix = exports.styleProp = void 0;
 
 var _inflector = require("./inflector");
 
@@ -85,6 +85,18 @@ var stylePropPrefix = function stylePropPrefix(prop) {
 
 exports.stylePropPrefix = stylePropPrefix;
 var pxExceptions = ['fillOpacity', 'columnCount', 'flexGrow', 'flexShrink', 'fontWeight', 'lineHeight', 'opacity', 'zIndex', 'zoom'];
+
+var parsePixelValue = function parsePixelValue(value) {
+  if ((0, _type.isNumeric)(value)) {
+    return value;
+  } else if ((0, _type.isString)(value)) {
+    return Number(value.replace('px', ''));
+  }
+
+  return NaN;
+};
+
+exports.parsePixelValue = parsePixelValue;
 
 var normalizeStyleProp = function normalizeStyleProp(prop, value) {
   if ((0, _type.isNumeric)(value) && pxExceptions.indexOf(prop) === -1) {

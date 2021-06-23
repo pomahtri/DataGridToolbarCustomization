@@ -22,8 +22,6 @@ var _errors = _interopRequireDefault(require("../core/errors"));
 
 var _dom_adapter = _interopRequireDefault(require("../core/dom_adapter"));
 
-var _utils = require("./widget/utils.ink_ripple");
-
 var _message = _interopRequireDefault(require("../localization/message"));
 
 var _component_registrator = _interopRequireDefault(require("../core/component_registrator"));
@@ -195,7 +193,6 @@ var SelectBox = _ui.default.inherit({
       openOnFieldClick: true,
       showDropDownButton: true,
       displayCustomValue: false,
-      useInkRipple: false,
       useHiddenSubmitElement: true
     });
   },
@@ -209,31 +206,9 @@ var SelectBox = _ui.default.inherit({
 
     this._renderTooltip();
 
-    this.option('useInkRipple') && this._renderInkRipple();
     this.callBase();
 
     this._$container.addClass(SELECTBOX_CONTAINER_CLASS);
-  },
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = (0, _utils.render)();
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase.apply(this, arguments);
-
-    if (!this._inkRipple || this._isEditable()) {
-      return;
-    }
-
-    var config = {
-      element: this._inputWrapper(),
-      event: e
-    };
-
-    if (value) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
-    }
   },
   _createPopup: function _createPopup() {
     this.callBase();
@@ -862,7 +837,6 @@ var SelectBox = _ui.default.inherit({
       case 'displayCustomValue':
       case 'acceptCustomValue':
       case 'showSelectionControls':
-      case 'useInkRipple':
         this._invalidate();
 
         break;
@@ -873,10 +847,6 @@ var SelectBox = _ui.default.inherit({
       default:
         this.callBase(args);
     }
-  },
-  _clean: function _clean() {
-    delete this._inkRipple;
-    this.callBase();
   }
 });
 

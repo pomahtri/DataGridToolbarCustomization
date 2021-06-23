@@ -36,6 +36,8 @@ var _series_data_source = require("./series_data_source");
 
 var _tick_generator = require("../axes/tick_generator");
 
+var _axes_constants = _interopRequireDefault(require("../axes/axes_constants"));
+
 var _base_widget = _interopRequireDefault(require("../core/base_widget"));
 
 var _export = require("../core/export");
@@ -1062,6 +1064,31 @@ function getTickStartPositionShift(length) {
   return length % 2 === 1 ? -_floor(length / 2) : -length / 2;
 }
 
+function checkShiftedLabels(majorTicks, boxes, minSpacing, alignment) {
+  function checkLabelsOverlapping(nearestLabelsIndexes) {
+    if (nearestLabelsIndexes.length === 2 && _axes_constants.default.areLabelsOverlap(boxes[nearestLabelsIndexes[0]], boxes[nearestLabelsIndexes[1]], minSpacing, alignment)) {
+      majorTicks[nearestLabelsIndexes[0]].removeLabel();
+    }
+  }
+
+  function getTwoVisibleLabels(startIndex) {
+    var labels = [];
+
+    for (var i = startIndex; labels.length < 2 && i < majorTicks.length; i++) {
+      majorTicks[i].label && labels.push(i);
+    }
+
+    return labels;
+  }
+
+  if (majorTicks.length < 3) {
+    return;
+  }
+
+  checkLabelsOverlapping(getTwoVisibleLabels(0));
+  checkLabelsOverlapping(getTwoVisibleLabels(majorTicks.length - 2).reverse());
+}
+
 function AxisWrapper(params) {
   var that = this;
   that._axis = new _base_axis.Axis({
@@ -1081,6 +1108,7 @@ function AxisWrapper(params) {
   that._updateSelectedRangeCallback = params.updateSelectedRange;
   that._axis.getAxisSharpDirection = that._axis.getSharpDirectionByCoords = getShiftDirection;
   that._axis.getTickStartPositionShift = getTickStartPositionShift;
+  that._axis._checkShiftedLabels = checkShiftedLabels;
 }
 
 AxisWrapper.prototype = {

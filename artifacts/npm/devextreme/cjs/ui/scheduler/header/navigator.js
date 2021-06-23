@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/header/navigator.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -13,8 +13,6 @@ exports.Navigator = void 0;
 var _renderer = _interopRequireDefault(require("../../../core/renderer"));
 
 var _common = require("../../../core/utils/common");
-
-var _type = require("../../../core/utils/type");
 
 var _ui = _interopRequireDefault(require("../../widget/ui.errors"));
 
@@ -38,11 +36,13 @@ var _popup = _interopRequireDefault(require("../../popup"));
 
 var _publisher_mixin = _interopRequireDefault(require("../publisher_mixin"));
 
-var _date2 = _interopRequireDefault(require("../../../localization/date"));
-
 var _ui3 = _interopRequireDefault(require("../../scroll_view/ui.scrollable"));
 
+var _utils = require("./utils");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var ELEMENT_CLASS = 'dx-scheduler-navigator';
 var CALENDAR_CLASS = 'dx-scheduler-navigator-calendar';
@@ -50,212 +50,8 @@ var NEXT_BUTTON_CLASS = 'dx-scheduler-navigator-next';
 var CAPTION_BUTTON_CLASS = 'dx-scheduler-navigator-caption';
 var PREVIOUS_BUTTON_CLASS = 'dx-scheduler-navigator-previous';
 var CALENDAR_POPOVER_CLASS = 'dx-scheduler-navigator-calendar-popover';
-var MONDAY_INDEX = 1;
-
-var getDefaultFirstDayOfWeekIndex = function getDefaultFirstDayOfWeekIndex(shift) {
-  return shift ? MONDAY_INDEX : _date2.default.firstDayOfWeekIndex();
-};
-
-var getDateMonthFormat = function getDateMonthFormat(short) {
-  return function (date) {
-    var monthName = _date2.default.getMonthNames(short ? 'abbreviated' : 'wide')[date.getMonth()];
-
-    return [_date2.default.format(date, 'day'), monthName].join(' ');
-  };
-};
-
-var getMonthYearFormat = function getMonthYearFormat(date) {
-  return _date2.default.getMonthNames('abbreviated')[date.getMonth()] + ' ' + _date2.default.format(date, 'year');
-};
-
-var getCaptionFormat = function getCaptionFormat(short, intervalCount, duration) {
-  var dateMonthFormat = getDateMonthFormat(short);
-  return function (date) {
-    if (intervalCount > 1) {
-      var lastIntervalDate = new Date(date);
-      var defaultViewDuration = duration;
-      lastIntervalDate.setDate(date.getDate() + defaultViewDuration - 1);
-      var isDifferentMonthDates = date.getMonth() !== lastIntervalDate.getMonth();
-      var useShortFormat = isDifferentMonthDates || short;
-
-      var firstWeekDateText = _date2.default.format(date, isDifferentMonthDates ? getDateMonthFormat(useShortFormat) : 'd');
-
-      var lastWeekDateText = _date2.default.format(lastIntervalDate, getCaptionFormat(useShortFormat));
-
-      return firstWeekDateText + '-' + lastWeekDateText;
-    }
-
-    return [dateMonthFormat(date), _date2.default.format(date, 'year')].join(' ');
-  };
-};
-
-var getWeekCaption = function getWeekCaption(date, shift, rejectWeekend) {
-  var firstDayOfWeek = this.option('firstDayOfWeek');
-  var firstDayOfWeekIndex = (0, _type.isDefined)(firstDayOfWeek) ? firstDayOfWeek : getDefaultFirstDayOfWeekIndex(shift);
-  if (firstDayOfWeekIndex === 0 && rejectWeekend) firstDayOfWeekIndex = MONDAY_INDEX;
-
-  var firstWeekDate = _date.default.getFirstWeekDate(date, firstDayOfWeekIndex);
-
-  var weekendDuration = 2;
-
-  if (rejectWeekend) {
-    firstWeekDate = _date.default.normalizeDateByWeek(firstWeekDate, date);
-  }
-
-  if (firstDayOfWeek >= 6 && rejectWeekend) {
-    firstWeekDate.setDate(firstWeekDate.getDate() + (7 - firstDayOfWeek + 1));
-  }
-
-  var lastWeekDate = new Date(firstWeekDate);
-  var intervalCount = this.option('intervalCount');
-  shift = shift || 6;
-  lastWeekDate = new Date(lastWeekDate.setDate(lastWeekDate.getDate() + (intervalCount > 1 ? 7 * (intervalCount - 1) + shift : shift)));
-
-  if (lastWeekDate.getDay() % 6 === 0 && rejectWeekend) {
-    lastWeekDate.setDate(lastWeekDate.getDate() + weekendDuration);
-  }
-
-  return {
-    text: formatCaptionByMonths.call(this, lastWeekDate, firstWeekDate),
-    startDate: firstWeekDate,
-    endDate: lastWeekDate
-  };
-};
-
-var formatCaptionByMonths = function formatCaptionByMonths(lastDate, firstDate) {
-  var isDifferentMonthDates = firstDate.getMonth() !== lastDate.getMonth();
-  var isDifferentYears = firstDate.getFullYear() !== lastDate.getFullYear();
-  var useShortFormat = isDifferentMonthDates || this.option('_useShortDateFormat');
-  var lastDateText;
-  var firstDateText;
-
-  if (isDifferentYears) {
-    firstDateText = _date2.default.format(firstDate, getCaptionFormat(true));
-    lastDateText = _date2.default.format(lastDate, getCaptionFormat(true));
-  } else {
-    firstDateText = _date2.default.format(firstDate, isDifferentMonthDates ? getDateMonthFormat(useShortFormat) : 'd');
-    lastDateText = _date2.default.format(lastDate, getCaptionFormat(useShortFormat));
-  }
-
-  return firstDateText + '-' + lastDateText;
-};
-
-var getMonthCaption = function getMonthCaption(date) {
-  var firstDate = new Date(_date.default.getFirstMonthDate(date));
-  var lastDate = new Date(_date.default.getLastMonthDate(firstDate));
-  var text;
-
-  if (this.option('intervalCount') > 1) {
-    lastDate = new Date(firstDate);
-    lastDate.setMonth(firstDate.getMonth() + this.option('intervalCount') - 1);
-    lastDate = new Date(_date.default.getLastMonthDate(lastDate));
-    var isSameYear = firstDate.getYear() === lastDate.getYear();
-    var lastDateText = getMonthYearFormat(lastDate);
-    var firstDateText = isSameYear ? _date2.default.getMonthNames('abbreviated')[firstDate.getMonth()] : getMonthYearFormat(firstDate);
-    text = firstDateText + '-' + lastDateText;
-  } else {
-    text = _date2.default.format(date, 'monthandyear');
-  }
-
-  return {
-    text: text,
-    startDate: firstDate,
-    endDate: lastDate
-  };
-};
-
-var dateGetter = function dateGetter(date, offset) {
-  return new Date(date[this.setter](date[this.getter]() + offset));
-};
-
-var getConfig = function getConfig(step) {
-  var agendaDuration;
-
-  switch (step) {
-    case 'day':
-      return {
-        duration: 1 * this.option('intervalCount'),
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: function getCaption(date) {
-          var format = getCaptionFormat(false, this.option('intervalCount'), this._getConfig().duration);
-          return {
-            text: _date2.default.format(date, format),
-            startDate: date,
-            endDate: date
-          };
-        }
-      };
-
-    case 'week':
-      return {
-        duration: 7 * this.option('intervalCount'),
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: getWeekCaption
-      };
-
-    case 'workWeek':
-      return {
-        duration: 7 * this.option('intervalCount'),
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: function getCaption(date) {
-          return getWeekCaption.call(this, date, 4, true);
-        }
-      };
-
-    case 'month':
-      return {
-        duration: 1 * this.option('intervalCount'),
-        setter: 'setMonth',
-        getter: 'getMonth',
-        getDate: function getDate(date, offset) {
-          var currentDate = date.getDate();
-          date.setDate(1);
-          date = dateGetter.call(this, date, offset);
-
-          var lastDate = _date.default.getLastMonthDay(date);
-
-          date.setDate(currentDate < lastDate ? currentDate : lastDate);
-          return date;
-        },
-        getCaption: getMonthCaption
-      };
-
-    case 'agenda':
-      agendaDuration = this.invoke('getAgendaDuration');
-      agendaDuration = (0, _type.isNumeric)(agendaDuration) && agendaDuration > 0 ? agendaDuration : 7;
-      return {
-        duration: agendaDuration,
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: function getCaption(date) {
-          var format = getCaptionFormat(this.option('_useShortDateFormat'));
-          var firstDate = new Date(date);
-          var lastDate = new Date(date);
-          var text;
-
-          if (agendaDuration > 1) {
-            lastDate.setDate(lastDate.getDate() + agendaDuration - 1);
-            text = formatCaptionByMonths.call(this, lastDate, date);
-          } else {
-            text = _date2.default.format(date, format);
-          }
-
-          return {
-            text: text,
-            startDate: firstDate,
-            endDate: lastDate
-          };
-        }
-      };
-  }
-};
+var DEFAULT_AGENDA_DURATION = 7;
+var ACCEPRED_STEPS = ['day', 'week', 'workWeek', 'month', 'agenda'];
 
 var Navigator = _ui2.default.inherit({
   _getDefaultOptions: function _getDefaultOptions() {
@@ -289,6 +85,8 @@ var Navigator = _ui2.default.inherit({
       case 'date':
       case 'intervalCount':
       case 'displayedDate':
+        this._validateStep();
+
         this._updateButtonsState();
 
         this._renderCaption();
@@ -374,8 +172,9 @@ var Navigator = _ui2.default.inherit({
   _updateButtonsState: function _updateButtonsState() {
     var min = this.option('min');
     var max = this.option('max');
+    var date = this.option('displayedDate') || this.option('date');
 
-    var caption = this._getConfig().getCaption.call(this, this.option('displayedDate') || this.option('date'));
+    var caption = this._getCaption(date);
 
     min = min ? _date.default.trimTime(min) : min;
     max = max ? _date.default.trimTime(max) : max;
@@ -394,12 +193,13 @@ var Navigator = _ui2.default.inherit({
   },
   _getNextDate: function _getNextDate(direction) {
     var initialDate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var date = initialDate || this.option('date');
 
-    var stepConfig = this._getConfig();
+    var options = _extends({}, this._getIntervalOptions(), {
+      date: date
+    });
 
-    var offset = stepConfig.duration * direction;
-    var date = stepConfig.getDate(new Date(initialDate || this.option('date')), offset);
-    return date;
+    return (0, _utils.getNextIntervalDate)(options, direction);
   },
   _renderFocusTarget: _common.noop,
   _initMarkup: function _initMarkup() {
@@ -489,18 +289,37 @@ var Navigator = _ui2.default.inherit({
       tabIndex: null
     };
   },
+  _getIntervalOptions: function _getIntervalOptions() {
+    var step = this.option('step');
+    var intervalCount = this.option('intervalCount');
+    var firstDayOfWeek = this.option('firstDayOfWeek') || 0; // TODO
+
+    var agendaDuration = this.invoke('getAgendaDuration') || DEFAULT_AGENDA_DURATION;
+    return {
+      step: step,
+      intervalCount: intervalCount,
+      firstDayOfWeek: firstDayOfWeek,
+      agendaDuration: agendaDuration
+    };
+  },
+  _getCaption: function _getCaption(date) {
+    var options = _extends({}, this._getIntervalOptions(), {
+      date: date
+    });
+
+    var customizationFunction = this.option('customizeDateNavigatorText');
+    var useShortDateFormat = this.option('_useShortDateFormat');
+    return (0, _utils.getCaption)(options, useShortDateFormat, customizationFunction);
+  },
   _renderCaption: function _renderCaption() {
     var _this2 = this;
 
     var date = this.option('displayedDate') || this.option('date');
 
-    var captionConfig = this._getConfig().getCaption.call(this, date);
-
-    var customizationFunction = this.option('customizeDateNavigatorText');
-    var caption = (0, _type.isFunction)(customizationFunction) ? customizationFunction(captionConfig) : captionConfig.text;
+    var caption = this._getCaption(date);
 
     this._caption.option({
-      text: caption,
+      text: caption.text,
       onKeyboardHandled: function onKeyboardHandled(opts) {
         _this2.option('focusStateEnabled') && !_this2.option('disabled') && _this2._calendar._keyboardHandler(opts);
       },
@@ -539,15 +358,12 @@ var Navigator = _ui2.default.inherit({
       this._calendar.option(name, value);
     }
   },
-  _getConfig: function _getConfig() {
+  _validateStep: function _validateStep() {
     var step = this.option('step');
-    var config = getConfig.call(this, step);
 
-    if (!config) {
+    if (!ACCEPRED_STEPS.includes(step)) {
       throw _ui.default.Error('E1033', step);
     }
-
-    return config;
   }
 }).include(_publisher_mixin.default);
 

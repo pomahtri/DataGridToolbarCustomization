@@ -25,18 +25,26 @@ var DropDownMenuStrategy = ToolbarStrategy.inherit({
       this._menu.close();
     }
   },
-  _menuWidgetClass: function _menuWidgetClass() {
+  _menuWidget: function _menuWidget() {
     return DropDownMenu;
   },
   _widgetOptions: function _widgetOptions() {
-    var that = this;
     return extend(this.callBase(), {
       deferRendering: true,
-      container: that._toolbar.option('menuContainer'),
+      container: this._toolbar.option('menuContainer'),
       menuWidget: ToolbarMenu,
-      onOptionChanged: function onOptionChanged(e) {
-        if (e.name === 'items') {
-          that._updateMenuVisibility(e.value);
+      onOptionChanged: _ref => {
+        var {
+          name,
+          value
+        } = _ref;
+
+        if (name === 'opened') {
+          this._toolbar.option('overflowMenuVisible', value);
+        }
+
+        if (name === 'items') {
+          this._updateMenuVisibility(value);
         }
       },
       popupPosition: {

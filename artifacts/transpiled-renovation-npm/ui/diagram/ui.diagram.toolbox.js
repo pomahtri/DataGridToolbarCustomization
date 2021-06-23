@@ -305,7 +305,7 @@ var DiagramToolbox = /*#__PURE__*/function (_DiagramFloatingPanel) {
       var title = $target.attr('title');
 
       if (title) {
-        var $tooltip = (0, _renderer.default)('<div>').html(title).appendTo($container);
+        var $tooltip = (0, _renderer.default)('<div>').text(title).appendTo($container);
 
         _this3._createComponent($tooltip, _tooltip.default, {
           target: $target.get(0),

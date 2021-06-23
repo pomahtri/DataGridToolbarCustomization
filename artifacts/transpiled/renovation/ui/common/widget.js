@@ -293,9 +293,7 @@ var Widget = /*#__PURE__*/function (_InfernoWrapperCompon) {
           });
         });
         onHoverStart === null || onHoverStart === void 0 ? void 0 : onHoverStart(event);
-      }, function (_ref4) {
-        var event = _ref4.event;
-
+      }, function (event) {
         _this5.setState(function (state) {
           return _extends({}, state, {
             hovered: false

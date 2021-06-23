@@ -12,6 +12,10 @@ var bracketsToDots = function bracketsToDots(expr) {
   return expr.replace(/\[/g, '.').replace(/\]/g, '');
 };
 
+export var getPathParts = function getPathParts(name) {
+  return bracketsToDots(name).split('.');
+};
+
 var readPropValue = function readPropValue(obj, propName, options) {
   options = options || {};
 
@@ -58,8 +62,7 @@ export var compileGetter = function compileGetter(expr) {
   }
 
   if (typeof expr === 'string') {
-    expr = bracketsToDots(expr);
-    var path = expr.split('.');
+    var path = getPathParts(expr);
     return function (obj, options) {
       options = prepareOptions(options);
       var functionAsIs = options.functionsAsIs;
@@ -151,7 +154,7 @@ var ensurePropValueDefined = function ensurePropValueDefined(obj, propName, valu
 };
 
 export var compileSetter = function compileSetter(expr) {
-  expr = bracketsToDots(expr || 'this').split('.');
+  expr = getPathParts(expr || 'this');
   var lastLevelIndex = expr.length - 1;
   return function (obj, value, options) {
     options = prepareOptions(options);

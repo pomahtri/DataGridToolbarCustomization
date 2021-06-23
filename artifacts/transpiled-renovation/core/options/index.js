@@ -10,6 +10,8 @@ var _option_manager = require("./option_manager");
 
 var _object = require("../utils/object");
 
+var _data = require("../utils/data");
+
 var _utils = require("./utils");
 
 var _extend = require("../utils/extend");
@@ -194,7 +196,7 @@ var Options = /*#__PURE__*/function () {
     var _this2 = this;
 
     if (name) {
-      var fullPath = name.replace(/\[([^\]])\]/g, '.$1').split('.');
+      var fullPath = (0, _data.getPathParts)(name);
       var value = fullPath.reduce(function (value, field) {
         return value ? value[field] : _this2.initial(field);
       }, null);

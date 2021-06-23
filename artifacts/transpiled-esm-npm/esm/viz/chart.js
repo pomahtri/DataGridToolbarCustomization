@@ -731,6 +731,10 @@ var dxChart = AdvancedChart.inherit({
     }
   },
 
+  _executeAppendAfterSeries(append) {
+    append();
+  },
+
   _prepareToRender(drawOptions) {
     var panesBorderOptions = this._createPanesBorderOptions();
 

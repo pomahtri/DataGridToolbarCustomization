@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/ui/common/widget.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -240,10 +240,7 @@ export class Widget extends InfernoWrapperComponent {
           hovered: true
         }));
         onHoverStart === null || onHoverStart === void 0 ? void 0 : onHoverStart(event);
-      }, _ref4 => {
-        var {
-          event
-        } = _ref4;
+      }, event => {
         this.setState(state => _extends({}, state, {
           hovered: false
         }));

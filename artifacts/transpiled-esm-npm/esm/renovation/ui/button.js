@@ -44,7 +44,7 @@ export var viewFunction = viewModel => {
     templateData,
     text
   } = viewModel.props;
-  var renderText = !viewModel.props.template && !children && text;
+  var renderText = !viewModel.props.template && !children && text !== "";
   var isIconLeft = iconPosition === "left";
   var iconComponent = !viewModel.props.template && !children && viewModel.iconSource && createComponentVNode(2, Icon, {
     "source": viewModel.iconSource,
@@ -88,6 +88,7 @@ export var ButtonProps = _extends({}, BaseWidgetProps, {
   hoverStateEnabled: true,
   icon: "",
   iconPosition: "left",
+  stylingMode: "contained",
   text: "",
   type: "normal",
   useInkRipple: false,
@@ -194,7 +195,7 @@ export class Button extends InfernoWrapperComponent {
     useSubmitBehavior && this.submitInputRef.current.click();
   }
 
-  onWidgetKeyDown(options) {
+  onWidgetKeyDown(e) {
     var {
       onKeyDown
     } = this.props;
@@ -202,8 +203,8 @@ export class Button extends InfernoWrapperComponent {
       keyName,
       originalEvent,
       which
-    } = options;
-    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(options);
+    } = e;
+    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(e);
 
     if (result !== null && result !== void 0 && result.cancel) {
       return result;

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/exporter/jspdf/pdf_table.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -58,7 +58,8 @@ export class PdfTable {
     for (var i = 0; i < cells.length; i++) {
       var currentCell = cells[i];
 
-      if (currentCell.drawLeftBorder === false) {
+      if (currentCell.drawLeftBorder === false && !isDefined(currentCell.colSpan)) {
+        // TODO
         if (i >= 1) {
           cells[i - 1].drawRightBorder = false;
         }

@@ -28,10 +28,9 @@ var CheckBox = /*#__PURE__*/function (_Editor) {
   _proto._optionChanged = function _optionChanged(option) {
     var _this$_valueChangeAct;
 
-    var _ref = option || {},
-        name = _ref.name,
-        previousValue = _ref.previousValue,
-        value = _ref.value;
+    var name = option.name,
+        previousValue = option.previousValue,
+        value = option.value;
 
     switch (name) {
       case "value":

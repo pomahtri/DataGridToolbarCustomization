@@ -19,7 +19,9 @@ export var viewFunction = viewModel => createComponentVNode(2, Row, {
       groups,
       index: cellIndex,
       isFirstGroupCell,
+      isFocused,
       isLastGroupCell,
+      isSelected,
       key,
       startDate
     } = _ref;
@@ -31,7 +33,9 @@ export var viewFunction = viewModel => createComponentVNode(2, Row, {
       "groups": groups,
       "groupIndex": cellGroupIndex,
       "index": cellIndex,
-      "dataCellTemplate": viewModel.props.dataCellTemplate
+      "dataCellTemplate": viewModel.props.dataCellTemplate,
+      "isSelected": isSelected,
+      "isFocused": isFocused
     }, key);
   })
 });

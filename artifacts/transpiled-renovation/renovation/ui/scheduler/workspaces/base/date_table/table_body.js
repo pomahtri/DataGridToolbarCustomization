@@ -62,7 +62,9 @@ var viewFunction = function viewFunction(_ref) {
               groups = _ref3.groups,
               cellIndex = _ref3.index,
               isFirstGroupCell = _ref3.isFirstGroupCell,
+              isFocused = _ref3.isFocused,
               isLastGroupCell = _ref3.isLastGroupCell,
+              isSelected = _ref3.isSelected,
               key = _ref3.key,
               otherMonth = _ref3.otherMonth,
               startDate = _ref3.startDate,
@@ -81,7 +83,9 @@ var viewFunction = function viewFunction(_ref) {
             text: text,
             today: today,
             otherMonth: otherMonth,
-            firstDayOfMonth: firstDayOfMonth
+            firstDayOfMonth: firstDayOfMonth,
+            isSelected: isSelected,
+            isFocused: isFocused
           });
         })
       }, cellsRow[0].key - viewData.leftVirtualCellCount);

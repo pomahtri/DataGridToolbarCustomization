@@ -45,10 +45,10 @@ var SchedulerWorkspaceVertical = /*#__PURE__*/function (_SchedulerWorkSpaceIn) {
 
     var options = _SchedulerWorkSpaceIn.prototype.generateRenderOptions.call(this);
 
-    options.cellDataGetters.push(function (_, rowIndex, cellIndex) {
+    options.cellDataGetters.push(function (_, rowIndex, columnIndex) {
       return {
         value: {
-          text: _getTimeText(rowIndex, cellIndex)
+          text: _getTimeText(rowIndex, columnIndex)
         }
       };
     });

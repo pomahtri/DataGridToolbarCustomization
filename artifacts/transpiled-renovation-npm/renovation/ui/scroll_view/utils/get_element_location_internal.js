@@ -9,7 +9,7 @@ var _consts = require("../common/consts");
 function getElementLocationInternal(element, offset, direction, containerElement) {
   var prop = direction === _consts.DIRECTION_VERTICAL ? "top" : "left";
   var dimension = direction === _consts.DIRECTION_VERTICAL ? "Height" : "Width";
-  var relativeLocation = containerElement["scroll".concat((0, _inflector.titleize)(prop))] + element.getBoundingClientRect()[prop] - containerElement.getBoundingClientRect()[prop];
+  var relativeLocation = containerElement["scroll".concat((0, _inflector.titleize)(prop))] - containerElement.getBoundingClientRect()[prop] + element.getBoundingClientRect()[prop];
   var containerLocation = containerElement["scroll".concat((0, _inflector.titleize)(prop))];
   var scrollBarSize = containerElement["offset".concat(dimension)] - containerElement["client".concat(dimension)];
   var containerSize = containerElement["offset".concat(dimension)];

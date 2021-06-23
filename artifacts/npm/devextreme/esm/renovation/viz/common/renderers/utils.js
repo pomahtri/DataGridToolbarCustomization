@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/viz/common/renderers/utils.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -286,9 +286,9 @@ export var removeExtraAttrs = html => {
   var findTagAttrs = /(?:(<[a-z0-9]+\s*))([\s\S]*?)(>|\/>)/gi;
   var findStyleAndClassAttrs = /(style|class)\s*=\s*(["'])(?:(?!\2).)*\2\s?/gi;
   return html.replace(findTagAttrs, (_, p1, p2, p3) => {
-    var _p;
+    var _p2$match, _p;
 
-    p2 = (((_p = p2) === null || _p === void 0 ? void 0 : _p.match(findStyleAndClassAttrs)) || []).map(str => str).join(" ");
+    p2 = ((_p2$match = (_p = p2) === null || _p === void 0 ? void 0 : _p.match(findStyleAndClassAttrs)) !== null && _p2$match !== void 0 ? _p2$match : []).map(str => str).join(" ");
     return p1 + p2 + p3;
   });
 };
@@ -328,7 +328,7 @@ export var setTextNodeAttribute = (item, name, value) => {
   (_item$stroke = item.stroke) === null || _item$stroke === void 0 ? void 0 : _item$stroke.setAttribute(name, value);
 };
 export var getItemLineHeight = (item, defaultValue) => item.inherits ? maxLengthFontSize(item.height, defaultValue) : Number(item.height) || defaultValue;
-export var getLineHeight = styles => styles && !isNaN(parseFloat(styles[KEY_FONT_SIZE])) ? parseFloat(styles[KEY_FONT_SIZE]) : DEFAULT_FONT_SIZE;
+export var getLineHeight = styles => styles && !Number.isNaN(parseFloat(styles[KEY_FONT_SIZE])) ? parseFloat(styles[KEY_FONT_SIZE]) : DEFAULT_FONT_SIZE;
 export var textsAreEqual = (newItems, renderedItems) => {
   if (!renderedItems || renderedItems.length !== newItems.length) return false;
   return renderedItems.every((item, index) => item.value === newItems[index].value);

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/workspaces/cells_selection_controller.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -40,7 +40,7 @@ export class CellsSelectionController {
         break;
     }
 
-    var currentCellData = getCellDataByPosition(nextCellIndices.rowIndex, nextCellIndices.cellIndex, isAllDayPanelCell);
+    var currentCellData = getCellDataByPosition(nextCellIndices.rowIndex, nextCellIndices.columnIndex, isAllDayPanelCell);
     return this.moveToCell(_extends({}, options, {
       currentCellData
     }));
@@ -48,14 +48,14 @@ export class CellsSelectionController {
 
   getCellFromNextRowPosition(focusedCellPosition, direction, edgeIndices) {
     var {
-      cellIndex,
+      columnIndex,
       rowIndex
     } = focusedCellPosition;
     var deltaPosition = direction === 'next' ? 1 : -1;
     var nextRowIndex = rowIndex + deltaPosition;
     var validRowIndex = nextRowIndex >= 0 && nextRowIndex <= edgeIndices.lastRowIndex ? nextRowIndex : rowIndex;
     return {
-      cellIndex,
+      columnIndex,
       rowIndex: validRowIndex
     };
   }
@@ -72,34 +72,34 @@ export class CellsSelectionController {
       isDateAndTimeView
     } = options;
     var {
-      cellIndex,
+      columnIndex,
       rowIndex
     } = focusedCellPosition;
     var {
-      firstCellIndex,
-      lastCellIndex,
+      firstColumnIndex,
+      lastColumnIndex,
       firstRowIndex,
       lastRowIndex
     } = edgeIndices;
     var step = isGroupedByDate && isMultiSelection ? groupCount : 1;
     var sign = isRTL ? -1 : 1;
-    var deltaCellIndex = direction === 'next' ? sign * step : -1 * sign * step;
-    var nextCellIndex = cellIndex + deltaCellIndex;
-    var isValidCellIndex = nextCellIndex >= firstCellIndex && nextCellIndex <= lastCellIndex;
+    var deltaColumnIndex = direction === 'next' ? sign * step : -1 * sign * step;
+    var nextColumnIndex = columnIndex + deltaColumnIndex;
+    var isValidColumnIndex = nextColumnIndex >= firstColumnIndex && nextColumnIndex <= lastColumnIndex;
 
-    if (isValidCellIndex) {
+    if (isValidColumnIndex) {
       return {
-        cellIndex: nextCellIndex,
+        columnIndex: nextColumnIndex,
         rowIndex
       };
     }
 
     return isDateAndTimeView ? focusedCellPosition : this._processEdgeCell({
-      nextCellIndex,
+      nextColumnIndex,
       rowIndex,
-      cellIndex,
-      firstCellIndex,
-      lastCellIndex,
+      columnIndex,
+      firstColumnIndex,
+      lastColumnIndex,
       firstRowIndex,
       lastRowIndex,
       step
@@ -108,41 +108,41 @@ export class CellsSelectionController {
 
   _processEdgeCell(options) {
     var {
-      nextCellIndex,
+      nextColumnIndex,
       rowIndex,
-      cellIndex,
-      firstCellIndex,
-      lastCellIndex,
+      columnIndex,
+      firstColumnIndex,
+      lastColumnIndex,
       firstRowIndex,
       lastRowIndex,
       step
     } = options;
-    var validCellIndex = nextCellIndex;
+    var validColumnIndex = nextColumnIndex;
     var validRowIndex = rowIndex;
-    var isLeftEdgeCell = nextCellIndex < firstCellIndex;
-    var isRightEdgeCell = nextCellIndex > lastCellIndex;
+    var isLeftEdgeCell = nextColumnIndex < firstColumnIndex;
+    var isRightEdgeCell = nextColumnIndex > lastColumnIndex;
 
     if (isLeftEdgeCell) {
-      var cellIndexInNextRow = lastCellIndex - (step - cellIndex % step - 1);
+      var columnIndexInNextRow = lastColumnIndex - (step - columnIndex % step - 1);
       var nextRowIndex = rowIndex - 1;
       var isValidRowIndex = nextRowIndex >= firstRowIndex;
       validRowIndex = isValidRowIndex ? nextRowIndex : rowIndex;
-      validCellIndex = isValidRowIndex ? cellIndexInNextRow : cellIndex;
+      validColumnIndex = isValidRowIndex ? columnIndexInNextRow : columnIndex;
     }
 
     if (isRightEdgeCell) {
-      var _cellIndexInNextRow = firstCellIndex + cellIndex % step;
+      var _columnIndexInNextRow = firstColumnIndex + columnIndex % step;
 
       var _nextRowIndex = rowIndex + 1;
 
       var _isValidRowIndex = _nextRowIndex <= lastRowIndex;
 
       validRowIndex = _isValidRowIndex ? _nextRowIndex : rowIndex;
-      validCellIndex = _isValidRowIndex ? _cellIndexInNextRow : cellIndex;
+      validColumnIndex = _isValidRowIndex ? _columnIndexInNextRow : columnIndex;
     }
 
     return {
-      cellIndex: validCellIndex,
+      columnIndex: validColumnIndex,
       rowIndex: validRowIndex
     };
   }

@@ -598,6 +598,8 @@ if (_devextremeQuill.default) {
           placeholder: localize(name),
           onValueChanged: function onValueChanged(e) {
             if (!_this11._isReset) {
+              _this11._hideAdaptiveMenu();
+
               _this11._applyFormat([name, e.value, USER_ACTION], e.event);
 
               _this11._setValueSilent(e.component, e.value);
@@ -605,6 +607,12 @@ if (_devextremeQuill.default) {
           }
         }
       }, item);
+    };
+
+    _proto._hideAdaptiveMenu = function _hideAdaptiveMenu() {
+      if (this.toolbarInstance.option('overflowMenuVisible')) {
+        this.toolbarInstance.option('overflowMenuVisible', false);
+      }
     };
 
     _proto._prepareColorClickHandler = function _prepareColorClickHandler(name) {

@@ -653,10 +653,3 @@ export class ResourceManager {
   }
 
 }
-var resourceManagers = {};
-export var createResourceManager = (key, resources) => {
-  var validKey = key || 0;
-  resourceManagers[validKey] = new ResourceManager(resources);
-};
-export var getResourceManager = key => resourceManagers[key];
-export var removeResourceManager = key => resourceManagers[key] = null;

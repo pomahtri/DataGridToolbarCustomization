@@ -10,8 +10,6 @@ var _devices = _interopRequireDefault(require("../core/devices"));
 
 var _extend = require("../core/utils/extend");
 
-var _utils = require("./widget/utils.ink_ripple");
-
 var _component_registrator = _interopRequireDefault(require("../core/component_registrator"));
 
 var _editor = _interopRequireDefault(require("./editor/editor"));
@@ -82,8 +80,7 @@ var Switch = _editor.default.inherit({
       activeStateEnabled: true,
       switchedOnText: _message.default.format('dxSwitch-switchedOnText'),
       switchedOffText: _message.default.format('dxSwitch-switchedOffText'),
-      value: false,
-      useInkRipple: false
+      value: false
     });
   },
   _defaultOptionsRules: function _defaultOptionsRules() {
@@ -101,7 +98,6 @@ var Switch = _editor.default.inherit({
   _initMarkup: function _initMarkup() {
     this._renderContainers();
 
-    this.option('useInkRipple') && this._renderInkRipple();
     this.$element().addClass(SWITCH_CLASS).append(this._$switchWrapper);
 
     this._renderSubmitElement();
@@ -168,41 +164,6 @@ var Switch = _editor.default.inherit({
   },
   _getSubmitElement: function _getSubmitElement() {
     return this._$submitElement;
-  },
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = (0, _utils.render)({
-      waveSizeCoefficient: 1.7,
-      isCentered: true,
-      useHoldAnimation: false,
-      wavesNumber: 2
-    });
-  },
-  _renderInkWave: function _renderInkWave(element, dxEvent, doRender, waveIndex) {
-    if (!this._inkRipple) {
-      return;
-    }
-
-    var config = {
-      element: element,
-      event: dxEvent,
-      wave: waveIndex
-    };
-
-    if (doRender) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
-    }
-  },
-  _updateFocusState: function _updateFocusState(e, value) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$handle, e, value, 0);
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$handle, e, value, 1);
   },
   _offsetDirection: function _offsetDirection() {
     return this.option('rtlEnabled') ? -1 : 1;
@@ -372,11 +333,6 @@ var Switch = _editor.default.inherit({
   },
   _optionChanged: function _optionChanged(args) {
     switch (args.name) {
-      case 'useInkRipple':
-        this._invalidate();
-
-        break;
-
       case 'width':
         delete this._marginBound;
 
@@ -399,10 +355,6 @@ var Switch = _editor.default.inherit({
       default:
         this.callBase(args);
     }
-  },
-  _clean: function _clean() {
-    delete this._inkRipple;
-    this.callBase();
   }
 });
 

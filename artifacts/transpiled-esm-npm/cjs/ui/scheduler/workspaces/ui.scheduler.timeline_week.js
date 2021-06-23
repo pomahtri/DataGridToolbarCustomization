@@ -8,6 +8,8 @@ var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.timeline"));
 
 var _position = require("../../../core/utils/position");
 
+var _week = require("./utils/week");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
@@ -47,6 +49,10 @@ var SchedulerTimelineWeek = /*#__PURE__*/function (_SchedulerTimeline) {
 
   _proto._incrementDate = function _incrementDate(date) {
     date.setDate(date.getDate() + 1);
+  };
+
+  _proto._getIntervalDuration = function _getIntervalDuration() {
+    return (0, _week.getIntervalDuration)(this.option('intervalCount'));
   };
 
   return SchedulerTimelineWeek;

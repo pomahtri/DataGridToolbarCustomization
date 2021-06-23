@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/date_box/ui.date_view.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -122,7 +122,8 @@ var DateView = _editor.default.inherit({
       that._rollers[that._rollerConfigs[name].type] = that._createComponent($roller, _ui.default, {
         items: that._rollerConfigs[name].displayItems,
         selectedIndex: that._rollerConfigs[name].selectedIndex,
-        showScrollbar: false,
+        showScrollbar: 'never',
+        scrollByContent: true,
         onStart: function onStart(e) {
           var roller = e.component;
 

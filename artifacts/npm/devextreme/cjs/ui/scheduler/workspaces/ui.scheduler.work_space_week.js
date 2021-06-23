@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.work_space_week.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -12,11 +12,9 @@ exports.default = void 0;
 
 var _component_registrator = _interopRequireDefault(require("../../../core/component_registrator"));
 
-var _date = _interopRequireDefault(require("../../../core/utils/date"));
-
-var _date2 = _interopRequireDefault(require("../../../localization/date"));
-
 var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.work_space_vertical"));
+
+var _week = require("./utils/week");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25,7 +23,6 @@ function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.crea
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var WEEK_CLASS = 'dx-scheduler-work-space-week';
-var toMs = _date.default.dateToMilliseconds;
 
 var SchedulerWorkSpaceWeek = /*#__PURE__*/function (_SchedulerWorkSpaceVe) {
   _inheritsLoose(SchedulerWorkSpaceWeek, _SchedulerWorkSpaceVe);
@@ -49,17 +46,17 @@ var SchedulerWorkSpaceWeek = /*#__PURE__*/function (_SchedulerWorkSpaceVe) {
   };
 
   _proto._getDateByIndex = function _getDateByIndex(headerIndex) {
-    var resultDate = new Date(this._firstViewDate);
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex);
+    var resultDate = new Date(this._startViewDate);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex);
     return resultDate;
   };
 
-  _proto._getStartViewDate = function _getStartViewDate() {
-    return _date.default.getFirstWeekDate(this.option('startDate'), this._firstDayOfWeek() || _date2.default.firstDayOfWeekIndex());
+  _proto._calculateViewStartDate = function _calculateViewStartDate() {
+    return (0, _week.calculateViewStartDate)(this.option('startDate'), this._firstDayOfWeek());
   };
 
   _proto._getIntervalDuration = function _getIntervalDuration() {
-    return toMs('day') * 7 * this.option('intervalCount');
+    return (0, _week.getIntervalDuration)(this.option('intervalCount'));
   };
 
   _proto.getPositionShift = function getPositionShift(timeShift, isAllDay) {

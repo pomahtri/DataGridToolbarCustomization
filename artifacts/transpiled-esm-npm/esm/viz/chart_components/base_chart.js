@@ -400,6 +400,14 @@ export var BaseChart = BaseWidget.inherit({
         this.above.linkAppend();
       }
     };
+    that._labelsAxesGroup = renderer.g().attr({
+      'class': 'dxc-elements-axes-group'
+    });
+
+    var appendLabelsAxesGroup = () => {
+      that._labelsAxesGroup.linkOn(root, 'elements');
+    };
+
     that._backgroundRect = renderer.rect().attr({
       fill: 'gray',
       opacity: 0.0001
@@ -423,6 +431,8 @@ export var BaseChart = BaseWidget.inherit({
       'class': 'dxc-axes-group'
     }).linkOn(root, 'axes'); // TODO: Must be created in the same place where used (advanced chart)
 
+    that._executeAppendBeforeSeries(appendLabelsAxesGroup);
+
     that._stripLabelAxesGroup = renderer.g().attr({
       'class': 'dxc-strips-labels-group'
     }).linkOn(root, 'strips-labels'); // TODO: Must be created in the same place where used (advanced chart)
@@ -431,9 +441,9 @@ export var BaseChart = BaseWidget.inherit({
     that._seriesGroup = renderer.g().attr({
       'class': 'dxc-series-group'
     }).linkOn(root, 'series');
-    that._labelsAxesGroup = renderer.g().attr({
-      'class': 'dxc-elements-axes-group'
-    }).linkOn(root, 'elements');
+
+    that._executeAppendAfterSeries(appendLabelsAxesGroup);
+
     that._constantLinesGroup.above = createConstantLinesGroup();
     that._scaleBreaksGroup = renderer.g().attr({
       'class': 'dxc-scale-breaks'
@@ -452,6 +462,11 @@ export var BaseChart = BaseWidget.inherit({
       'class': 'dxc-scroll-bar'
     }).linkOn(root, 'scroll-bar');
   },
+
+  _executeAppendBeforeSeries() {},
+
+  _executeAppendAfterSeries() {},
+
   _disposeObjectsInArray: function _disposeObjectsInArray(propName, fieldNames) {
     _each(this[propName] || [], function (_, item) {
       if (fieldNames && item) {
@@ -491,7 +506,6 @@ export var BaseChart = BaseWidget.inherit({
     unlinkGroup('_stripsGroup');
     unlinkGroup('_gridGroup');
     unlinkGroup('_axesGroup');
-    unlinkGroup('_labelsAxesGroup');
     unlinkGroup('_constantLinesGroup');
     unlinkGroup('_stripLabelAxesGroup');
     unlinkGroup('_panesBorderGroup');
@@ -507,7 +521,6 @@ export var BaseChart = BaseWidget.inherit({
     disposeObject('_stripsGroup');
     disposeObject('_gridGroup');
     disposeObject('_axesGroup');
-    disposeObject('_labelsAxesGroup');
     disposeObject('_constantLinesGroup');
     disposeObject('_stripLabelAxesGroup');
     disposeObject('_panesBorderGroup');
@@ -1340,6 +1353,8 @@ export var BaseChart = BaseWidget.inherit({
   },
 
   _populateSeries(data) {
+    var _that$series2;
+
     var that = this;
     var seriesBasis = [];
     var incidentOccurred = that._incidentOccurred;
@@ -1366,7 +1381,7 @@ export var BaseChart = BaseWidget.inherit({
       }
     });
 
-    that._tracker.clearHover();
+    ((_that$series2 = that.series) === null || _that$series2 === void 0 ? void 0 : _that$series2.length) !== 0 && that._tracker.clearHover();
 
     _reverseEach(that.series, (index, series) => {
       if (!seriesBasis.some(s => series === s.series)) {

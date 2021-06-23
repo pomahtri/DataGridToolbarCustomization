@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/toolbar.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -54,7 +54,8 @@ var Toolbar = _uiToolbar.default.inherit({
       * @hidden
       */
       submenuType: 'dropDownMenu',
-      menuContainer: undefined
+      menuContainer: undefined,
+      overflowMenuVisible: false
       /**
       * @name dxToolbarOptions.selectedIndex
       * @type number
@@ -114,8 +115,6 @@ var Toolbar = _uiToolbar.default.inherit({
     if (dimension === 'height') {
       return;
     }
-
-    this._menuStrategy.toggleMenuVisibility(false, true);
 
     this.callBase();
 
@@ -290,19 +289,12 @@ var Toolbar = _uiToolbar.default.inherit({
     return itemData.location === undefined || itemData.locateInMenu === 'never';
   },
   _optionChanged: function _optionChanged(args) {
-    var name = args.name;
-    var value = args.value;
+    var name = args.name,
+        value = args.value;
 
     switch (name) {
       case 'submenuType':
         this._invalidate();
-
-        break;
-
-      case 'visible':
-        this.callBase.apply(this, arguments);
-
-        this._menuStrategy.handleToolbarVisibilityChange(value);
 
         break;
 
@@ -319,6 +311,11 @@ var Toolbar = _uiToolbar.default.inherit({
 
       case 'menuContainer':
         this._changeMenuOption('container', value);
+
+        break;
+
+      case 'overflowMenuVisible':
+        this._changeMenuOption(this._menuStrategy.NAME === 'dropDownMenu' ? 'opened' : 'visible', value);
 
         break;
 

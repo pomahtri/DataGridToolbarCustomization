@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/shared/ui.editor_factory_mixin.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -163,10 +163,9 @@ var EditorFactoryMixin = function () {
       var stopWatch = options.row.watch(() => {
         dataSource = options.lookup.dataSource(options.row);
         return dataSource && dataSource.filter;
-      }, () => {
-        selectBox.option('dataSource', dataSource);
-      }, row => {
+      }, (newValue, row) => {
         options.row = row;
+        selectBox.option('dataSource', dataSource);
       });
     }
   }

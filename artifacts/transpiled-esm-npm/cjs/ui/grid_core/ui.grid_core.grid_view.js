@@ -96,6 +96,8 @@ var ResizingController = _uiGrid_core.default.ViewController.inherit({
         } else if (changeType === 'update' && e.changeTypes) {
           if ((items.length > 1 || e.changeTypes[0] !== 'insert') && !(items.length === 0 && e.changeTypes[0] === 'remove') && !e.needUpdateDimensions) {
             (0, _common.deferUpdate)(function () {
+              that._setScrollerSpacing(that._hasHeight);
+
               that._rowsView.resize();
             });
           } else {

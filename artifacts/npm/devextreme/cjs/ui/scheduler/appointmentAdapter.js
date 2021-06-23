@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/appointmentAdapter.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -17,6 +17,8 @@ var _ui = _interopRequireDefault(require("../widget/ui.errors"));
 var _object = require("../../core/utils/object");
 
 var _recurrence = require("./recurrence");
+
+var _instanceFactory = require("./instanceFactory");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -184,7 +186,7 @@ var AppointmentAdapter = /*#__PURE__*/function () {
   }, {
     key: "timeZoneCalculator",
     get: function get() {
-      return this.options.getTimeZoneCalculator();
+      return (0, _instanceFactory.getTimeZoneCalculator)(this.options.key);
     }
   }, {
     key: "isRecurrent",

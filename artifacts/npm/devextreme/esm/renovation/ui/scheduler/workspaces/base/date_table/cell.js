@@ -1,30 +1,47 @@
 /**
 * DevExtreme (esm/renovation/ui/scheduler/workspaces/base/date_table/cell.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 import _objectWithoutPropertiesLoose from "@babel/runtime/helpers/esm/objectWithoutPropertiesLoose";
 import _extends from "@babel/runtime/helpers/esm/extends";
-var _excluded = ["allDay", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "otherMonth", "startDate", "text", "today"];
+var _excluded = ["allDay", "ariaLabel", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isFocused", "isLastGroupCell", "isSelected", "otherMonth", "startDate", "text", "today"];
 import { createComponentVNode, normalizeProps } from "inferno";
 import { BaseInfernoComponent } from "@devextreme/vdom";
 import { CellBase as Cell, CellBaseProps } from "../cell";
 import { combineClasses } from "../../../../../utils/combine_classes";
-export var viewFunction = viewModel => createComponentVNode(2, Cell, {
-  "isFirstGroupCell": viewModel.props.isFirstGroupCell,
-  "isLastGroupCell": viewModel.props.isLastGroupCell,
-  "contentTemplate": viewModel.props.dataCellTemplate,
-  "contentTemplateProps": viewModel.dataCellTemplateProps,
-  "className": viewModel.classes,
-  children: viewModel.props.children
-});
+var ADD_APPOINTMENT_LABEL = "Add appointment";
+export var viewFunction = _ref => {
+  var {
+    ariaLabel,
+    classes,
+    dataCellTemplateProps,
+    props: {
+      children,
+      dataCellTemplate,
+      isFirstGroupCell,
+      isLastGroupCell
+    }
+  } = _ref;
+  return createComponentVNode(2, Cell, {
+    "isFirstGroupCell": isFirstGroupCell,
+    "isLastGroupCell": isLastGroupCell,
+    "contentTemplate": dataCellTemplate,
+    "contentTemplateProps": dataCellTemplateProps,
+    "className": classes,
+    "ariaLabel": ariaLabel,
+    children: children
+  });
+};
 export var DateTableCellBaseProps = _extends({}, CellBaseProps, {
   otherMonth: false,
   today: false,
-  firstDayOfMonth: false
+  firstDayOfMonth: false,
+  isSelected: false,
+  isFocused: false
 });
 
 var getTemplate = TemplateProp => TemplateProp && (TemplateProp.defaultProps ? props => normalizeProps(createComponentVNode(2, TemplateProp, _extends({}, props))) : TemplateProp);
@@ -38,12 +55,16 @@ export class DateTableCellBase extends BaseInfernoComponent {
   get classes() {
     var {
       allDay,
-      className
+      className,
+      isFocused,
+      isSelected
     } = this.props;
     return combineClasses({
       "dx-scheduler-cell-sizes-horizontal": true,
       "dx-scheduler-cell-sizes-vertical": !allDay,
       "dx-scheduler-date-table-cell": !allDay,
+      "dx-state-focused": isSelected,
+      "dx-scheduler-focused-cell": isFocused,
       [className]: true
     });
   }
@@ -71,6 +92,10 @@ export class DateTableCellBase extends BaseInfernoComponent {
     };
   }
 
+  get ariaLabel() {
+    return this.props.isSelected ? ADD_APPOINTMENT_LABEL : undefined;
+  }
+
   get restAttributes() {
     var _this$props = this.props,
         restProps = _objectWithoutPropertiesLoose(_this$props, _excluded);
@@ -87,6 +112,7 @@ export class DateTableCellBase extends BaseInfernoComponent {
       }),
       classes: this.classes,
       dataCellTemplateProps: this.dataCellTemplateProps,
+      ariaLabel: this.ariaLabel,
       restAttributes: this.restAttributes
     });
   }

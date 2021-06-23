@@ -15,22 +15,20 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var ViewDataProvider = /*#__PURE__*/function () {
-  function ViewDataProvider(workspace) {
+  function ViewDataProvider() {
     this._viewDataGenerator = null;
-    this._viewData = [];
-    this._completeViewDataMap = [];
-    this._completeDateHeaderMap = [];
-    this._viewDataMap = [];
+    this.viewData = [];
+    this.completeViewDataMap = [];
+    this.completeDateHeaderMap = [];
+    this.viewDataMap = [];
     this._groupedDataMapProvider = null;
-    this._workspace = workspace;
   }
 
   var _proto = ViewDataProvider.prototype;
 
-  _proto.update = function update(isGenerateNewViewData) {
+  _proto.update = function update(renderOptions, isGenerateNewViewData) {
     var viewDataGenerator = this.viewDataGenerator;
-
-    var renderOptions = this._workspace.generateRenderOptions();
+    this._options = renderOptions;
 
     if (isGenerateNewViewData) {
       this.completeViewDataMap = viewDataGenerator._getCompleteViewDataMap(renderOptions);
@@ -39,7 +37,7 @@ var ViewDataProvider = /*#__PURE__*/function () {
     }
 
     this.viewDataMap = viewDataGenerator._generateViewDataMap(this.completeViewDataMap, renderOptions);
-    this.viewData = viewDataGenerator._getViewDataFromMap(this.viewDataMap, renderOptions);
+    this.updateViewData(renderOptions);
     this._groupedDataMapProvider = new _grouped_data_map_provider.GroupedDataMapProvider(this.viewDataGenerator, this.viewDataMap, this.completeViewDataMap, {
       isVerticalGrouping: renderOptions.isVerticalGrouping,
       isDateAndTimeView: renderOptions.isDateAndTimeView
@@ -48,10 +46,9 @@ var ViewDataProvider = /*#__PURE__*/function () {
     this.timePanelData = viewDataGenerator._generateTimePanelData(this.completeTimePanelMap, renderOptions);
   };
 
-  _proto.getStartDate = function getStartDate() {
-    var groupedData = this.viewData.groupedData;
-    var dateTable = groupedData[0].dateTable;
-    return dateTable[0][0].startDate;
+  _proto.updateViewData = function updateViewData(renderOptions) {
+    this.viewDataMapWithSelection = this.viewDataGenerator.markSelectedAndFocusedCells(this.viewDataMap, renderOptions);
+    this.viewData = this.viewDataGenerator._getViewDataFromMap(this.viewDataMapWithSelection, renderOptions);
   };
 
   _proto.getGroupStartDate = function getGroupStartDate(groupIndex) {
@@ -94,24 +91,21 @@ var ViewDataProvider = /*#__PURE__*/function () {
     return this._groupedDataMapProvider.getRowCountInGroup(groupIndex);
   };
 
-  _proto.getCellData = function getCellData(rowIndex, cellIndex, isAllDay) {
-    if (isAllDay && !this.isVerticalGroupedWorkspace) {
-      return this._viewData.groupedData[0].allDayPanel[cellIndex];
+  _proto.getCellData = function getCellData(rowIndex, columnIndex, isAllDay) {
+    if (isAllDay && !this._options.isVerticalGrouping) {
+      return this.viewDataMap.allDayPanelMap[columnIndex].cellData;
     }
 
     var dateTableMap = this.viewDataMap.dateTableMap;
-    var cellData = dateTableMap[rowIndex][cellIndex].cellData;
+    var cellData = dateTableMap[rowIndex][columnIndex].cellData;
     return cellData;
   };
 
   _proto.getCellsByGroupIndexAndAllDay = function getCellsByGroupIndexAndAllDay(groupIndex, allDay) {
-    var workspace = this._workspace;
-
-    var rowsPerGroup = workspace._getRowCountWithAllDayRows();
-
-    var isShowAllDayPanel = workspace.isAllDayPanelVisible;
-    var firstRowInGroup = this.isVerticalGroupedWorkspace ? groupIndex * rowsPerGroup : 0;
-    var lastRowInGroup = this.isVerticalGroupedWorkspace ? (groupIndex + 1) * rowsPerGroup - 1 : rowsPerGroup;
+    var rowsPerGroup = this._options.rowCountWithAllDayRow;
+    var isShowAllDayPanel = this._options.isAllDayPanelVisible;
+    var firstRowInGroup = this._options.isVerticalGrouping ? groupIndex * rowsPerGroup : 0;
+    var lastRowInGroup = this._options.isVerticalGrouping ? (groupIndex + 1) * rowsPerGroup - 1 : rowsPerGroup;
     var correctedFirstRow = isShowAllDayPanel && !allDay ? firstRowInGroup + 1 : firstRowInGroup;
     var correctedLastRow = allDay ? correctedFirstRow : lastRowInGroup;
     return this.completeViewDataMap.slice(correctedFirstRow, correctedLastRow + 1).map(function (row) {
@@ -125,7 +119,7 @@ var ViewDataProvider = /*#__PURE__*/function () {
   _proto.getGroupData = function getGroupData(groupIndex) {
     var groupedData = this.viewData.groupedData;
 
-    if (this.isVerticalGroupedWorkspace) {
+    if (this._options.isVerticalGrouping) {
       return groupedData.filter(function (item) {
         return item.groupIndex === groupIndex;
       })[0];
@@ -174,9 +168,8 @@ var ViewDataProvider = /*#__PURE__*/function () {
   _proto.findGlobalCellPosition = function findGlobalCellPosition(date) {
     var groupIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var allDay = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var completeViewDataMap = this.completeViewDataMap,
-        workspace = this._workspace;
-    var showAllDayPanel = workspace.isAllDayPanelVisible;
+    var completeViewDataMap = this.completeViewDataMap;
+    var showAllDayPanel = this._options.isAllDayPanelVisible;
 
     for (var rowIndex = 0; rowIndex < completeViewDataMap.length; rowIndex += 1) {
       var currentRow = completeViewDataMap[rowIndex];
@@ -192,7 +185,7 @@ var ViewDataProvider = /*#__PURE__*/function () {
           return {
             position: {
               columnIndex: columnIndex,
-              rowIndex: showAllDayPanel && !this.isVerticalGroupedWorkspace ? rowIndex - 1 : rowIndex
+              rowIndex: showAllDayPanel && !this._options.isVerticalGrouping ? rowIndex - 1 : rowIndex
             },
             cellData: cellData
           };
@@ -242,16 +235,16 @@ var ViewDataProvider = /*#__PURE__*/function () {
   _proto.getViewEdgeIndices = function getViewEdgeIndices(isAllDayPanel) {
     if (isAllDayPanel) {
       return {
-        firstCellIndex: 0,
-        lastCellIndex: this.viewDataMap.allDayPanelMap.length - 1,
+        firstColumnIndex: 0,
+        lastColumnIndex: this.viewDataMap.allDayPanelMap.length - 1,
         firstRowIndex: 0,
         lastRowIndex: 0
       };
     }
 
     return {
-      firstCellIndex: 0,
-      lastCellIndex: this.viewDataMap.dateTableMap[0].length - 1,
+      firstColumnIndex: 0,
+      lastColumnIndex: this.viewDataMap.dateTableMap[0].length - 1,
       firstRowIndex: 0,
       lastRowIndex: this.viewDataMap.dateTableMap.length - 1
     };
@@ -261,21 +254,21 @@ var ViewDataProvider = /*#__PURE__*/function () {
     var groupedDataMap = this.groupedDataMap.dateTableGroupedMap[groupIndex];
     var cellsCount = groupedDataMap[0].length;
     var rowsCount = groupedDataMap.length;
-    var firstCellIndex = groupedDataMap[0][0].position.cellIndex;
-    var lastCellIndex = groupedDataMap[0][cellsCount - 1].position.cellIndex;
+    var firstColumnIndex = groupedDataMap[0][0].position.columnIndex;
+    var lastColumnIndex = groupedDataMap[0][cellsCount - 1].position.columnIndex;
 
     if (isAllDay) {
       return {
-        firstCellIndex: firstCellIndex,
-        lastCellIndex: lastCellIndex,
+        firstColumnIndex: firstColumnIndex,
+        lastColumnIndex: lastColumnIndex,
         firstRowIndex: 0,
         lastRowIndex: 0
       };
     }
 
     return {
-      firstCellIndex: firstCellIndex,
-      lastCellIndex: lastCellIndex,
+      firstColumnIndex: firstColumnIndex,
+      lastColumnIndex: lastColumnIndex,
       firstRowIndex: groupedDataMap[0][0].position.rowIndex,
       lastRowIndex: groupedDataMap[rowsCount - 1][0].position.rowIndex
     };
@@ -303,70 +296,9 @@ var ViewDataProvider = /*#__PURE__*/function () {
       return this._viewDataGenerator;
     }
   }, {
-    key: "completeViewDataMap",
-    get: function get() {
-      return this._completeViewDataMap;
-    },
-    set: function set(value) {
-      this._completeViewDataMap = value;
-    }
-  }, {
-    key: "completeDateHeaderMap",
-    get: function get() {
-      return this._completeDateHeaderMap;
-    },
-    set: function set(value) {
-      this._completeDateHeaderMap = value;
-    }
-  }, {
-    key: "completeTimePanelMap",
-    get: function get() {
-      return this._completeTimePanelMap;
-    },
-    set: function set(value) {
-      this._completeTimePanelMap = value;
-    }
-  }, {
-    key: "viewData",
-    get: function get() {
-      return this._viewData;
-    },
-    set: function set(value) {
-      this._viewData = value;
-    }
-  }, {
-    key: "viewDataMap",
-    get: function get() {
-      return this._viewDataMap;
-    },
-    set: function set(value) {
-      this._viewDataMap = value;
-    }
-  }, {
-    key: "dateHeaderData",
-    get: function get() {
-      return this._dateHeaderData;
-    },
-    set: function set(value) {
-      this._dateHeaderData = value;
-    }
-  }, {
-    key: "timePanelData",
-    get: function get() {
-      return this._timePanelData;
-    },
-    set: function set(value) {
-      this._timePanelData = value;
-    }
-  }, {
     key: "groupedDataMap",
     get: function get() {
       return this._groupedDataMapProvider.groupedDataMap;
-    }
-  }, {
-    key: "isVerticalGroupedWorkspace",
-    get: function get() {
-      return this._workspace._isVerticalGroupedWorkSpace();
     }
   }]);
 

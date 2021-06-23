@@ -181,7 +181,8 @@ var TextSvgElement = /*#__PURE__*/function (_InfernoComponent) {
       var textWidth = (0, _utils.getTextWidth)(item);
 
       if (maxTextWidth !== 0 && maxTextWidth !== textWidth) {
-        (0, _utils.setTextNodeAttribute)(item, "dx", direction * (Math.round((maxTextWidth - textWidth) / 2 * 10) / 10));
+        var value = direction * (Math.round((maxTextWidth - textWidth) / 2 * 10) / 10);
+        (0, _utils.setTextNodeAttribute)(item, "dx", String(value));
       }
     }
   };
@@ -193,16 +194,16 @@ var TextSvgElement = /*#__PURE__*/function (_InfernoComponent) {
         y = _this$props.y;
     var lineHeight = (0, _utils.getLineHeight)(styles !== null && styles !== void 0 ? styles : {});
     var item = items[0];
-    (0, _utils.setTextNodeAttribute)(item, "x", x);
-    (0, _utils.setTextNodeAttribute)(item, "y", y);
+    (0, _utils.setTextNodeAttribute)(item, "x", String(x));
+    (0, _utils.setTextNodeAttribute)(item, "y", String(y));
 
     for (var i = 1, ii = items.length; i < ii; ++i) {
       item = items[i];
 
       if ((0, _type.isDefined)(item.height) && item.height >= 0) {
-        (0, _utils.setTextNodeAttribute)(item, "x", x);
+        (0, _utils.setTextNodeAttribute)(item, "x", String(x));
         var height = (0, _utils.getItemLineHeight)(item, lineHeight);
-        (0, _utils.setTextNodeAttribute)(item, "dy", height);
+        (0, _utils.setTextNodeAttribute)(item, "dy", String(height));
       }
     }
   };
@@ -216,10 +217,13 @@ var TextSvgElement = /*#__PURE__*/function (_InfernoComponent) {
 
     for (var i = 0, ii = items.length; i < ii; ++i) {
       var tspan = items[i].stroke;
-      tspan.setAttribute(KEY_STROKE, stroke);
-      tspan.setAttribute("stroke-width", strokeWidth.toString());
-      tspan.setAttribute("stroke-opacity", strokeOpacity.toString());
-      tspan.setAttribute("stroke-linejoin", "round");
+
+      if (tspan) {
+        tspan.setAttribute(KEY_STROKE, String(stroke));
+        tspan.setAttribute("stroke-width", String(strokeWidth));
+        tspan.setAttribute("stroke-opacity", String(strokeOpacity));
+        tspan.setAttribute("stroke-linejoin", "round");
+      }
     }
   };
 

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/core/options/option_manager.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -50,7 +50,7 @@ var OptionManager = /*#__PURE__*/function () {
     var previousValue = this.get(this._options, name, false);
 
     if (!(0, _comparator.equals)(previousValue, value)) {
-      var path = name.split(/[.[]/);
+      var path = (0, _data.getPathParts)(name);
       !silent && this._changingCallback(name, previousValue, value);
       cachedSetters[name] = cachedSetters[name] || (0, _data.compileSetter)(name);
       cachedSetters[name](this._options, value, {

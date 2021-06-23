@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/text_box.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -105,8 +105,10 @@ export interface dxTextBoxOptions<TComponent> extends dxTextEditorOptions<TCompo
  */
 export default class dxTextBox<TProperties = Properties> extends dxTextEditor<TProperties> { }
 
+interface TextBoxInstance extends dxTextBox<Properties> { }
+
 /** @public */
-export type Properties = dxTextBoxOptions<dxTextBox<Properties>>;
+export type Properties = dxTextBoxOptions<TextBoxInstance>;
 
 /** @deprecated use Properties instead */
 export type Options = Properties;

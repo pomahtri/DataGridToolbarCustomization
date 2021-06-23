@@ -100,19 +100,13 @@ var _uiScheduler9 = _interopRequireDefault(require("./workspaces/ui.scheduler.wo
 
 var _appointmentAdapter = _interopRequireDefault(require("./appointmentAdapter"));
 
-var _timeZoneCalculator = require("./timeZoneCalculator");
-
 var _dataStructures = require("./dataStructures");
 
 var _appointmentSettingsGenerator = require("./appointmentSettingsGenerator");
 
-var _utils2 = _interopRequireDefault(require("./utils"));
+var _utils2 = require("./utils");
 
 var _instanceFactory = require("./instanceFactory");
-
-var _resourceManager = require("./resources/resourceManager");
-
-var _appointmentDataProvider = require("./appointments/DataProvider/appointmentDataProvider");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -476,7 +470,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     var whenLoaded = this.postponedOperations.add('loadResources', function () {
       var groups = _this._getCurrentViewOption('groups');
 
-      return (0, _resourceManager.getResourceManager)(_this.key).loadResources(groups);
+      return (0, _instanceFactory.getResourceManager)(_this.key).loadResources(groups);
     });
     var resolveCallbacks = new _deferred.Deferred();
     whenLoaded.done(function (resources) {
@@ -529,7 +523,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       case 'dataSource':
         this._initDataSource();
 
-        (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).setDataSource(this._dataSource);
+        (0, _instanceFactory.getAppointmentDataProvider)(this.key).setDataSource(this._dataSource);
 
         this._postponeResourceLoading().done(function (resources) {
           _this2._filterAppointmentsByDate();
@@ -616,8 +610,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
         break;
 
       case 'resources':
-        (0, _resourceManager.getResourceManager)(this.key).setResources(this.option('resources'));
-        (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).updateDataAccessors(this._dataAccessors);
+        this.updateFactoryInstances();
 
         this._postponeResourceLoading().done(function (resources) {
           _this2._appointments.option('items', []);
@@ -632,6 +625,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       case 'startDayHour':
       case 'endDayHour':
         this.fire('validateDayHours');
+        this.updateFactoryInstances();
 
         this._appointments.option('items', []);
 
@@ -764,6 +758,8 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
         }
 
       case 'showAllDayPanel':
+        this.updateFactoryInstances();
+
         this._postponeResourceLoading().done(function (resources) {
           _this2._filterAppointmentsByDate();
 
@@ -790,6 +786,10 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       case 'recurrenceEditMode':
       case 'remoteFiltering':
       case 'timeZone':
+        this.updateFactoryInstances();
+        this.repaint();
+        break;
+
       case 'appointmentCollectorTemplate':
       case '_appointmentTooltipOffset':
       case '_appointmentTooltipButtonsPosition':
@@ -819,7 +819,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       case 'disabledExpr':
         this._updateExpression(name, value);
 
-        (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).updateDataAccessors(this._dataAccessors);
+        (0, _instanceFactory.getAppointmentDataProvider)(this.key).updateDataAccessors(_utils2.utils.dataAccessors.combine(this.key, this._dataAccessors));
 
         this._initAppointmentTemplate();
 
@@ -930,7 +930,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._isAllDayExpanded = function _isAllDayExpanded(items) {
-    return this.option('showAllDayPanel') && (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).hasAllDayAppointments(items);
+    return this.option('showAllDayPanel') && (0, _instanceFactory.getAppointmentDataProvider)(this.key).hasAllDayAppointments(items);
   };
 
   _proto._getTimezoneOffsetByOption = function _getTimezoneOffsetByOption(date) {
@@ -940,13 +940,14 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   _proto._filterAppointmentsByDate = function _filterAppointmentsByDate() {
     var dateRange = this._workSpace.getDateRange();
 
-    var startDate = this.timeZoneCalculator.createDate(dateRange[0], {
+    var timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key);
+    var startDate = timeZoneCalculator.createDate(dateRange[0], {
       path: 'fromGrid'
     });
-    var endDate = this.timeZoneCalculator.createDate(dateRange[1], {
+    var endDate = timeZoneCalculator.createDate(dateRange[1], {
       path: 'fromGrid'
     });
-    (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).filterByDate(startDate, endDate, this.option('remoteFiltering'), this.option('dateSerializationFormat'));
+    (0, _instanceFactory.getAppointmentDataProvider)(this.key).filterByDate(startDate, endDate, this.option('remoteFiltering'), this.option('dateSerializationFormat'));
   };
 
   _proto._reloadDataSource = function _reloadDataSource() {
@@ -995,7 +996,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._dimensionChanged = function _dimensionChanged() {
-    var _getAppointmentDataPr = (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key),
+    var _getAppointmentDataPr = (0, _instanceFactory.getAppointmentDataProvider)(this.key),
         filteredItems = _getAppointmentDataPr.filteredItems;
 
     this._toggleSmallClass();
@@ -1045,8 +1046,6 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._init = function _init() {
-    var _this3 = this;
-
     this._initExpressions({
       startDate: this.option('startDateExpr'),
       endDate: this.option('endDateExpr'),
@@ -1068,12 +1067,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
 
     this._initEditing();
 
-    this.key = (0, _instanceFactory.createFactoryInstances)({
-      scheduler: this,
-      resources: this.option('resources'),
-      dataSource: this._dataSource,
-      appointmentDataAccessors: this._dataAccessors
-    });
+    this.updateFactoryInstances();
 
     this._initActions();
 
@@ -1081,16 +1075,24 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     this._asyncTemplatesTimers = [];
     this._dataSourceLoadedCallback = (0, _callbacks.default)();
     this._subscribes = _subscribes.default;
-    this.timeZoneCalculator = new _timeZoneCalculator.TimeZoneCalculator({
-      getClientOffset: function getClientOffset(date) {
-        return _utils.default.getClientTimezoneOffset(date);
-      },
-      getCommonOffset: function getCommonOffset(date, timeZone) {
-        return _utils.default.calculateTimezoneByValue(timeZone || _this3.option('timeZone'), date);
-      },
-      getAppointmentOffset: function getAppointmentOffset(date, appointmentTimezone) {
-        return _utils.default.calculateTimezoneByValue(appointmentTimezone, date);
-      }
+  };
+
+  _proto.updateFactoryInstances = function updateFactoryInstances() {
+    this.key = (0, _instanceFactory.createFactoryInstances)({
+      key: this.key,
+      scheduler: this,
+      getIsVirtualScrolling: this.isVirtualScrolling.bind(this),
+      resources: this.option('resources'),
+      dataSource: this._dataSource,
+      startDayHour: this._getCurrentViewOption('startDayHour'),
+      endDayHour: this._getCurrentViewOption('endDayHour'),
+      appointmentDuration: this._getCurrentViewOption('cellDuration'),
+      firstDayOfWeek: this.getFirstDayOfWeek(),
+      showAllDayPanel: this.option('showAllDayPanel'),
+      timeZone: this.option('timeZone'),
+      getDataAccessors: function (key) {
+        return _utils2.utils.dataAccessors.combine(key, this._dataAccessors);
+      }.bind(this)
     });
   };
 
@@ -1106,7 +1108,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._initAppointmentTemplate = function _initAppointmentTemplate() {
-    var _this4 = this;
+    var _this3 = this;
 
     var expr = this._dataAccessors.expr;
 
@@ -1127,7 +1129,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     };
 
     this._templateManager.addDefaultTemplates(_defineProperty({}, 'item', new _bindable_template.BindableTemplate(function ($container, data, model) {
-      return _this4.getAppointmentsInstance()._renderAppointmentTemplate($container, data, model);
+      return _this3.getAppointmentsInstance()._renderAppointmentTemplate($container, data, model);
     }, ['html', 'text', 'startDate', 'endDate', 'allDay', 'description', 'recurrenceRule', 'recurrenceException', 'startDateTimeZone', 'endDateTimeZone'], this.option('integrationOptions.watchMethod'), {
       'text': createGetter(expr.textExpr),
       'startDate': getDate(createGetter(expr.startDateExpr)),
@@ -1148,7 +1150,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       this._workSpaceRecalculation.done(function () {
         this._renderAppointments();
 
-        var _getAppointmentDataPr2 = (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key),
+        var _getAppointmentDataPr2 = (0, _instanceFactory.getAppointmentDataProvider)(this.key),
             filteredItems = _getAppointmentDataPr2.filteredItems;
 
         this.getWorkSpace().onDataSourceChanged(filteredItems);
@@ -1172,7 +1174,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._filterAppointments = function _filterAppointments() {
-    (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).filter();
+    (0, _instanceFactory.getAppointmentDataProvider)(this.key).filter();
   };
 
   _proto._renderAppointments = function _renderAppointments() {
@@ -1180,7 +1182,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
 
     this._filterAppointments();
 
-    var _getAppointmentDataPr3 = (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key),
+    var _getAppointmentDataPr3 = (0, _instanceFactory.getAppointmentDataProvider)(this.key),
         filteredItems = _getAppointmentDataPr3.filteredItems;
 
     workspace.preRenderAppointments({
@@ -1191,14 +1193,14 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     if (filteredItems.length && this._isVisible()) {
       this._appointments.option('items', this._getAppointmentsToRepaint());
 
-      (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).cleanState();
+      (0, _instanceFactory.getAppointmentDataProvider)(this.key).cleanState();
     } else {
       this._appointments.option('items', []);
     }
   };
 
   _proto._getAppointmentsToRepaint = function _getAppointmentsToRepaint() {
-    var _getAppointmentDataPr4 = (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key),
+    var _getAppointmentDataPr4 = (0, _instanceFactory.getAppointmentDataProvider)(this.key),
         filteredItems = _getAppointmentDataPr4.filteredItems;
 
     var appointments = this._layoutManager.createAppointmentsMap(filteredItems);
@@ -1317,9 +1319,10 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     this._asyncTemplatesTimers.forEach(clearTimeout);
 
     this._asyncTemplatesTimers = [];
-    (0, _instanceFactory.disposeFactoryInstances)(this.key);
 
     _Widget.prototype._dispose.call(this);
+
+    (0, _instanceFactory.disposeFactoryInstances)(this.key);
   };
 
   _proto._initActions = function _initActions() {
@@ -1345,7 +1348,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._initMarkup = function _initMarkup() {
-    var _this5 = this;
+    var _this4 = this;
 
     _Widget.prototype._initMarkup.call(this);
 
@@ -1366,7 +1369,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     this._appointmentPopup = new _appointmentPopup.default(this);
 
     if (this._isLoaded() || this._isDataSourceLoading()) {
-      this._initMarkupCore((0, _resourceManager.getResourceManager)(this.key).loadedResources);
+      this._initMarkupCore((0, _instanceFactory.getResourceManager)(this.key).loadedResources);
 
       this._dataSourceChangedHandler(this._dataSource.items());
 
@@ -1374,16 +1377,16 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     } else {
       var groups = this._getCurrentViewOption('groups');
 
-      (0, _resourceManager.getResourceManager)(this.key).loadResources(groups).done(function (resources) {
-        _this5._initMarkupCore(resources);
+      (0, _instanceFactory.getResourceManager)(this.key).loadResources(groups).done(function (resources) {
+        _this4._initMarkupCore(resources);
 
-        _this5._reloadDataSource();
+        _this4._reloadDataSource();
       });
     }
   };
 
   _proto._getAppointmentTooltipOptions = function _getAppointmentTooltipOptions() {
-    var _this6 = this;
+    var _this5 = this;
 
     var that = this;
     return {
@@ -1396,21 +1399,21 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       checkAndDeleteAppointment: that.checkAndDeleteAppointment.bind(that),
       isAppointmentInAllDayPanel: that.isAppointmentInAllDayPanel.bind(that),
       createFormattedDateText: function createFormattedDateText(appointment, targetedAppointment, format) {
-        return _this6.fire('getTextAndFormatDate', appointment, targetedAppointment, format);
+        return _this5.fire('getTextAndFormatDate', appointment, targetedAppointment, format);
       },
       getAppointmentDisabled: function getAppointmentDisabled(appointment) {
-        return _this6.createAppointmentAdapter(appointment).disabled;
+        return _this5.createAppointmentAdapter(appointment).disabled;
       }
     };
   };
 
   _proto.checkAndDeleteAppointment = function checkAndDeleteAppointment(appointment, targetedAppointment) {
-    var _this7 = this;
+    var _this6 = this;
 
     var targetedAdapter = this.createAppointmentAdapter(targetedAppointment);
 
     this._checkRecurringAppointment(appointment, targetedAppointment, targetedAdapter.startDate, function () {
-      _this7.deleteAppointment(appointment);
+      _this6.deleteAppointment(appointment);
     }, true);
   };
 
@@ -1430,7 +1433,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._initMarkupCore = function _initMarkupCore(resources) {
-    var _this8 = this;
+    var _this7 = this;
 
     this._readyToRenderAppointments = (0, _window.hasWindow)();
     this._workSpace && this._cleanWorkspace();
@@ -1443,16 +1446,16 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     });
 
     this._waitAsyncTemplate(function () {
-      var _this8$_workSpaceReca;
+      var _this7$_workSpaceReca;
 
-      return (_this8$_workSpaceReca = _this8._workSpaceRecalculation) === null || _this8$_workSpaceReca === void 0 ? void 0 : _this8$_workSpaceReca.resolve();
+      return (_this7$_workSpaceReca = _this7._workSpaceRecalculation) === null || _this7$_workSpaceReca === void 0 ? void 0 : _this7$_workSpaceReca.resolve();
     });
 
     this._filterAppointmentsByDate();
   };
 
   _proto._isLoaded = function _isLoaded() {
-    return (0, _resourceManager.getResourceManager)(this.key).isLoaded() && this._isDataSourceLoaded();
+    return (0, _instanceFactory.getResourceManager)(this.key).isLoaded() && this._isDataSourceLoaded();
   };
 
   _proto._isDataSourceLoaded = function _isDataSourceLoaded() {
@@ -1474,7 +1477,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._headerConfig = function _headerConfig() {
-    var _this9 = this;
+    var _this8 = this;
 
     var currentViewOptions = this._getCurrentViewOptions();
 
@@ -1500,10 +1503,9 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     result.currentDate = _date.default.trimTime(new Date(this._dateOption('currentDate')));
 
     result.todayDate = function () {
-      var result = _this9.timeZoneCalculator.createDate(new Date(), {
+      var result = (0, _instanceFactory.getTimeZoneCalculator)(_this8.key).createDate(new Date(), {
         path: 'toGrid'
       });
-
       return result;
     };
 
@@ -1511,9 +1513,10 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._appointmentsConfig = function _appointmentsConfig() {
-    var _this10 = this;
+    var _this9 = this;
 
     var config = {
+      key: this.key,
       observer: this,
       onItemRendered: this._getAppointmentRenderedAction(),
       onItemClick: this._createActionByOption('onAppointmentClick'),
@@ -1529,10 +1532,10 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       currentView: this.option('currentView'),
       groups: this._getCurrentViewOption('groups'),
       onContentReady: function onContentReady() {
-        var _this10$_workSpace;
+        var _this9$_workSpace;
 
-        var filteredItems = (0, _appointmentDataProvider.getAppointmentDataProvider)(_this10.key).filteredItems;
-        (_this10$_workSpace = _this10._workSpace) === null || _this10$_workSpace === void 0 ? void 0 : _this10$_workSpace.option('allDayExpanded', _this10._isAllDayExpanded(filteredItems));
+        var filteredItems = (0, _instanceFactory.getAppointmentDataProvider)(_this9.key).filteredItems;
+        (_this9$_workSpace = _this9._workSpace) === null || _this9$_workSpace === void 0 ? void 0 : _this9$_workSpace.option('allDayExpanded', _this9._isAllDayExpanded(filteredItems));
       }
     };
     return config;
@@ -1643,20 +1646,20 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._recalculateWorkspace = function _recalculateWorkspace() {
-    var _this11 = this;
+    var _this10 = this;
 
     this._workSpaceRecalculation = new _deferred.Deferred();
 
     this._waitAsyncTemplate(function () {
-      (0, _visibility_change.triggerResizeEvent)(_this11._workSpace.$element());
+      (0, _visibility_change.triggerResizeEvent)(_this10._workSpace.$element());
 
-      _this11._workSpace._refreshDateTimeIndication();
+      _this10._workSpace._refreshDateTimeIndication();
     });
   };
 
   _proto._workSpaceConfig = function _workSpaceConfig(groups, countConfig) {
     var _currentViewOptions$s2,
-        _this12 = this;
+        _this11 = this;
 
     var currentViewOptions = this._getCurrentViewOptions();
 
@@ -1669,6 +1672,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     }).length > 0);
     var crossScrollingEnabled = this.option('crossScrollingEnabled') || horizontalVirtualScrollingAllowed;
     var result = (0, _extend.extend)({
+      key: this.key,
       noDataText: this.option('noDataText'),
       firstDayOfWeek: this.option('firstDayOfWeek'),
       startDayHour: this.option('startDayHour'),
@@ -1691,7 +1695,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       allowMultipleCellSelection: this.option('allowMultipleCellSelection'),
       selectedCellData: this.option('selectedCellData'),
       onSelectionChanged: function onSelectionChanged(args) {
-        _this12.option('selectedCellData', args.selectedCellData);
+        _this11.option('selectedCellData', args.selectedCellData);
       },
       groupByDate: this._getCurrentViewOption('groupByDate'),
       scrolling: scrolling,
@@ -1709,7 +1713,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     result.max = new Date(this._dateOption('max'));
     result.currentDate = _date.default.trimTime(new Date(this._dateOption('currentDate')));
     result.hoursInterval = result.cellDuration / 60;
-    result.allDayExpanded = this._isAllDayExpanded((0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).filteredItems);
+    result.allDayExpanded = this._isAllDayExpanded((0, _instanceFactory.getAppointmentDataProvider)(this.key).filteredItems);
     result.dataCellTemplate = result.dataCellTemplate ? this._getTemplate(result.dataCellTemplate) : null;
     result.timeCellTemplate = result.timeCellTemplate ? this._getTemplate(result.timeCellTemplate) : null;
     result.resourceCellTemplate = result.resourceCellTemplate ? this._getTemplate(result.resourceCellTemplate) : null;
@@ -1767,7 +1771,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._refreshWorkSpace = function _refreshWorkSpace(groups) {
-    var _this13 = this;
+    var _this12 = this;
 
     this._cleanWorkspace();
 
@@ -1782,7 +1786,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       });
 
       this._waitAsyncTemplate(function () {
-        return _this13._workSpaceRecalculation.resolve();
+        return _this12._workSpaceRecalculation.resolve();
       });
     }
   };
@@ -1826,7 +1830,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._checkRecurringAppointment = function _checkRecurringAppointment(targetAppointment, singleAppointment, exceptionDate, callback, isDeleted, isPopupEditing, dragEvent) {
-    var _this14 = this;
+    var _this13 = this;
 
     delete this._updatedRecAppointment;
     var recurrenceRule = this.fire('getField', 'recurrenceRule', targetAppointment);
@@ -1855,16 +1859,16 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
 
         this._showRecurrenceChangeConfirm(isDeleted).done(function (editingMode) {
           editingMode === RECURRENCE_EDITING_MODE.SERIES && callback();
-          editingMode === RECURRENCE_EDITING_MODE.OCCURENCE && _this14._excludeAppointmentFromSeries(targetAppointment, singleAppointment, exceptionDate, isDeleted, isPopupEditing, dragEvent);
+          editingMode === RECURRENCE_EDITING_MODE.OCCURENCE && _this13._excludeAppointmentFromSeries(targetAppointment, singleAppointment, exceptionDate, isDeleted, isPopupEditing, dragEvent);
         }).fail(function () {
-          return _this14._appointments.moveAppointmentBack(dragEvent);
+          return _this13._appointments.moveAppointmentBack(dragEvent);
         });
 
     }
   };
 
   _proto._excludeAppointmentFromSeries = function _excludeAppointmentFromSeries(rawAppointment, newRawAppointment, exceptionDate, isDeleted, isPopupEditing, dragEvent) {
-    var _this15 = this;
+    var _this14 = this;
 
     var appointment = this.createAppointmentAdapter(_extends({}, rawAppointment));
     var newAppointment = this.createAppointmentAdapter(newRawAppointment);
@@ -1873,7 +1877,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     var canCreateNewAppointment = !isDeleted && !isPopupEditing;
 
     if (canCreateNewAppointment) {
-      var keyPropertyName = (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).keyName;
+      var keyPropertyName = (0, _instanceFactory.getAppointmentDataProvider)(this.key).keyName;
       delete newRawAppointment[keyPropertyName];
       this.addAppointment(newRawAppointment);
     }
@@ -1889,7 +1893,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       this._editAppointmentData = rawAppointment;
     } else {
       this._updateAppointment(rawAppointment, appointment.source(), function () {
-        _this15._appointments.moveAppointmentBack(dragEvent);
+        _this14._appointments.moveAppointmentBack(dragEvent);
       }, dragEvent);
     }
   };
@@ -1942,10 +1946,10 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._getUpdatedData = function _getUpdatedData(rawAppointment) {
-    var _this16 = this;
+    var timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key);
 
     var getConvertedFromGrid = function getConvertedFromGrid(date) {
-      return date ? _this16.timeZoneCalculator.createDate(date, {
+      return date ? timeZoneCalculator.createDate(date, {
         path: 'fromGrid'
       }) : undefined;
     };
@@ -1975,12 +1979,12 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
 
     if (isKeepAppointmentHours) {
       var trimTime = _date.default.trimTime;
-      var startDate = this.timeZoneCalculator.createDate(appointment.startDate, {
+      var startDate = timeZoneCalculator.createDate(appointment.startDate, {
         path: 'toGrid'
       });
       var timeInMs = startDate.getTime() - trimTime(startDate).getTime();
       resultedStartDate = new Date(trimTime(targetCell.startDate).getTime() + timeInMs);
-      resultedStartDate = this.timeZoneCalculator.createDate(resultedStartDate, {
+      resultedStartDate = timeZoneCalculator.createDate(resultedStartDate, {
         path: 'fromGrid'
       });
     }
@@ -2012,14 +2016,14 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
 
     result.endDate = new Date(resultedEndDate.getTime() - timeZoneOffset);
     var rawResult = result.source();
-    (0, _resourceManager.getResourceManager)(this.key).setResourcesToItem(rawResult, targetCell.groups);
+    (0, _instanceFactory.getResourceManager)(this.key).setResourcesToItem(rawResult, targetCell.groups);
     return rawResult;
   };
 
   _proto.getTargetedAppointment = function getTargetedAppointment(appointment, element) {
-    var settings = _utils2.default.dataAccessors.getAppointmentSettings(element);
+    var settings = _utils2.utils.dataAccessors.getAppointmentSettings(element);
 
-    var info = _utils2.default.dataAccessors.getAppointmentInfo(element);
+    var info = _utils2.utils.dataAccessors.getAppointmentInfo(element);
 
     var appointmentIndex = (0, _renderer.default)(element).data(this._appointments._itemIndexKey());
     var adapter = this.createAppointmentAdapter(appointment);
@@ -2088,7 +2092,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     }
 
     return this._processActionResult(updatingOptions, function (canceled) {
-      var _this17 = this;
+      var _this15 = this;
 
       var deferred = new _deferred.Deferred();
 
@@ -2096,10 +2100,10 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
         this._expandAllDayPanel(rawAppointment);
 
         try {
-          deferred = (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).update(target, rawAppointment).done(function () {
+          deferred = (0, _instanceFactory.getAppointmentDataProvider)(this.key).update(target, rawAppointment).done(function () {
             dragEvent && dragEvent.cancel.resolve(false);
           }).always(function (storeAppointment) {
-            return _this17._onDataPromiseCompleted(StoreEventNames.UPDATED, storeAppointment);
+            return _this15._onDataPromiseCompleted(StoreEventNames.UPDATED, storeAppointment);
           }).fail(function () {
             return performFailAction();
           });
@@ -2117,7 +2121,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._processActionResult = function _processActionResult(actionOptions, callback) {
-    var _this18 = this;
+    var _this16 = this;
 
     var deferred = new _deferred.Deferred();
 
@@ -2131,7 +2135,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
           cancel = actionOptions.cancel.state() === 'rejected';
         }
 
-        resolveCallback(callback.call(_this18, cancel));
+        resolveCallback(callback.call(_this16, cancel));
       });
     } else {
       resolveCallback(callback.call(this, actionOptions.cancel));
@@ -2141,7 +2145,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto._expandAllDayPanel = function _expandAllDayPanel(appointment) {
-    if (!this._isAllDayExpanded((0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).filteredItems) && this.appointmentTakesAllDay(appointment)) {
+    if (!this._isAllDayExpanded((0, _instanceFactory.getAppointmentDataProvider)(this.key).filteredItems) && this.appointmentTakesAllDay(appointment)) {
       this._workSpace.option('allDayExpanded', true);
     }
   };
@@ -2190,52 +2194,14 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto.appointmentTakesAllDay = function appointmentTakesAllDay(appointment) {
-    return (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).appointmentTakesAllDay(appointment, this._getCurrentViewOption('startDayHour'), this._getCurrentViewOption('endDayHour'));
-  } // TODO: use for appointment model
-  ;
-
-  _proto._getRecurrenceException = function _getRecurrenceException(rawAppointment) {
-    var appointment = this.createAppointmentAdapter(rawAppointment);
-    var recurrenceException = appointment.recurrenceException;
-
-    if (recurrenceException) {
-      var exceptions = recurrenceException.split(',');
-
-      for (var i = 0; i < exceptions.length; i++) {
-        exceptions[i] = this._convertRecurrenceException(exceptions[i], appointment.startDate);
-      }
-
-      return exceptions.join();
-    }
-
-    return recurrenceException;
-  };
-
-  _proto._convertRecurrenceException = function _convertRecurrenceException(exceptionString, startDate) {
-    var _this19 = this;
-
-    exceptionString = exceptionString.replace(/\s/g, '');
-
-    var getConvertedToTimeZone = function getConvertedToTimeZone(date) {
-      return _this19.timeZoneCalculator.createDate(date, {
-        path: 'toGrid'
-      });
-    };
-
-    var exceptionDate = _date_serialization.default.deserializeDate(exceptionString);
-
-    var convertedStartDate = getConvertedToTimeZone(startDate);
-    var convertedExceptionDate = getConvertedToTimeZone(exceptionDate);
-    convertedExceptionDate = _utils.default.correctRecurrenceExceptionByTimezone(convertedExceptionDate, convertedStartDate, this.option('timeZone'));
-    exceptionString = _date_serialization.default.serializeDate(convertedExceptionDate, FULL_DATE_FORMAT);
-    return exceptionString;
+    return (0, _instanceFactory.getAppointmentDataProvider)(this.key).appointmentTakesAllDay(appointment, this._getCurrentViewOption('startDayHour'), this._getCurrentViewOption('endDayHour'));
   };
 
   _proto.dayHasAppointment = function dayHasAppointment(day, rawAppointment, trimTime) {
-    var _this20 = this;
+    var _this17 = this;
 
     var getConvertedToTimeZone = function getConvertedToTimeZone(date) {
-      return _this20.timeZoneCalculator.createDate(date, {
+      return (0, _instanceFactory.getTimeZoneCalculator)(_this17.key).createDate(date, {
         path: 'toGrid'
       });
     };
@@ -2266,7 +2232,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     var groups = this._getCurrentViewOption('groups');
 
     if (groups !== null && groups !== void 0 && groups.length) {
-      var resourcesSetter = (0, _resourceManager.getResourceManager)(this.key)._dataAccessors.setter;
+      var resourcesSetter = (0, _instanceFactory.getResourceManager)(this.key)._dataAccessors.setter;
 
       var workSpace = this._workSpace;
       var getGroups;
@@ -2276,7 +2242,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
         getGroups = function getGroups() {
           var apptSettings = this.getLayoutManager()._positionMap[appointmentIndex];
 
-          return (0, _resourceManager.getResourceManager)(this.key).getCellGroups(apptSettings[0].groupIndex, this.getWorkSpace().option('groups'));
+          return (0, _instanceFactory.getResourceManager)(this.key).getCellGroups(apptSettings[0].groupIndex, this.getWorkSpace().option('groups'));
         };
 
         setResourceCallback = function setResourceCallback(_, group) {
@@ -2285,7 +2251,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       } else {
         getGroups = function getGroups() {
           // TODO: in the future, necessary refactor the engine of determining groups
-          var setting = _utils2.default.dataAccessors.getAppointmentSettings(element) || {};
+          var setting = _utils2.utils.dataAccessors.getAppointmentSettings(element) || {};
           return workSpace.getCellDataByCoordinates({
             left: setting.left,
             top: setting.top
@@ -2310,19 +2276,19 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto.showAppointmentPopup = function showAppointmentPopup(rawAppointment, createNewAppointment, rawTargetedAppointment) {
-    var _this21 = this;
+    var _this18 = this;
 
     var appointment = this.createAppointmentAdapter(rawTargetedAppointment || rawAppointment);
     var newTargetedAppointment = (0, _extend.extend)({}, rawAppointment, rawTargetedAppointment);
 
     this._checkRecurringAppointment(rawAppointment, newTargetedAppointment, appointment.startDate, function () {
       if (createNewAppointment || (0, _type.isEmptyObject)(rawAppointment)) {
-        delete _this21._editAppointmentData;
-        _this21._editing.allowAdding && _this21._appointmentPopup.show(rawAppointment, true);
+        delete _this18._editAppointmentData;
+        _this18._editing.allowAdding && _this18._appointmentPopup.show(rawAppointment, true);
       } else {
-        _this21._editAppointmentData = rawAppointment;
+        _this18._editAppointmentData = rawAppointment;
 
-        _this21._appointmentPopup.show(rawAppointment, _this21._editing.allowUpdating);
+        _this18._appointmentPopup.show(rawAppointment, _this18._editing.allowUpdating);
       }
     }, false, true);
   };
@@ -2337,9 +2303,9 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
 
   _proto.showAppointmentTooltip = function showAppointmentTooltip(appointment, element, targetedAppointment) {
     if (appointment) {
-      var settings = _utils2.default.dataAccessors.getAppointmentSettings(element);
+      var settings = _utils2.utils.dataAccessors.getAppointmentSettings(element);
 
-      var deferredColor = (0, _resourceManager.getResourceManager)(this.key).getAppointmentColor({
+      var deferredColor = (0, _instanceFactory.getResourceManager)(this.key).getAppointmentColor({
         itemData: targetedAppointment || appointment,
         groupIndex: settings === null || settings === void 0 ? void 0 : settings.groupIndex,
         groups: this.option('groups'),
@@ -2379,7 +2345,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto.addAppointment = function addAppointment(rawAppointment) {
-    var _this22 = this;
+    var _this19 = this;
 
     var appointment = this.createAppointmentAdapter(rawAppointment);
     appointment.text = appointment.text || '';
@@ -2396,10 +2362,10 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
         return new _deferred.Deferred().resolve();
       }
 
-      _this22._expandAllDayPanel(serializedAppointment);
+      _this19._expandAllDayPanel(serializedAppointment);
 
-      return (0, _appointmentDataProvider.getAppointmentDataProvider)(_this22.key).add(serializedAppointment).always(function (storeAppointment) {
-        return _this22._onDataPromiseCompleted(StoreEventNames.ADDED, storeAppointment);
+      return (0, _instanceFactory.getAppointmentDataProvider)(_this19.key).add(serializedAppointment).always(function (storeAppointment) {
+        return _this19._onDataPromiseCompleted(StoreEventNames.ADDED, storeAppointment);
       });
     });
   };
@@ -2417,11 +2383,11 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     this._actions[StoreEventNames.DELETING](deletingOptions);
 
     this._processActionResult(deletingOptions, function (canceled) {
-      var _this23 = this;
+      var _this20 = this;
 
       if (!canceled) {
-        (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key).remove(rawAppointment).always(function (storeAppointment) {
-          return _this23._onDataPromiseCompleted(StoreEventNames.DELETED, storeAppointment, rawAppointment);
+        (0, _instanceFactory.getAppointmentDataProvider)(this.key).remove(rawAppointment).always(function (storeAppointment) {
+          return _this20._onDataPromiseCompleted(StoreEventNames.DELETED, storeAppointment, rawAppointment);
         });
       }
     });
@@ -2440,17 +2406,15 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
   };
 
   _proto.createAppointmentAdapter = function createAppointmentAdapter(rawAppointment) {
-    var _this24 = this;
+    var _this21 = this;
 
     var options = {
+      key: this.key,
       getField: function getField(rawAppointment, property) {
-        return _this24.fire('getField', property, rawAppointment);
+        return _this21.fire('getField', property, rawAppointment);
       },
       setField: function setField(rawAppointment, property, value) {
-        return _this24.fire('setField', property, rawAppointment, value);
-      },
-      getTimeZoneCalculator: function getTimeZoneCalculator() {
-        return _this24.timeZoneCalculator;
+        return _this21.fire('setField', property, rawAppointment, value);
       }
     };
     return new _appointmentAdapter.default(rawAppointment, options);

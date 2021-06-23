@@ -94,7 +94,8 @@ var Export = {
     rowsView._renderLoadPanel(rowsView.element(), rowsView.element().parent());
   },
   export: function _export(options) {
-    var _this = this;
+    var _component$_getIntern,
+        _this = this;
 
     var jsPDFDocument = options.jsPDFDocument,
         autoTableOptions = options.autoTableOptions,
@@ -103,13 +104,14 @@ var Export = {
         keepColumnWidths = options.keepColumnWidths,
         selectedRowsOnly = options.selectedRowsOnly,
         loadPanel = options.loadPanel;
-    var initialLoadPanelOptions = (0, _extend.extend)({}, component.option('loadPanel'));
+    var internalComponent = ((_component$_getIntern = component._getInternalInstance) === null || _component$_getIntern === void 0 ? void 0 : _component$_getIntern.call(component)) || component;
+    var initialLoadPanelOptions = (0, _extend.extend)({}, internalComponent.option('loadPanel'));
 
-    if ('animation' in component.option('loadPanel')) {
+    if ('animation' in internalComponent.option('loadPanel')) {
       loadPanel.animation = null;
     }
 
-    this._setLoadPanelOptions(component, loadPanel);
+    this._setLoadPanelOptions(internalComponent, loadPanel);
 
     var dataProvider = component.getDataProvider(selectedRowsOnly);
     var wrapText = !!component.option('wordWrapEnabled');
@@ -197,7 +199,7 @@ var Export = {
         jsPDFDocument.autoTable(autoTableOptions);
         resolve();
       }).always(function () {
-        _this._setLoadPanelOptions(component, initialLoadPanelOptions);
+        _this._setLoadPanelOptions(internalComponent, initialLoadPanelOptions);
       });
     });
   },

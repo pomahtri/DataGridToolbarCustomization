@@ -1055,7 +1055,9 @@ var _default = _class.default.inherit(function () {
       return this._paginate && this._store && this._store.supportPaging();
     },
     isEmpty: function isEmpty() {
-      var dataFields = this.getAreaFields('data');
+      var dataFields = this.getAreaFields('data').filter(function (f) {
+        return f.visible !== false;
+      });
       var data = this.getData();
       return !dataFields.length || !data.values.length;
     },

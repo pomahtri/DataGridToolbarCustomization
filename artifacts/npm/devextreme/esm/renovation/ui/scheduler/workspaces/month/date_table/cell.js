@@ -1,14 +1,14 @@
 /**
 * DevExtreme (esm/renovation/ui/scheduler/workspaces/month/date_table/cell.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 import _objectWithoutPropertiesLoose from "@babel/runtime/helpers/esm/objectWithoutPropertiesLoose";
 import _extends from "@babel/runtime/helpers/esm/extends";
-var _excluded = ["allDay", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "otherMonth", "startDate", "text", "today"];
+var _excluded = ["allDay", "ariaLabel", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isFocused", "isLastGroupCell", "isSelected", "otherMonth", "startDate", "text", "today"];
 import { createVNode, createComponentVNode, normalizeProps } from "inferno";
 import { BaseInfernoComponent } from "@devextreme/vdom";
 import { combineClasses } from "../../../../../utils/combine_classes";
@@ -24,7 +24,9 @@ export var viewFunction = _ref => {
       groups,
       index,
       isFirstGroupCell,
+      isFocused,
       isLastGroupCell,
+      isSelected,
       startDate,
       text
     }
@@ -40,6 +42,8 @@ export var viewFunction = _ref => {
     "index": index,
     "isFirstGroupCell": isFirstGroupCell,
     "isLastGroupCell": isLastGroupCell,
+    "isSelected": isSelected,
+    "isFocused": isFocused,
     "contentTemplateProps": contentTemplateProps,
     children: createVNode(1, "div", "dx-scheduler-date-table-cell-text", text, 0)
   });

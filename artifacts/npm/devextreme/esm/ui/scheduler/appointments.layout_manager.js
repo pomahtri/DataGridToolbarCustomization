@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/appointments.layout_manager.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -106,10 +106,10 @@ class AppointmentLayoutManager {
     var createSettingsToCompare = (settings, index) => {
       var virtualCellCount = settings.virtualCellCount || 0;
       var virtualRowCount = settings.virtualRowCount || 0;
-      var cellIndex = settings[index].cellIndex + virtualCellCount;
+      var columnIndex = settings[index].columnIndex + virtualCellCount;
       var rowIndex = settings[index].rowIndex + virtualRowCount;
       return _extends({}, settings[index], {
-        cellIndex: cellIndex,
+        columnIndex,
         rowIndex: rowIndex,
         virtualCellCount: -1,
         virtualRowCount: -1

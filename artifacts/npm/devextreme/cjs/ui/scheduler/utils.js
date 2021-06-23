@@ -1,16 +1,22 @@
 /**
 * DevExtreme (cjs/ui/scheduler/utils.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
 
-exports.default = void 0;
+exports.utils = void 0;
 
 var _renderer = _interopRequireDefault(require("../../core/renderer"));
+
+var _extend = require("../../core/utils/extend");
+
+var _iterator = require("../../core/utils/iterator");
+
+var _instanceFactory = require("./instanceFactory");
 
 var _constants = require("./constants");
 
@@ -24,10 +30,20 @@ var utils = {
     getAppointmentInfo: function getAppointmentInfo(element) {
       var settings = utils.dataAccessors.getAppointmentSettings(element);
       return settings === null || settings === void 0 ? void 0 : settings.info;
+    },
+    combine: function combine(key, dataAccessors) {
+      // TODO get rid of it and rework resourceManager
+      var result = (0, _extend.extend)(true, {}, dataAccessors);
+      var resourceManager = (0, _instanceFactory.getResourceManager)(key);
+
+      if (dataAccessors && resourceManager) {
+        (0, _iterator.each)(resourceManager._dataAccessors, function (type, accessor) {
+          result[type].resources = accessor;
+        });
+      }
+
+      return result;
     }
   }
 };
-var _default = utils;
-exports.default = _default;
-module.exports = exports.default;
-module.exports.default = exports.default;
+exports.utils = utils;

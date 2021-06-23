@@ -2,7 +2,6 @@ import $ from '../../core/renderer';
 import eventsEngine from '../../events/core/events_engine';
 import devices from '../../core/devices';
 import { extend } from '../../core/utils/extend';
-import { render } from '../widget/utils.ink_ripple';
 import registerComponent from '../../core/component_registrator';
 import Editor from '../editor/editor';
 import { addNamespace } from '../../events/utils/index';
@@ -36,8 +35,7 @@ var RadioButton = Editor.inherit({
     return extend(this.callBase(), {
       hoverStateEnabled: true,
       activeStateEnabled: true,
-      value: false,
-      useInkRipple: false
+      value: false
     });
   },
   _canValueBeChangedByClick: function _canValueBeChangedByClick() {
@@ -62,48 +60,11 @@ var RadioButton = Editor.inherit({
 
     this._renderIcon();
 
-    this.option('useInkRipple') && this._renderInkRipple();
-
     this._renderCheckedState(this.option('value'));
 
     this._renderClick();
 
     this.setAria('role', 'radio');
-  },
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = render({
-      waveSizeCoefficient: 3.3,
-      useHoldAnimation: false,
-      wavesNumber: 2,
-      isCentered: true
-    });
-  },
-  _renderInkWave: function _renderInkWave(element, dxEvent, doRender, waveIndex) {
-    if (!this._inkRipple) {
-      return;
-    }
-
-    var config = {
-      element: element,
-      event: dxEvent,
-      wave: waveIndex
-    };
-
-    if (doRender) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
-    }
-  },
-  _updateFocusState: function _updateFocusState(e, value) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$icon, e, value, 0);
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$icon, e, value, 1);
   },
   _renderIcon: function _renderIcon() {
     this._$icon = $('<div>').addClass(RADIO_BUTTON_ICON_CLASS);
@@ -133,11 +94,6 @@ var RadioButton = Editor.inherit({
   },
   _optionChanged: function _optionChanged(args) {
     switch (args.name) {
-      case 'useInkRipple':
-        this._invalidate();
-
-        break;
-
       case 'value':
         this._renderCheckedState(args.value);
 
@@ -147,10 +103,6 @@ var RadioButton = Editor.inherit({
       default:
         this.callBase(args);
     }
-  },
-  _clean: function _clean() {
-    delete this._inkRipple;
-    this.callBase();
   }
 });
 registerComponent('dxRadioButton', RadioButton);

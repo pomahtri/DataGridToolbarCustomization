@@ -1,14 +1,14 @@
 /**
 * DevExtreme (esm/ui/scheduler/header/navigator.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
+import _extends from "@babel/runtime/helpers/esm/extends";
 import $ from '../../../core/renderer';
 import { noop } from '../../../core/utils/common';
-import { isNumeric, isDefined, isFunction } from '../../../core/utils/type';
 import errors from '../../widget/ui.errors';
 import dateUtils from '../../../core/utils/date';
 import { extend } from '../../../core/utils/extend';
@@ -20,213 +20,16 @@ import Calendar from '../../calendar';
 import Popover from '../../popover';
 import Popup from '../../popup';
 import publisherMixin from '../publisher_mixin';
-import dateLocalization from '../../../localization/date';
 import Scrollable from '../../scroll_view/ui.scrollable';
+import { getCaption, getNextIntervalDate } from './utils';
 var ELEMENT_CLASS = 'dx-scheduler-navigator';
 var CALENDAR_CLASS = 'dx-scheduler-navigator-calendar';
 var NEXT_BUTTON_CLASS = 'dx-scheduler-navigator-next';
 var CAPTION_BUTTON_CLASS = 'dx-scheduler-navigator-caption';
 var PREVIOUS_BUTTON_CLASS = 'dx-scheduler-navigator-previous';
 var CALENDAR_POPOVER_CLASS = 'dx-scheduler-navigator-calendar-popover';
-var MONDAY_INDEX = 1;
-
-var getDefaultFirstDayOfWeekIndex = function getDefaultFirstDayOfWeekIndex(shift) {
-  return shift ? MONDAY_INDEX : dateLocalization.firstDayOfWeekIndex();
-};
-
-var getDateMonthFormat = function getDateMonthFormat(short) {
-  return function (date) {
-    var monthName = dateLocalization.getMonthNames(short ? 'abbreviated' : 'wide')[date.getMonth()];
-    return [dateLocalization.format(date, 'day'), monthName].join(' ');
-  };
-};
-
-var getMonthYearFormat = function getMonthYearFormat(date) {
-  return dateLocalization.getMonthNames('abbreviated')[date.getMonth()] + ' ' + dateLocalization.format(date, 'year');
-};
-
-var getCaptionFormat = function getCaptionFormat(short, intervalCount, duration) {
-  var dateMonthFormat = getDateMonthFormat(short);
-  return function (date) {
-    if (intervalCount > 1) {
-      var lastIntervalDate = new Date(date);
-      var defaultViewDuration = duration;
-      lastIntervalDate.setDate(date.getDate() + defaultViewDuration - 1);
-      var isDifferentMonthDates = date.getMonth() !== lastIntervalDate.getMonth();
-      var useShortFormat = isDifferentMonthDates || short;
-      var firstWeekDateText = dateLocalization.format(date, isDifferentMonthDates ? getDateMonthFormat(useShortFormat) : 'd');
-      var lastWeekDateText = dateLocalization.format(lastIntervalDate, getCaptionFormat(useShortFormat));
-      return firstWeekDateText + '-' + lastWeekDateText;
-    }
-
-    return [dateMonthFormat(date), dateLocalization.format(date, 'year')].join(' ');
-  };
-};
-
-var getWeekCaption = function getWeekCaption(date, shift, rejectWeekend) {
-  var firstDayOfWeek = this.option('firstDayOfWeek');
-  var firstDayOfWeekIndex = isDefined(firstDayOfWeek) ? firstDayOfWeek : getDefaultFirstDayOfWeekIndex(shift);
-  if (firstDayOfWeekIndex === 0 && rejectWeekend) firstDayOfWeekIndex = MONDAY_INDEX;
-  var firstWeekDate = dateUtils.getFirstWeekDate(date, firstDayOfWeekIndex);
-  var weekendDuration = 2;
-
-  if (rejectWeekend) {
-    firstWeekDate = dateUtils.normalizeDateByWeek(firstWeekDate, date);
-  }
-
-  if (firstDayOfWeek >= 6 && rejectWeekend) {
-    firstWeekDate.setDate(firstWeekDate.getDate() + (7 - firstDayOfWeek + 1));
-  }
-
-  var lastWeekDate = new Date(firstWeekDate);
-  var intervalCount = this.option('intervalCount');
-  shift = shift || 6;
-  lastWeekDate = new Date(lastWeekDate.setDate(lastWeekDate.getDate() + (intervalCount > 1 ? 7 * (intervalCount - 1) + shift : shift)));
-
-  if (lastWeekDate.getDay() % 6 === 0 && rejectWeekend) {
-    lastWeekDate.setDate(lastWeekDate.getDate() + weekendDuration);
-  }
-
-  return {
-    text: formatCaptionByMonths.call(this, lastWeekDate, firstWeekDate),
-    startDate: firstWeekDate,
-    endDate: lastWeekDate
-  };
-};
-
-var formatCaptionByMonths = function formatCaptionByMonths(lastDate, firstDate) {
-  var isDifferentMonthDates = firstDate.getMonth() !== lastDate.getMonth();
-  var isDifferentYears = firstDate.getFullYear() !== lastDate.getFullYear();
-  var useShortFormat = isDifferentMonthDates || this.option('_useShortDateFormat');
-  var lastDateText;
-  var firstDateText;
-
-  if (isDifferentYears) {
-    firstDateText = dateLocalization.format(firstDate, getCaptionFormat(true));
-    lastDateText = dateLocalization.format(lastDate, getCaptionFormat(true));
-  } else {
-    firstDateText = dateLocalization.format(firstDate, isDifferentMonthDates ? getDateMonthFormat(useShortFormat) : 'd');
-    lastDateText = dateLocalization.format(lastDate, getCaptionFormat(useShortFormat));
-  }
-
-  return firstDateText + '-' + lastDateText;
-};
-
-var getMonthCaption = function getMonthCaption(date) {
-  var firstDate = new Date(dateUtils.getFirstMonthDate(date));
-  var lastDate = new Date(dateUtils.getLastMonthDate(firstDate));
-  var text;
-
-  if (this.option('intervalCount') > 1) {
-    lastDate = new Date(firstDate);
-    lastDate.setMonth(firstDate.getMonth() + this.option('intervalCount') - 1);
-    lastDate = new Date(dateUtils.getLastMonthDate(lastDate));
-    var isSameYear = firstDate.getYear() === lastDate.getYear();
-    var lastDateText = getMonthYearFormat(lastDate);
-    var firstDateText = isSameYear ? dateLocalization.getMonthNames('abbreviated')[firstDate.getMonth()] : getMonthYearFormat(firstDate);
-    text = firstDateText + '-' + lastDateText;
-  } else {
-    text = dateLocalization.format(date, 'monthandyear');
-  }
-
-  return {
-    text: text,
-    startDate: firstDate,
-    endDate: lastDate
-  };
-};
-
-var dateGetter = function dateGetter(date, offset) {
-  return new Date(date[this.setter](date[this.getter]() + offset));
-};
-
-var getConfig = function getConfig(step) {
-  var agendaDuration;
-
-  switch (step) {
-    case 'day':
-      return {
-        duration: 1 * this.option('intervalCount'),
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: function getCaption(date) {
-          var format = getCaptionFormat(false, this.option('intervalCount'), this._getConfig().duration);
-          return {
-            text: dateLocalization.format(date, format),
-            startDate: date,
-            endDate: date
-          };
-        }
-      };
-
-    case 'week':
-      return {
-        duration: 7 * this.option('intervalCount'),
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: getWeekCaption
-      };
-
-    case 'workWeek':
-      return {
-        duration: 7 * this.option('intervalCount'),
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: function getCaption(date) {
-          return getWeekCaption.call(this, date, 4, true);
-        }
-      };
-
-    case 'month':
-      return {
-        duration: 1 * this.option('intervalCount'),
-        setter: 'setMonth',
-        getter: 'getMonth',
-        getDate: function getDate(date, offset) {
-          var currentDate = date.getDate();
-          date.setDate(1);
-          date = dateGetter.call(this, date, offset);
-          var lastDate = dateUtils.getLastMonthDay(date);
-          date.setDate(currentDate < lastDate ? currentDate : lastDate);
-          return date;
-        },
-        getCaption: getMonthCaption
-      };
-
-    case 'agenda':
-      agendaDuration = this.invoke('getAgendaDuration');
-      agendaDuration = isNumeric(agendaDuration) && agendaDuration > 0 ? agendaDuration : 7;
-      return {
-        duration: agendaDuration,
-        setter: 'setDate',
-        getter: 'getDate',
-        getDate: dateGetter,
-        getCaption: function getCaption(date) {
-          var format = getCaptionFormat(this.option('_useShortDateFormat'));
-          var firstDate = new Date(date);
-          var lastDate = new Date(date);
-          var text;
-
-          if (agendaDuration > 1) {
-            lastDate.setDate(lastDate.getDate() + agendaDuration - 1);
-            text = formatCaptionByMonths.call(this, lastDate, date);
-          } else {
-            text = dateLocalization.format(date, format);
-          }
-
-          return {
-            text: text,
-            startDate: firstDate,
-            endDate: lastDate
-          };
-        }
-      };
-  }
-};
-
+var DEFAULT_AGENDA_DURATION = 7;
+var ACCEPRED_STEPS = ['day', 'week', 'workWeek', 'month', 'agenda'];
 export var Navigator = Widget.inherit({
   _getDefaultOptions: function _getDefaultOptions() {
     return extend(this.callBase(), {
@@ -257,6 +60,8 @@ export var Navigator = Widget.inherit({
       case 'date':
       case 'intervalCount':
       case 'displayedDate':
+        this._validateStep();
+
         this._updateButtonsState();
 
         this._renderCaption();
@@ -342,8 +147,9 @@ export var Navigator = Widget.inherit({
   _updateButtonsState: function _updateButtonsState() {
     var min = this.option('min');
     var max = this.option('max');
+    var date = this.option('displayedDate') || this.option('date');
 
-    var caption = this._getConfig().getCaption.call(this, this.option('displayedDate') || this.option('date'));
+    var caption = this._getCaption(date);
 
     min = min ? dateUtils.trimTime(min) : min;
     max = max ? dateUtils.trimTime(max) : max;
@@ -361,12 +167,13 @@ export var Navigator = Widget.inherit({
   },
   _getNextDate: function _getNextDate(direction) {
     var initialDate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var date = initialDate || this.option('date');
 
-    var stepConfig = this._getConfig();
+    var options = _extends({}, this._getIntervalOptions(), {
+      date
+    });
 
-    var offset = stepConfig.duration * direction;
-    var date = stepConfig.getDate(new Date(initialDate || this.option('date')), offset);
-    return date;
+    return getNextIntervalDate(options, direction);
   },
   _renderFocusTarget: noop,
   _initMarkup: function _initMarkup() {
@@ -452,16 +259,35 @@ export var Navigator = Widget.inherit({
       tabIndex: null
     };
   },
+  _getIntervalOptions: function _getIntervalOptions() {
+    var step = this.option('step');
+    var intervalCount = this.option('intervalCount');
+    var firstDayOfWeek = this.option('firstDayOfWeek') || 0; // TODO
+
+    var agendaDuration = this.invoke('getAgendaDuration') || DEFAULT_AGENDA_DURATION;
+    return {
+      step,
+      intervalCount,
+      firstDayOfWeek,
+      agendaDuration
+    };
+  },
+  _getCaption: function _getCaption(date) {
+    var options = _extends({}, this._getIntervalOptions(), {
+      date
+    });
+
+    var customizationFunction = this.option('customizeDateNavigatorText');
+    var useShortDateFormat = this.option('_useShortDateFormat');
+    return getCaption(options, useShortDateFormat, customizationFunction);
+  },
   _renderCaption: function _renderCaption() {
     var date = this.option('displayedDate') || this.option('date');
 
-    var captionConfig = this._getConfig().getCaption.call(this, date);
-
-    var customizationFunction = this.option('customizeDateNavigatorText');
-    var caption = isFunction(customizationFunction) ? customizationFunction(captionConfig) : captionConfig.text;
+    var caption = this._getCaption(date);
 
     this._caption.option({
-      text: caption,
+      text: caption.text,
       onKeyboardHandled: opts => {
         this.option('focusStateEnabled') && !this.option('disabled') && this._calendar._keyboardHandler(opts);
       },
@@ -498,15 +324,12 @@ export var Navigator = Widget.inherit({
       this._calendar.option(name, value);
     }
   },
-  _getConfig: function _getConfig() {
+  _validateStep: function _validateStep() {
     var step = this.option('step');
-    var config = getConfig.call(this, step);
 
-    if (!config) {
+    if (!ACCEPRED_STEPS.includes(step)) {
       throw errors.Error('E1033', step);
     }
-
-    return config;
   }
 }).include(publisherMixin);
 registerComponent('dxSchedulerNavigator', Navigator);

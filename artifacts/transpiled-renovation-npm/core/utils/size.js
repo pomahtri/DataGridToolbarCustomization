@@ -1,10 +1,14 @@
 "use strict";
 
-exports.parseHeight = exports.getVisibleHeight = exports.getVerticalOffsets = exports.addOffsetToMinHeight = exports.addOffsetToMaxHeight = exports.getElementBoxParams = exports.getSize = void 0;
+exports.getOffset = exports.getWindowByElement = exports.elementSize = exports.setInnerHeight = exports.getInnerHeight = exports.setInnerWidth = exports.getInnerWidth = exports.setOuterHeight = exports.getOuterHeight = exports.setOuterWidth = exports.getOuterWidth = exports.setHeight = exports.getHeight = exports.setWidth = exports.getWidth = exports.getVisibleHeight = exports.getVerticalOffsets = exports.addOffsetToMinHeight = exports.addOffsetToMaxHeight = exports.parseHeight = exports.getSize = exports.getElementBoxParams = void 0;
 
 var _window = require("../../core/utils/window");
 
+var _dom_adapter = _interopRequireDefault(require("../../core/dom_adapter"));
+
 var _type = require("../utils/type");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var window = (0, _window.getWindow)();
 var SPECIAL_HEIGHT_VALUES = ['auto', 'none', 'inherit', 'initial'];
@@ -147,3 +151,151 @@ var getVisibleHeight = function getVisibleHeight(element) {
 };
 
 exports.getVisibleHeight = getVisibleHeight;
+
+var getWidth = function getWidth(el) {
+  return elementSize(el, 'width');
+};
+
+exports.getWidth = getWidth;
+
+var setWidth = function setWidth(el, value) {
+  return elementSize(el, 'width', value);
+};
+
+exports.setWidth = setWidth;
+
+var getHeight = function getHeight(el) {
+  return elementSize(el, 'height');
+};
+
+exports.getHeight = getHeight;
+
+var setHeight = function setHeight(el, value) {
+  return elementSize(el, 'height', value);
+};
+
+exports.setHeight = setHeight;
+
+var getOuterWidth = function getOuterWidth(el) {
+  return elementSize(el, 'outerWidth');
+};
+
+exports.getOuterWidth = getOuterWidth;
+
+var setOuterWidth = function setOuterWidth(el, value) {
+  return elementSize(el, 'outerWidth', value);
+};
+
+exports.setOuterWidth = setOuterWidth;
+
+var getOuterHeight = function getOuterHeight(el) {
+  return elementSize(el, 'outerHeight');
+};
+
+exports.getOuterHeight = getOuterHeight;
+
+var setOuterHeight = function setOuterHeight(el, value) {
+  return elementSize(el, 'outerHeight', value);
+};
+
+exports.setOuterHeight = setOuterHeight;
+
+var getInnerWidth = function getInnerWidth(el) {
+  return elementSize(el, 'innerWidth');
+};
+
+exports.getInnerWidth = getInnerWidth;
+
+var setInnerWidth = function setInnerWidth(el, value) {
+  return elementSize(el, 'innerWidth', value);
+};
+
+exports.setInnerWidth = setInnerWidth;
+
+var getInnerHeight = function getInnerHeight(el) {
+  return elementSize(el, 'innerHeight');
+};
+
+exports.getInnerHeight = getInnerHeight;
+
+var setInnerHeight = function setInnerHeight(el, value) {
+  return elementSize(el, 'innerHeight', value);
+};
+
+exports.setInnerHeight = setInnerHeight;
+
+var elementSize = function elementSize(el, sizeProperty, value) {
+  var partialName = sizeProperty.toLowerCase().indexOf('width') >= 0 ? 'Width' : 'Height';
+  var propName = partialName.toLowerCase();
+  var isOuter = sizeProperty.indexOf('outer') === 0;
+  var isInner = sizeProperty.indexOf('inner') === 0;
+
+  if ((0, _type.isWindow)(el)) {
+    return isOuter ? el['inner' + partialName] : _dom_adapter.default.getDocumentElement()['client' + partialName];
+  }
+
+  if (_dom_adapter.default.isDocument(el)) {
+    var documentElement = _dom_adapter.default.getDocumentElement();
+
+    var body = _dom_adapter.default.getBody();
+
+    return Math.max(body['scroll' + partialName], body['offset' + partialName], documentElement['scroll' + partialName], documentElement['offset' + partialName], documentElement['client' + partialName]);
+  }
+
+  if (arguments.length === 2 || typeof value === 'boolean') {
+    var include = {
+      paddings: isInner || isOuter,
+      borders: isOuter,
+      margins: value
+    };
+    return getSize(el, propName, include);
+  }
+
+  if ((0, _type.isNumeric)(value)) {
+    var elementStyles = window.getComputedStyle(el);
+    var sizeAdjustment = getElementBoxParams(propName, elementStyles);
+    var isBorderBox = elementStyles.boxSizing === 'border-box';
+    value = Number(value);
+
+    if (isOuter) {
+      value -= isBorderBox ? 0 : sizeAdjustment.border + sizeAdjustment.padding;
+    } else if (isInner) {
+      value += isBorderBox ? sizeAdjustment.border : -sizeAdjustment.padding;
+    } else if (isBorderBox) {
+      value += sizeAdjustment.border + sizeAdjustment.padding;
+    }
+  }
+
+  value += (0, _type.isNumeric)(value) ? 'px' : '';
+
+  _dom_adapter.default.setStyle(el, propName, value);
+
+  return null;
+};
+
+exports.elementSize = elementSize;
+
+var getWindowByElement = function getWindowByElement(el) {
+  return (0, _type.isWindow)(el) ? el : el.defaultView;
+};
+
+exports.getWindowByElement = getWindowByElement;
+
+var getOffset = function getOffset(el) {
+  if (!el.getClientRects().length) {
+    return {
+      top: 0,
+      left: 0
+    };
+  }
+
+  var rect = el.getBoundingClientRect();
+  var win = getWindowByElement(el.ownerDocument);
+  var docElem = el.ownerDocument.documentElement;
+  return {
+    top: rect.top + win.pageYOffset - docElem.clientTop,
+    left: rect.left + win.pageXOffset - docElem.clientLeft
+  };
+};
+
+exports.getOffset = getOffset;

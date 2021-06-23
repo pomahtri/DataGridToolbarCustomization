@@ -9,6 +9,7 @@ import Scrollable from '../scroll_view/ui.scrollable';
 import devices from '../../core/devices';
 import fx from '../../animation/fx';
 import { resetPosition } from '../../animation/translator';
+import { restoreLocation } from '../../renovation/ui/scroll_view/utils/restore_location';
 var DATEVIEW_ROLLER_CLASS = 'dx-dateviewroller';
 var DATEVIEW_ROLLER_ACTIVE_CLASS = 'dx-state-active';
 var DATEVIEW_ROLLER_CURRENT_CLASS = 'dx-dateviewroller-current';
@@ -20,36 +21,29 @@ var DATEVIEW_ROLLER_ITEM_SELECTED_BORDER_CLASS = 'dx-dateview-item-selected-bord
 class DateViewRoller extends Scrollable {
   _getDefaultOptions() {
     return extend(super._getDefaultOptions(), {
-      showScrollbar: false,
+      showScrollbar: 'never',
       useNative: false,
       selectedIndex: 0,
       bounceEnabled: false,
       items: [],
       showOnClick: false,
       onClick: null,
-      onSelectedIndexChanged: null
+      onSelectedIndexChanged: null,
+      scrollByContent: true
     });
-  }
-
-  _defaultOptionsRules() {
-    return super._defaultOptionsRules().concat([{
-      device: {
-        platform: 'generic'
-      },
-      options: {
-        scrollByContent: true
-      }
-    }]);
   }
 
   _init() {
     super._init();
 
-    this._renderSelectedItemFrame();
+    this.option('onVisibilityChange', this._visibilityChangedHandler.bind(this));
+    this.option('onEnd', this._endActionHandler.bind(this));
   }
 
   _render() {
     super._render();
+
+    this._renderSelectedItemFrame();
 
     this.$element().addClass(DATEVIEW_ROLLER_CLASS);
 
@@ -62,8 +56,6 @@ class DateViewRoller extends Scrollable {
     this._renderItemsClick();
 
     this._renderWheelEvent();
-
-    this._wrapAction('_endAction', this._endActionHandler.bind(this));
 
     this._renderSelectedIndexChanged();
   }
@@ -93,16 +85,6 @@ class DateViewRoller extends Scrollable {
         event: e
       });
     });
-  }
-
-  _wrapAction(actionName, callback) {
-    var strategy = this._strategy;
-    var originalAction = strategy[actionName];
-
-    strategy[actionName] = function () {
-      callback.apply(this, arguments);
-      return originalAction.apply(this, arguments);
-    };
   }
 
   _renderItems() {
@@ -187,17 +169,15 @@ class DateViewRoller extends Scrollable {
   }
 
   _moveTo(targetLocation) {
-    targetLocation = this._normalizeLocation(targetLocation);
-
-    var location = this._location();
-
+    targetLocation = restoreLocation(targetLocation);
+    var location = this.scrollOffset();
     var delta = {
-      x: -(location.left - targetLocation.left),
-      y: -(location.top - targetLocation.top)
+      x: location.left + targetLocation.left,
+      y: location.top + targetLocation.top
     };
 
     if (this._isVisible() && (delta.x || delta.y)) {
-      this._strategy._prepareDirections(true);
+      this._prepareDirections(true);
 
       if (this._animation && !this._shouldScrollToNeighborItem()) {
         var that = this;
@@ -211,8 +191,7 @@ class DateViewRoller extends Scrollable {
 
           complete() {
             resetPosition($(that.content()));
-
-            that._strategy.handleMove({
+            that.handleMove({
               delta
             });
           }
@@ -220,7 +199,7 @@ class DateViewRoller extends Scrollable {
         });
         delete this._animation;
       } else {
-        this._strategy.handleMove({
+        this.handleMove({
           delta
         });
       }
@@ -228,7 +207,7 @@ class DateViewRoller extends Scrollable {
   }
 
   _validate(e) {
-    return this._strategy.validate(e);
+    return this._moveIsAllowed(e);
   }
 
   _fitSelectedIndexInRange(index) {
@@ -242,7 +221,7 @@ class DateViewRoller extends Scrollable {
   }
 
   _getSelectedIndexAfterScroll(currentSelectedIndex) {
-    var locationTop = -this._location().top;
+    var locationTop = this.scrollOffset().top;
 
     var currentSelectedIndexPosition = currentSelectedIndex * this._itemHeight();
 
@@ -266,7 +245,7 @@ class DateViewRoller extends Scrollable {
 
     this._animation = true;
 
-    var ratio = -this._location().top / this._itemHeight();
+    var ratio = this.scrollOffset().top / this._itemHeight();
 
     return Math.round(ratio);
   }
@@ -310,8 +289,15 @@ class DateViewRoller extends Scrollable {
   _visibilityChanged(visible) {
     super._visibilityChanged(visible);
 
+    this._visibilityChangedHandler(visible);
+  }
+
+  _visibilityChangedHandler(visible) {
     if (visible) {
-      this._renderSelectedValue(this.option('selectedIndex'));
+      // TODO: for renovated code, avoid async
+      this._visibilityTimer = setTimeout(() => {
+        this._renderSelectedValue(this.option('selectedIndex'));
+      });
     }
 
     this.toggleActiveState(false);
@@ -364,6 +350,12 @@ class DateViewRoller extends Scrollable {
         super._optionChanged(args);
 
     }
+  }
+
+  _dispose() {
+    clearTimeout(this._visibilityTimer);
+
+    super._dispose();
   }
 
 }

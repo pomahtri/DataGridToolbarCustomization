@@ -130,7 +130,7 @@ var RowDraggingExtender = {
       pager: {
         visible: false
       },
-      loadingTimeout: undefined,
+      loadingTimeout: null,
       columnFixing: gridOptions.columnFixing,
       columnAutoWidth: gridOptions.columnAutoWidth,
       showColumnLines: gridOptions.showColumnLines,

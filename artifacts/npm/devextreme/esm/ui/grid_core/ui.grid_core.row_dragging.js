@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/grid_core/ui.grid_core.row_dragging.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -138,7 +138,7 @@ var RowDraggingExtender = {
       pager: {
         visible: false
       },
-      loadingTimeout: undefined,
+      loadingTimeout: null,
       columnFixing: gridOptions.columnFixing,
       columnAutoWidth: gridOptions.columnAutoWidth,
       showColumnLines: gridOptions.showColumnLines,

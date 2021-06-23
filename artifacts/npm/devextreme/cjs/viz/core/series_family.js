@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/core/series_family.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -66,11 +66,18 @@ function correctStackCoordinates(series, currentStacks, arg, stack, parameters, 
     if ((0, _type.isDefined)(barPadding) || (0, _type.isDefined)(barWidth)) {
       extraParameters = calculateParams(barsArea, currentStacks.length, 1 - barPadding, barWidth);
       width = extraParameters.width;
-      offset = getOffset(stackIndex, extraParameters);
+
+      if (!series.getBarOverlapGroup()) {
+        offset = getOffset(stackIndex, extraParameters);
+      }
     }
 
     correctPointCoordinates(points, width, offset);
   });
+}
+
+function getStackName(series) {
+  return series.getStackName() || series.getBarOverlapGroup();
 }
 
 function adjustBarSeriesDimensionsCore(series, options, seriesStackIndexCallback) {
@@ -97,7 +104,7 @@ function adjustBarSeriesDimensionsCore(series, options, seriesStackIndexCallback
   interval = argumentAxis === null || argumentAxis === void 0 ? void 0 : argumentAxis.getTranslator().getInterval(interval);
   var barsArea = barGroupWidth ? interval > barGroupWidth ? barGroupWidth : interval : interval * (1 - validateBarGroupPadding(options.barGroupPadding));
   series.forEach(function (s, i) {
-    var stackName = s.getStackName() || s.getBarOverlapGroup() || i.toString();
+    var stackName = getStackName(s) || i.toString();
     var argument;
 
     for (argument in s.pointsByArgument) {
@@ -239,7 +246,7 @@ function adjustStackedSeriesValues() {
   var lastSeriesInPositiveStack = {};
   var lastSeriesInNegativeStack = {};
   series.forEach(function (singleSeries) {
-    var stackName = singleSeries.getStackName() || singleSeries.getBarOverlapGroup();
+    var stackName = getStackName(singleSeries);
     var hole = false;
     var stack = getFirstValueSign(singleSeries) < 0 ? lastSeriesInNegativeStack : lastSeriesInPositiveStack;
     singleSeries._prevSeries = stack[stackName];
@@ -300,7 +307,7 @@ function adjustStackedSeriesValues() {
   series.forEach(function (singleSeries) {
     singleSeries.getPoints().forEach(function (point) {
       var argument = point.argument.valueOf();
-      var stackName = singleSeries.getStackName() || singleSeries.getBarOverlapGroup();
+      var stackName = getStackName(singleSeries);
       var absTotal = getAbsStackSumByArg(stackKeepers, stackName, argument);
       var total = getStackSumByArg(stackKeepers, stackName, argument);
       point.setPercentValue(absTotal, total, holesStack.left[argument], holesStack.right[argument]);

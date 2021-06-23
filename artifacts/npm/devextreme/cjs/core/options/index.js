@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/core/options/index.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -17,6 +17,8 @@ var _common = require("../utils/common");
 var _option_manager = require("./option_manager");
 
 var _object = require("../utils/object");
+
+var _data = require("../utils/data");
 
 var _utils = require("./utils");
 
@@ -202,7 +204,7 @@ var Options = /*#__PURE__*/function () {
     var _this2 = this;
 
     if (name) {
-      var fullPath = name.replace(/\[([^\]])\]/g, '.$1').split('.');
+      var fullPath = (0, _data.getPathParts)(name);
       var value = fullPath.reduce(function (value, field) {
         return value ? value[field] : _this2.initial(field);
       }, null);

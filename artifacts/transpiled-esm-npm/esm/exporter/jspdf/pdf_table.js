@@ -50,7 +50,8 @@ export class PdfTable {
     for (var i = 0; i < cells.length; i++) {
       var currentCell = cells[i];
 
-      if (currentCell.drawLeftBorder === false) {
+      if (currentCell.drawLeftBorder === false && !isDefined(currentCell.colSpan)) {
+        // TODO
         if (i >= 1) {
           cells[i - 1].drawRightBorder = false;
         }

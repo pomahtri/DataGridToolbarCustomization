@@ -98,10 +98,10 @@ class AppointmentLayoutManager {
     var createSettingsToCompare = (settings, index) => {
       var virtualCellCount = settings.virtualCellCount || 0;
       var virtualRowCount = settings.virtualRowCount || 0;
-      var cellIndex = settings[index].cellIndex + virtualCellCount;
+      var columnIndex = settings[index].columnIndex + virtualCellCount;
       var rowIndex = settings[index].rowIndex + virtualRowCount;
       return _extends({}, settings[index], {
-        cellIndex: cellIndex,
+        columnIndex,
         rowIndex: rowIndex,
         virtualCellCount: -1,
         virtualRowCount: -1

@@ -2,7 +2,7 @@
 /**
 * DevExtreme (dx.darkmoon.css)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -11549,6 +11549,12 @@
   width: 85px;
   min-width: 85px;
 }
+.dx-datagrid-table .dx-row .dx-command-edit .dx-link.dx-state-disabled {
+  opacity: .5;
+}
+.dx-datagrid-table .dx-row .dx-command-edit .dx-link.dx-state-disabled.dx-link-icon {
+  opacity: .6;
+}
 .dx-datagrid-table .dx-row .dx-command-expand {
   width: 30px;
   min-width: 30px;
@@ -13637,6 +13643,12 @@ input.dx-hidden {
 .dx-treelist-table .dx-row .dx-command-edit {
   width: 85px;
   min-width: 85px;
+}
+.dx-treelist-table .dx-row .dx-command-edit .dx-link.dx-state-disabled {
+  opacity: .5;
+}
+.dx-treelist-table .dx-row .dx-command-edit .dx-link.dx-state-disabled.dx-link-icon {
+  opacity: .6;
 }
 .dx-treelist-table .dx-row .dx-command-expand {
   width: 30px;

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/exporter/jspdf/export.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -90,6 +90,8 @@ export var Export = {
     rowsView._renderLoadPanel(rowsView.element(), rowsView.element().parent());
   },
   export: function _export(options) {
+    var _component$_getIntern;
+
     var {
       jsPDFDocument,
       autoTableOptions,
@@ -99,13 +101,14 @@ export var Export = {
       selectedRowsOnly,
       loadPanel
     } = options;
-    var initialLoadPanelOptions = extend({}, component.option('loadPanel'));
+    var internalComponent = ((_component$_getIntern = component._getInternalInstance) === null || _component$_getIntern === void 0 ? void 0 : _component$_getIntern.call(component)) || component;
+    var initialLoadPanelOptions = extend({}, internalComponent.option('loadPanel'));
 
-    if ('animation' in component.option('loadPanel')) {
+    if ('animation' in internalComponent.option('loadPanel')) {
       loadPanel.animation = null;
     }
 
-    this._setLoadPanelOptions(component, loadPanel);
+    this._setLoadPanelOptions(internalComponent, loadPanel);
 
     var dataProvider = component.getDataProvider(selectedRowsOnly);
     var wrapText = !!component.option('wordWrapEnabled');
@@ -193,7 +196,7 @@ export var Export = {
         jsPDFDocument.autoTable(autoTableOptions);
         resolve();
       }).always(() => {
-        this._setLoadPanelOptions(component, initialLoadPanelOptions);
+        this._setLoadPanelOptions(internalComponent, initialLoadPanelOptions);
       });
     });
   },

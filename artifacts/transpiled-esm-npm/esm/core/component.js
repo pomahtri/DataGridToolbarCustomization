@@ -11,6 +11,7 @@ import { name as publicComponentName } from './utils/public_component';
 import { PostponedOperations } from './postponed_operations';
 import { isFunction, isPlainObject, isDefined } from './utils/type';
 import { noop } from './utils/common';
+import { getPathParts } from './utils/data';
 
 var getEventName = actionName => {
   return actionName.charAt(2).toLowerCase() + actionName.substr(3);
@@ -245,7 +246,7 @@ export var Component = Class.inherit({
       for (var i = 0; i < optionNames.length; i++) {
         var name = optionNames[i];
         var args = {
-          name: name.split(/[.[]/)[0],
+          name: getPathParts(name)[0],
           fullName: name,
           value: value,
           previousValue: previousValue

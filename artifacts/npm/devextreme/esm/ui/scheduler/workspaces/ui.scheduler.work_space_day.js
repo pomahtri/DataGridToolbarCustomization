@@ -1,13 +1,14 @@
 /**
 * DevExtreme (esm/ui/scheduler/workspaces/ui.scheduler.work_space_day.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 import registerComponent from '../../../core/component_registrator';
 import SchedulerWorkSpaceVertical from './ui.scheduler.work_space_vertical';
+import { calculateStartViewDate } from './utils/day';
 var DAY_CLASS = 'dx-scheduler-work-space-day';
 
 class SchedulerWorkSpaceDay extends SchedulerWorkSpaceVertical {
@@ -23,19 +24,17 @@ class SchedulerWorkSpaceDay extends SchedulerWorkSpaceVertical {
     return this.option('intervalCount');
   }
 
-  _setFirstViewDate() {
-    this._firstViewDate = this._getViewStartByOptions();
-
-    this._setStartDayHour(this._firstViewDate);
+  _calculateStartViewDate() {
+    return calculateStartViewDate(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration());
   }
 
   _getDateByIndex(headerIndex) {
     if (this.option('intervalCount') === 1) {
-      return this._firstViewDate;
+      return this._startViewDate;
     }
 
-    var resultDate = new Date(this._firstViewDate);
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex);
+    var resultDate = new Date(this._startViewDate);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex);
     return resultDate;
   }
 

@@ -6,6 +6,8 @@ var _component_registrator = _interopRequireDefault(require("../../../core/compo
 
 var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.timeline"));
 
+var _day = require("./utils/day");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
@@ -27,10 +29,8 @@ var SchedulerTimelineDay = /*#__PURE__*/function (_SchedulerTimeline) {
     return TIMELINE_CLASS;
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    this._firstViewDate = this.option('currentDate');
-
-    this._setStartDayHour(this._firstViewDate);
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _day.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration());
   };
 
   _proto._needRenderWeekHeader = function _needRenderWeekHeader() {

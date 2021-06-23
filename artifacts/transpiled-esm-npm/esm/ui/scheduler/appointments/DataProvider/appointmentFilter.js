@@ -8,10 +8,11 @@ import { extend } from '../../../../core/utils/extend';
 import { map, each } from '../../../../core/utils/iterator';
 import { isFunction, isDefined, isString } from '../../../../core/utils/type';
 import query from '../../../../data/query';
-import { getResourceManager } from '../../resources/resourceManager';
+import timeZoneUtils from '../../utils.timeZone';
 var toMs = dateUtils.dateToMilliseconds;
 var DATE_FILTER_POSITION = 0;
 var USER_FILTER_POSITION = 1;
+var FULL_DATE_FORMAT = 'yyyyMMddTHHmmss';
 var FilterStrategies = {
   virtual: 'virtual',
   standard: 'standard'
@@ -117,10 +118,10 @@ class FilterMaker {
 }
 
 export class AppointmentFilterBaseStrategy {
-  constructor(scheduler, dataSource, dataAccessors) {
-    this.scheduler = scheduler;
-    this.dataAccessors = dataAccessors;
-    this.dataSource = dataSource;
+  constructor(options) {
+    this.options = options;
+    this.dataSource = this.options.dataSource;
+    this.dataAccessors = this.options.dataAccessors;
     this.filterHelper = new AppointmentFilterHelper();
 
     this._init();
@@ -131,40 +132,50 @@ export class AppointmentFilterBaseStrategy {
   } // TODO - Use DI to get appropriate services
 
 
+  get scheduler() {
+    return this.options.scheduler;
+  } // TODO get rid
+
+
   get workspace() {
     return this.scheduler.getWorkSpace();
-  }
+  } // TODO get rid
+
 
   get viewDataProvider() {
     return this.workspace.viewDataProvider;
   }
 
   get resourceManager() {
-    return getResourceManager(this.scheduler.key);
+    return this.options.resourceManager;
   }
 
   get timeZoneCalculator() {
-    return this.scheduler.timeZoneCalculator;
+    return this.options.timeZoneCalculator;
   }
 
   get viewStartDayHour() {
-    return this.scheduler._getCurrentViewOption('startDayHour');
+    return this.options.startDayHour;
   }
 
   get viewEndDayHour() {
-    return this.scheduler._getCurrentViewOption('endDayHour');
-  }
-
-  get firstDayOfWeek() {
-    return this.scheduler.getFirstDayOfWeek();
+    return this.options.endDayHour;
   }
 
   get appointmentDuration() {
-    return this.scheduler.getAppointmentDurationInMinutes();
+    return this.options.appointmentDuration;
   }
 
-  get recurrenceExceptionGenerator() {
-    return this.scheduler._getRecurrenceException.bind(this.scheduler);
+  get timezone() {
+    return this.options.timezone;
+  }
+
+  get firstDayOfWeek() {
+    return this.options.firstDayOfWeek;
+  }
+
+  get showAllDayPanel() {
+    return this.options.showAllDayPanel;
   }
 
   _init() {
@@ -177,7 +188,7 @@ export class AppointmentFilterBaseStrategy {
     var resources = this.resourceManager.getResourcesData();
     var allDay;
 
-    if (!this.scheduler.option('showAllDayPanel') && this.workspace.supportAllDayRow()) {
+    if (!this.showAllDayPanel && this.workspace.supportAllDayRow()) {
       allDay = false;
     }
 
@@ -191,8 +202,43 @@ export class AppointmentFilterBaseStrategy {
       resources: resources,
       allDay: allDay,
       firstDayOfWeek: this.firstDayOfWeek,
-      recurrenceException: this.recurrenceExceptionGenerator
-    }, this.timeZoneCalculator);
+      recurrenceException: this.getRecurrenceException.bind(this)
+    });
+  } // TODO: Get rid of it after rework filtering
+
+
+  getRecurrenceException(rawAppointment) {
+    var appointment = this.scheduler.createAppointmentAdapter(rawAppointment);
+    var recurrenceException = appointment.recurrenceException;
+
+    if (recurrenceException) {
+      var exceptions = recurrenceException.split(',');
+
+      for (var i = 0; i < exceptions.length; i++) {
+        exceptions[i] = this._convertRecurrenceException(exceptions[i], appointment.startDate);
+      }
+
+      return exceptions.join();
+    }
+
+    return recurrenceException;
+  }
+
+  _convertRecurrenceException(exceptionString, startDate) {
+    exceptionString = exceptionString.replace(/\s/g, '');
+
+    var getConvertedToTimeZone = date => {
+      return this.timeZoneCalculator.createDate(date, {
+        path: 'toGrid'
+      });
+    };
+
+    var exceptionDate = dateSerialization.deserializeDate(exceptionString);
+    var convertedStartDate = getConvertedToTimeZone(startDate);
+    var convertedExceptionDate = getConvertedToTimeZone(exceptionDate);
+    convertedExceptionDate = timeZoneUtils.correctRecurrenceExceptionByTimezone(convertedExceptionDate, convertedStartDate, this.timeZone);
+    exceptionString = dateSerialization.serializeDate(convertedExceptionDate, FULL_DATE_FORMAT);
+    return exceptionString;
   }
 
   filterByDate(min, max, remoteFiltering, dateSerializationFormat) {
@@ -315,7 +361,7 @@ export class AppointmentFilterBaseStrategy {
     return [[appointment => that.appointmentTakesAllDay(appointment, viewStartDayHour, viewEndDayHour)]];
   }
 
-  _createCombinedFilter(filterOptions, timeZoneCalculator) {
+  _createCombinedFilter(filterOptions) {
     var dataAccessors = this.dataAccessors;
     var min = new Date(filterOptions.min);
     var max = new Date(filterOptions.max);
@@ -331,7 +377,10 @@ export class AppointmentFilterBaseStrategy {
     } = filterOptions;
     var that = this;
     return [[appointment => {
-      var result = true;
+      var _appointment$visible;
+
+      var appointmentVisible = (_appointment$visible = appointment.visible) !== null && _appointment$visible !== void 0 ? _appointment$visible : true;
+      var result = appointmentVisible;
       var startDate = new Date(dataAccessors.getter.startDate(appointment));
       var endDate = new Date(dataAccessors.getter.endDate(appointment));
       var appointmentTakesAllDay = that.appointmentTakesAllDay(appointment, viewStartDayHour, viewEndDayHour);
@@ -355,11 +404,11 @@ export class AppointmentFilterBaseStrategy {
 
       var startDateTimeZone = dataAccessors.getter.startDateTimeZone(appointment);
       var endDateTimeZone = dataAccessors.getter.endDateTimeZone(appointment);
-      var comparableStartDate = timeZoneCalculator.createDate(startDate, {
+      var comparableStartDate = this.timeZoneCalculator.createDate(startDate, {
         appointmentTimeZone: startDateTimeZone,
         path: 'toGrid'
       });
-      var comparableEndDate = timeZoneCalculator.createDate(endDate, {
+      var comparableEndDate = this.timeZoneCalculator.createDate(endDate, {
         appointmentTimeZone: endDateTimeZone,
         path: 'toGrid'
       });
@@ -410,7 +459,7 @@ export class AppointmentFilterBaseStrategy {
     }]];
   }
 
-  customizeDateFilter(dateFilter, timeZoneCalculator) {
+  customizeDateFilter(dateFilter) {
     var currentFilter = extend(true, [], dateFilter);
     return (appointment => {
       var startDate = new Date(this.dataAccessors.getter.startDate(appointment));
@@ -418,11 +467,11 @@ export class AppointmentFilterBaseStrategy {
       appointment = extend(true, {}, appointment);
       var startDateTimeZone = this.dataAccessors.getter.startDateTimeZone(appointment);
       var endDateTimeZone = this.dataAccessors.getter.endDateTimeZone(appointment);
-      var comparableStartDate = timeZoneCalculator.createDate(startDate, {
+      var comparableStartDate = this.timeZoneCalculator.createDate(startDate, {
         appointmentTimeZone: startDateTimeZone,
         path: 'toGrid'
       });
-      var comparableEndDate = timeZoneCalculator.createDate(endDate, {
+      var comparableEndDate = this.timeZoneCalculator.createDate(endDate, {
         appointmentTimeZone: endDateTimeZone,
         path: 'toGrid'
       });
@@ -432,8 +481,8 @@ export class AppointmentFilterBaseStrategy {
     }).bind(this);
   }
 
-  _createAppointmentFilter(filterOptions, timeZoneCalculator) {
-    var combinedFilter = this._createCombinedFilter(filterOptions, timeZoneCalculator);
+  _createAppointmentFilter(filterOptions) {
+    var combinedFilter = this._createCombinedFilter(filterOptions);
 
     if (this.filterMaker.isRegistered()) {
       this.filterMaker.make('user', undefined);
@@ -441,7 +490,7 @@ export class AppointmentFilterBaseStrategy {
       var trimmedDates = this._trimDates(filterOptions.min, filterOptions.max);
 
       this.filterMaker.make('date', [trimmedDates.min, trimmedDates.max, true]);
-      var dateFilter = this.customizeDateFilter(this.filterMaker.combine(), timeZoneCalculator);
+      var dateFilter = this.customizeDateFilter(this.filterMaker.combine());
       combinedFilter.push([dateFilter]);
     }
 
@@ -599,8 +648,8 @@ export class AppointmentFilterBaseStrategy {
     });
   }
 
-  filterLoadedAppointments(filterOption, timeZoneCalculator) {
-    var combinedFilter = this._createAppointmentFilter(filterOption, timeZoneCalculator);
+  filterLoadedAppointments(filterOption) {
+    var combinedFilter = this._createAppointmentFilter(filterOption);
 
     return query(this.getPreparedDataItems()).filter(combinedFilter).toArray();
   }
@@ -622,7 +671,7 @@ export class AppointmentFilterVirtualStrategy extends AppointmentFilterBaseStrat
     var isCalculateStartAndEndDayHour = this.workspace.isDateAndTimeView;
     var checkIntersectViewport = this.workspace.isDateAndTimeView && this.workspace.viewDirection === 'horizontal';
     var isAllDayWorkspace = !this.workspace.supportAllDayRow();
-    var showAllDayAppointments = this.scheduler.option('showAllDayPanel') || isAllDayWorkspace;
+    var showAllDayAppointments = this.showAllDayPanel || isAllDayWorkspace;
     var endViewDate = this.workspace.getEndViewDateByEndDayHour();
     var filterOptions = [];
     var groupsInfo = this.viewDataProvider.getCompletedGroupsInfo();
@@ -649,14 +698,14 @@ export class AppointmentFilterVirtualStrategy extends AppointmentFilterBaseStrat
         allDay: supportAllDayAppointment,
         resources,
         firstDayOfWeek: this.firstDayOfWeek,
-        recurrenceException: this.recurrenceExceptionGenerator,
+        recurrenceException: this.getRecurrenceException.bind(this),
         checkIntersectViewport
       });
     });
-    return this.filterLoadedAppointments(filterOptions, this.timeZoneCalculator, this.workspace._getGroupCount());
+    return this.filterLoadedAppointments(filterOptions, this.workspace._getGroupCount());
   }
 
-  filterLoadedAppointments(filterOptions, timeZoneCalculator, groupCount) {
+  filterLoadedAppointments(filterOptions, groupCount) {
     var combinedFilters = [];
     var itemsToFilter = this.getPreparedDataItems();
     var needPreFilter = groupCount > 0;
@@ -678,7 +727,7 @@ export class AppointmentFilterVirtualStrategy extends AppointmentFilterBaseStrat
     filterOptions.forEach(filterOption => {
       combinedFilters.length && combinedFilters.push('or');
 
-      var filter = this._createAppointmentFilter(filterOption, timeZoneCalculator);
+      var filter = this._createAppointmentFilter(filterOption);
 
       combinedFilters.push(filter);
     });

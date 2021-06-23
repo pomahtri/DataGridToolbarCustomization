@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/exporter/exceljs/export.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -137,7 +137,8 @@ var Export = {
     renderLoadPanel(component);
   },
   export: function _export(options, helpers) {
-    var _this2 = this;
+    var _component$_getIntern,
+        _this2 = this;
 
     var customizeCell = options.customizeCell,
         component = options.component,
@@ -149,13 +150,14 @@ var Export = {
         loadPanel = options.loadPanel,
         mergeRowFieldValues = options.mergeRowFieldValues,
         mergeColumnFieldValues = options.mergeColumnFieldValues;
-    var initialLoadPanelOptions = (0, _extend.extend)({}, component.option('loadPanel'));
+    var internalComponent = ((_component$_getIntern = component._getInternalInstance) === null || _component$_getIntern === void 0 ? void 0 : _component$_getIntern.call(component)) || component;
+    var initialLoadPanelOptions = (0, _extend.extend)({}, internalComponent.option('loadPanel'));
 
-    if ('animation' in component.option('loadPanel')) {
+    if ('animation' in internalComponent.option('loadPanel')) {
       loadPanel.animation = null;
     }
 
-    this.setLoadPanelOptions(component, loadPanel, helpers._renderLoadPanel);
+    this.setLoadPanelOptions(internalComponent, loadPanel, helpers._renderLoadPanel);
     var wrapText = !!component.option('wordWrapEnabled');
     worksheet.properties.outlineProperties = {
       summaryBelow: false,
@@ -219,7 +221,7 @@ var Export = {
 
         resolve(cellRange);
       }).always(function () {
-        _this2.setLoadPanelOptions(component, initialLoadPanelOptions, helpers._renderLoadPanel);
+        _this2.setLoadPanelOptions(internalComponent, initialLoadPanelOptions, helpers._renderLoadPanel);
       });
     });
   },

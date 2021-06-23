@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/multi_view.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -126,8 +126,10 @@ export default class dxMultiView<TProperties = Properties> extends CollectionWid
 export interface dxMultiViewItem extends CollectionWidgetItem {
 }
 
+interface MultiViewInstance extends dxMultiView<Properties> { }
+
 /** @public */
-export type Properties = dxMultiViewOptions<dxMultiView<Properties>>;
+export type Properties = dxMultiViewOptions<MultiViewInstance>;
 
 /** @deprecated use Properties instead */
 export type Options = Properties;

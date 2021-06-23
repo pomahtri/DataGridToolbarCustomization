@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/appointmentSettingsGenerator.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -19,6 +19,8 @@ var _extend = require("../../core/utils/extend");
 var _recurrence = require("./recurrence");
 
 var _utilsTimeZone = _interopRequireDefault(require("./utils.timeZone.js"));
+
+var _instanceFactory = require("./instanceFactory");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74,6 +76,8 @@ exports.AppointmentSettingsGenerator = AppointmentSettingsGenerator;
 var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
   function AppointmentSettingsGeneratorBaseStrategy(scheduler) {
     this.scheduler = scheduler;
+    this.key = this.scheduler.key;
+    this.timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key);
   }
 
   var _proto2 = AppointmentSettingsGeneratorBaseStrategy.prototype;
@@ -484,11 +488,6 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
   };
 
   _createClass(AppointmentSettingsGeneratorBaseStrategy, [{
-    key: "timeZoneCalculator",
-    get: function get() {
-      return this.scheduler.timeZoneCalculator;
-    }
-  }, {
     key: "workspace",
     get: function get() {
       return this.scheduler.getWorkSpace();

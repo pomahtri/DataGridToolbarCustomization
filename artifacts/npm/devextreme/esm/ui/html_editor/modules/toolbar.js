@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/html_editor/modules/toolbar.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -600,6 +600,8 @@ if (Quill) {
           placeholder: localize(name),
           onValueChanged: e => {
             if (!this._isReset) {
+              this._hideAdaptiveMenu();
+
               this._applyFormat([name, e.value, USER_ACTION], e.event);
 
               this._setValueSilent(e.component, e.value);
@@ -607,6 +609,12 @@ if (Quill) {
           }
         }
       }, item);
+    }
+
+    _hideAdaptiveMenu() {
+      if (this.toolbarInstance.option('overflowMenuVisible')) {
+        this.toolbarInstance.option('overflowMenuVisible', false);
+      }
     }
 
     _prepareColorClickHandler(name) {

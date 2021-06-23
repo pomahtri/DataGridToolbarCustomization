@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/ui/scroll_view/utils/get_element_location_internal.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -17,7 +17,7 @@ var _consts = require("../common/consts");
 function getElementLocationInternal(element, offset, direction, containerElement) {
   var prop = direction === _consts.DIRECTION_VERTICAL ? "top" : "left";
   var dimension = direction === _consts.DIRECTION_VERTICAL ? "Height" : "Width";
-  var relativeLocation = containerElement["scroll".concat((0, _inflector.titleize)(prop))] + element.getBoundingClientRect()[prop] - containerElement.getBoundingClientRect()[prop];
+  var relativeLocation = containerElement["scroll".concat((0, _inflector.titleize)(prop))] - containerElement.getBoundingClientRect()[prop] + element.getBoundingClientRect()[prop];
   var containerLocation = containerElement["scroll".concat((0, _inflector.titleize)(prop))];
   var scrollBarSize = containerElement["offset".concat(dimension)] - containerElement["client".concat(dimension)];
   var containerSize = containerElement["offset".concat(dimension)];

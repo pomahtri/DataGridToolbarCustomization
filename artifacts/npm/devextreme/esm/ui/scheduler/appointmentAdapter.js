@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/appointmentAdapter.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -10,6 +10,7 @@ import { extend } from '../../core/utils/extend';
 import errors from '../widget/ui.errors';
 import { deepExtendArraySafe } from '../../core/utils/object';
 import { getRecurrenceProcessor } from './recurrence';
+import { getTimeZoneCalculator } from './instanceFactory';
 var PROPERTY_NAMES = {
   startDate: 'startDate',
   endDate: 'endDate',
@@ -104,7 +105,7 @@ class AppointmentAdapter {
   }
 
   get timeZoneCalculator() {
-    return this.options.getTimeZoneCalculator();
+    return getTimeZoneCalculator(this.options.key);
   }
 
   get isRecurrent() {

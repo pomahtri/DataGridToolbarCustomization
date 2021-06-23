@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.timeline.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -139,7 +139,7 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
 
     var result = this._getDateByIndexCore(firstViewDate, index);
 
-    if (_utils.default.isTimezoneChangeInDate(this._firstViewDate)) {
+    if (_utils.default.isTimezoneChangeInDate(this._startViewDate)) {
       result.setDate(result.getDate() - 1);
     }
 
@@ -150,14 +150,14 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
     return 'shorttime';
   };
 
-  _proto._calculateHiddenInterval = function _calculateHiddenInterval(rowIndex, cellIndex) {
-    var dayIndex = Math.floor(cellIndex / this._getCellCountInDay());
+  _proto._calculateHiddenInterval = function _calculateHiddenInterval(rowIndex, columnIndex) {
+    var dayIndex = Math.floor(columnIndex / this._getCellCountInDay());
     return dayIndex * this._getHiddenInterval();
   };
 
-  _proto._getMillisecondsOffset = function _getMillisecondsOffset(rowIndex, cellIndex) {
-    cellIndex = this._calculateCellIndex(rowIndex, cellIndex);
-    return this._getInterval() * cellIndex + this._calculateHiddenInterval(rowIndex, cellIndex);
+  _proto._getMillisecondsOffset = function _getMillisecondsOffset(rowIndex, columnIndex) {
+    columnIndex = this._calculateCellIndex(rowIndex, columnIndex);
+    return this._getInterval() * columnIndex + this._calculateHiddenInterval(rowIndex, columnIndex);
   };
 
   _proto._createWorkSpaceElements = function _createWorkSpaceElements() {
@@ -237,7 +237,7 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
     var $headerRow = _SchedulerWorkSpace.prototype._renderDateHeader.call(this);
 
     if (this._needRenderWeekHeader()) {
-      var firstViewDate = new Date(this._firstViewDate);
+      var firstViewDate = new Date(this._startViewDate);
       var currentDate = new Date(firstViewDate);
       var $cells = [];
 
@@ -298,8 +298,7 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
   };
 
   _proto._renderView = function _renderView() {
-    this._setFirstViewDate();
-
+    this._startViewDate = this._calculateStartViewDate();
     var groupCellTemplates;
 
     if (!this.isRenovatedRender()) {
@@ -457,7 +456,7 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
 
   _proto._getCellCoordinatesByIndex = function _getCellCoordinatesByIndex(index) {
     return {
-      cellIndex: index % this._getCellCount(),
+      columnIndex: index % this._getCellCount(),
       rowIndex: 0
     };
   };
@@ -465,7 +464,7 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
   _proto._getCellByCoordinates = function _getCellByCoordinates(cellCoordinates, groupIndex) {
     var indexes = this._groupedStrategy.prepareCellIndexes(cellCoordinates, groupIndex);
 
-    return this._$dateTable.find('tr').eq(indexes.rowIndex).find('td').eq(indexes.cellIndex);
+    return this._$dateTable.find('tr').eq(indexes.rowIndex).find('td').eq(indexes.columnIndex);
   };
 
   _proto._getWorkSpaceWidth = function _getWorkSpaceWidth() {
@@ -473,7 +472,7 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
   };
 
   _proto._getIndicationFirstViewDate = function _getIndicationFirstViewDate() {
-    return _date.default.trimTime(new Date(this._firstViewDate));
+    return _date.default.trimTime(new Date(this._startViewDate));
   };
 
   _proto._getIntervalBetween = function _getIntervalBetween(currentDate, allDay) {
@@ -642,15 +641,15 @@ var SchedulerTimeline = /*#__PURE__*/function (_SchedulerWorkSpace) {
     var index = this.getCellIndexByDate(today);
 
     var _this$_getCellCoordin = this._getCellCoordinatesByIndex(index),
-        currentTimeCellIndex = _this$_getCellCoordin.cellIndex;
+        currentTimeColumnIndex = _this$_getCellCoordin.columnIndex;
 
-    if (currentTimeCellIndex === undefined) {
+    if (currentTimeColumnIndex === undefined) {
       return [];
     }
 
     var horizontalGroupCount = this._isHorizontalGroupedWorkSpace() && !this.isGroupedByDate() ? this._getGroupCount() : 1;
     return _toConsumableArray(new Array(horizontalGroupCount)).map(function (_, groupIndex) {
-      return columnCountPerGroup * groupIndex + currentTimeCellIndex;
+      return columnCountPerGroup * groupIndex + currentTimeColumnIndex;
     });
   };
 

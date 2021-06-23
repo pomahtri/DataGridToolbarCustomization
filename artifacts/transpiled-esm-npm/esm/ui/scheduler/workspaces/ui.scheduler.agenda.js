@@ -9,6 +9,8 @@ import { extend } from '../../../core/utils/extend';
 import dateLocalization from '../../../localization/date';
 import tableCreatorModule from '../table_creator';
 import { TIME_PANEL_CLASS, DATE_TABLE_CLASS, DATE_TABLE_ROW_CLASS, GROUP_ROW_CLASS, GROUP_HEADER_CONTENT_CLASS } from '../classes';
+import { getTimeZoneCalculator } from '../instanceFactory';
+import { calculateStartViewDate } from './utils/agenda';
 var {
   tableCreator
 } = tableCreatorModule;
@@ -108,10 +110,8 @@ class SchedulerAgenda extends WorkSpace {
     return AGENDA_CLASS;
   }
 
-  _setFirstViewDate() {
-    this._firstViewDate = new Date(this.option('currentDate'));
-
-    this._setStartDayHour(this._firstViewDate);
+  _calculateStartViewDate() {
+    return calculateStartViewDate(this.option('currentDate'), this.option('startDayHour'));
   }
 
   _getRowCount() {
@@ -158,8 +158,7 @@ class SchedulerAgenda extends WorkSpace {
   }
 
   _renderView() {
-    this._setFirstViewDate();
-
+    this._startViewDate = this._calculateStartViewDate();
     this._rows = [];
   }
 
@@ -560,8 +559,8 @@ class SchedulerAgenda extends WorkSpace {
   }
 
   updateScrollPosition(date) {
-    var scheduler = this.option('observer');
-    var newDate = scheduler.timeZoneCalculator.createDate(date, {
+    var timeZoneCalculator = getTimeZoneCalculator(this.option('key'));
+    var newDate = timeZoneCalculator.createDate(date, {
       path: 'toGrid'
     });
     var bounds = this.getVisibleBounds();

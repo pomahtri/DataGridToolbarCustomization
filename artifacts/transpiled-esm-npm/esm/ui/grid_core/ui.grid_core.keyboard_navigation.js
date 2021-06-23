@@ -1198,7 +1198,7 @@ var KeyboardNavigationController = core.ViewController.inherit({
       var editingController = this._editingController;
       var isCellEditMode = editingController.getEditMode() === EDIT_MODE_CELL;
 
-      if (!this.option('repaintChangesOnly') && isCellEditMode && editingController.hasChanges()) {
+      if (isCellEditMode && editingController.hasChanges()) {
         editingController._focusEditingCell();
 
         return;

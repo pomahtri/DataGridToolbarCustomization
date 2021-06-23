@@ -6,6 +6,8 @@ import dateUtils from '../../../core/utils/date';
 import { getBoundingRect } from '../../../core/utils/position';
 import dateLocalization from '../../../localization/date';
 import dxrMonthDateTableLayout from '../../../renovation/ui/scheduler/workspaces/month/date_table/layout.j';
+import { calculateStartViewDate, getViewStartByOptions } from './utils/month';
+import { setStartDayHour } from './utils/base';
 var MONTH_CLASS = 'dx-scheduler-work-space-month';
 var DATE_TABLE_CURRENT_DATE_CLASS = 'dx-scheduler-date-table-current-date';
 var DATE_TABLE_CELL_TEXT_CLASS = 'dx-scheduler-date-table-cell-text';
@@ -38,8 +40,8 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
   }
 
   _getDateByIndex(headerIndex) {
-    var resultDate = new Date(this._firstViewDate);
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex);
+    var resultDate = new Date(this._startViewDate);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex);
     return resultDate;
   }
 
@@ -47,14 +49,14 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
     return this._formatWeekday;
   }
 
-  _calculateCellIndex(rowIndex, cellIndex) {
+  _calculateCellIndex(rowIndex, columnIndex) {
     if (this._isVerticalGroupedWorkSpace()) {
       rowIndex = rowIndex % this._getRowCount();
     } else {
-      cellIndex = cellIndex % this._getCellCount();
+      columnIndex = columnIndex % this._getCellCount();
     }
 
-    return rowIndex * this._getCellCount() + cellIndex;
+    return rowIndex * this._getCellCount() + columnIndex;
   }
 
   _getInterval() {
@@ -67,12 +69,10 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
     return currentDate.getTime() - (firstViewDate.getTime() - this.option('startDayHour') * 3600000) - timeZoneOffset;
   }
 
-  _getDateByCellIndexes(rowIndex, cellIndex) {
-    var date = super._getDateByCellIndexes(rowIndex, cellIndex);
+  _getDateByCellIndexes(rowIndex, columnIndex) {
+    var date = super._getDateByCellIndexes(rowIndex, columnIndex);
 
-    this._setStartDayHour(date);
-
-    return date;
+    return setStartDayHour(date, this.option('startDayHour'));
   } // TODO: temporary fix, in the future, if we replace table layout on div layout, getCellWidth method need remove. Details in T712431
   // TODO: there is a test for this bug, when changing the layout, the test will also be useless
 
@@ -101,10 +101,10 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
 
   _getCellCoordinatesByIndex(index) {
     var rowIndex = Math.floor(index / this._getCellCount());
-    var cellIndex = index - this._getCellCount() * rowIndex;
+    var columnIndex = index - this._getCellCount() * rowIndex;
     return {
       rowIndex: rowIndex,
-      cellIndex: cellIndex
+      columnIndex
     };
   }
 
@@ -140,48 +140,19 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
     return noop();
   }
 
-  _setFirstViewDate() {
-    var firstMonthDate = dateUtils.getFirstMonthDate(this._getViewStartByOptions());
-
-    var firstDayOfWeek = this._getCalculatedFirstDayOfWeek();
-
-    this._firstViewDate = dateUtils.getFirstWeekDate(firstMonthDate, firstDayOfWeek);
-
-    this._setStartDayHour(this._firstViewDate);
-
+  _setVisibilityDates() {
     var date = this._getViewStartByOptions();
 
     this._minVisibleDate = new Date(date.setDate(1));
     this._maxVisibleDate = new Date(new Date(date.setMonth(date.getMonth() + this.option('intervalCount'))).setDate(0));
   }
 
-  _getViewStartByOptions() {
-    if (!this.option('startDate')) {
-      return new Date(this.option('currentDate').getTime());
-    } else {
-      var startDate = this._getStartViewDate();
-
-      var currentDate = this.option('currentDate');
-      var diff = startDate.getTime() <= currentDate.getTime() ? 1 : -1;
-      var endDate = new Date(new Date(this._getStartViewDate().setMonth(this._getStartViewDate().getMonth() + diff * this.option('intervalCount'))));
-
-      while (!this._dateInRange(currentDate, startDate, endDate, diff)) {
-        startDate = new Date(endDate);
-
-        if (diff > 0) {
-          startDate.setDate(1);
-        }
-
-        endDate = new Date(new Date(endDate.setMonth(endDate.getMonth() + diff * this.option('intervalCount'))));
-      }
-
-      return diff > 0 ? startDate : endDate;
-    }
+  _calculateStartViewDate() {
+    return calculateStartViewDate(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this.option('intervalCount'), this.option('firstDayOfWeek'));
   }
 
-  _getStartViewDate() {
-    var firstMonthDate = dateUtils.getFirstMonthDate(this.option('startDate'));
-    return firstMonthDate;
+  _getViewStartByOptions() {
+    return getViewStartByOptions(this.option('startDate'), this.option('currentDate'), this.option('intervalCount'), dateUtils.getFirstMonthDate(this.option('startDate')));
   }
 
   _renderTableBody(options) {
@@ -191,14 +162,14 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
     super._renderTableBody(options);
   }
 
-  _getCellText(rowIndex, cellIndex) {
+  _getCellText(rowIndex, columnIndex) {
     if (this.isGroupedByDate()) {
-      cellIndex = Math.floor(cellIndex / this._getGroupCount());
+      columnIndex = Math.floor(columnIndex / this._getGroupCount());
     } else {
-      cellIndex = cellIndex % this._getCellCount();
+      columnIndex = columnIndex % this._getCellCount();
     }
 
-    var date = this._getDate(rowIndex, cellIndex);
+    var date = this._getDate(rowIndex, columnIndex);
 
     if (this._isWorkSpaceWithCount() && this._isFirstDayOfMonth(date)) {
       return this._formatMonthAndDay(date);
@@ -213,7 +184,7 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
   }
 
   _getDate(week, day) {
-    var result = new Date(this._firstViewDate);
+    var result = new Date(this._startViewDate);
 
     var lastRowInDay = this._getRowCount();
 
@@ -225,8 +196,8 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
     return index;
   }
 
-  _prepareCellData(rowIndex, cellIndex, cell) {
-    var data = super._prepareCellData(rowIndex, cellIndex, cell);
+  _prepareCellData(rowIndex, columnIndex, cell) {
+    var data = super._prepareCellData(rowIndex, columnIndex, cell);
 
     var $cell = $(cell);
     $cell.toggleClass(DATE_TABLE_CURRENT_DATE_CLASS, this._isCurrentDate(data.startDate)).toggleClass(DATE_TABLE_FIRST_OF_MONTH_CLASS, this._isFirstDayOfMonth(data.startDate)).toggleClass(DATE_TABLE_OTHER_MONTH_DATE_CLASS, this._isOtherMonth(data.startDate));
@@ -345,15 +316,15 @@ class SchedulerWorkSpaceMonth extends SchedulerWorkSpace {
 
   generateRenderOptions() {
     var options = super.generateRenderOptions();
-    options.cellDataGetters.push((_, rowIndex, cellIndex) => {
+    options.cellDataGetters.push((_, rowIndex, columnIndex) => {
       return {
         value: {
-          text: this._getCellText(rowIndex, cellIndex)
+          text: this._getCellText(rowIndex, columnIndex)
         }
       };
     });
 
-    var getCellMetaData = (_, rowIndex, cellIndex, groupIndex, startDate) => {
+    var getCellMetaData = (_, rowIndex, columnIndex, groupIndex, startDate) => {
       return {
         value: {
           today: this._isCurrentDate(startDate),

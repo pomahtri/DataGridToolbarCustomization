@@ -122,6 +122,8 @@ export var Export = {
   },
 
   export(options, helpers) {
+    var _component$_getIntern;
+
     var {
       customizeCell,
       component,
@@ -134,13 +136,14 @@ export var Export = {
       mergeRowFieldValues,
       mergeColumnFieldValues
     } = options;
-    var initialLoadPanelOptions = extend({}, component.option('loadPanel'));
+    var internalComponent = ((_component$_getIntern = component._getInternalInstance) === null || _component$_getIntern === void 0 ? void 0 : _component$_getIntern.call(component)) || component;
+    var initialLoadPanelOptions = extend({}, internalComponent.option('loadPanel'));
 
-    if ('animation' in component.option('loadPanel')) {
+    if ('animation' in internalComponent.option('loadPanel')) {
       loadPanel.animation = null;
     }
 
-    this.setLoadPanelOptions(component, loadPanel, helpers._renderLoadPanel);
+    this.setLoadPanelOptions(internalComponent, loadPanel, helpers._renderLoadPanel);
     var wrapText = !!component.option('wordWrapEnabled');
     worksheet.properties.outlineProperties = {
       summaryBelow: false,
@@ -203,7 +206,7 @@ export var Export = {
 
         resolve(cellRange);
       }).always(() => {
-        this.setLoadPanelOptions(component, initialLoadPanelOptions, helpers._renderLoadPanel);
+        this.setLoadPanelOptions(internalComponent, initialLoadPanelOptions, helpers._renderLoadPanel);
       });
     });
   },

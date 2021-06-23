@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/ui/grids/data_grid/data_grid.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -36,7 +36,7 @@ var _devices = _interopRequireDefault(require("../../../../core/devices"));
 var _themes = require("../../../../ui/themes");
 
 var _excluded = ["onOptionChanged"],
-    _excluded2 = ["accessKey", "activeStateEnabled", "allowColumnReordering", "allowColumnResizing", "autoNavigateToFocusedRow", "cacheEnabled", "cellHintEnabled", "className", "columnAutoWidth", "columnChooser", "columnFixing", "columnHidingEnabled", "columnMinWidth", "columnResizingMode", "columnWidth", "columns", "commonColumnSettings", "customizeColumns", "customizeExportData", "dataSource", "dateSerializationFormat", "defaultFilterValue", "defaultFocusedColumnIndex", "defaultFocusedRowIndex", "defaultFocusedRowKey", "defaultSelectedRowKeys", "defaultSelectionFilter", "disabled", "editing", "errorRowEnabled", "export", "filterBuilder", "filterBuilderPopup", "filterPanel", "filterRow", "filterSyncEnabled", "filterValue", "filterValueChange", "focusStateEnabled", "focusedColumnIndex", "focusedColumnIndexChange", "focusedRowEnabled", "focusedRowIndex", "focusedRowIndexChange", "focusedRowKey", "focusedRowKeyChange", "groupPanel", "grouping", "headerFilter", "height", "highlightChanges", "hint", "hoverStateEnabled", "keyExpr", "keyboardNavigation", "loadPanel", "loadingTimeout", "masterDetail", "noDataText", "onAdaptiveDetailRowPreparing", "onCellClick", "onCellDblClick", "onCellHoverChanged", "onCellPrepared", "onClick", "onContextMenuPreparing", "onDataErrorOccurred", "onEditingStart", "onEditorPrepared", "onEditorPreparing", "onExported", "onExporting", "onFileSaving", "onFocusedCellChanged", "onFocusedCellChanging", "onFocusedRowChanged", "onFocusedRowChanging", "onInitNewRow", "onKeyDown", "onRowClick", "onRowCollapsed", "onRowCollapsing", "onRowDblClick", "onRowExpanded", "onRowExpanding", "onRowInserted", "onRowInserting", "onRowPrepared", "onRowRemoved", "onRowRemoving", "onRowUpdated", "onRowUpdating", "onRowValidating", "onSelectionChanged", "onToolbarPreparing", "pager", "paging", "remoteOperations", "renderAsync", "repaintChangesOnly", "rowAlternationEnabled", "rowDragging", "rowTemplate", "rtlEnabled", "scrolling", "searchPanel", "selectedRowKeys", "selectedRowKeysChange", "selection", "selectionFilter", "selectionFilterChange", "showBorders", "showColumnHeaders", "showColumnLines", "showRowLines", "sortByGroupSummaryInfo", "sorting", "stateStoring", "summary", "tabIndex", "toolbar", "twoWayBindingEnabled", "useKeyboard", "visible", "width", "wordWrapEnabled"];
+    _excluded2 = ["accessKey", "activeStateEnabled", "allowColumnReordering", "allowColumnResizing", "autoNavigateToFocusedRow", "cacheEnabled", "cellHintEnabled", "className", "columnAutoWidth", "columnChooser", "columnFixing", "columnHidingEnabled", "columnMinWidth", "columnResizingMode", "columnWidth", "columns", "commonColumnSettings", "customizeColumns", "customizeExportData", "dataSource", "dateSerializationFormat", "defaultFilterValue", "defaultFocusedColumnIndex", "defaultFocusedRowIndex", "defaultFocusedRowKey", "defaultSelectedRowKeys", "defaultSelectionFilter", "disabled", "editing", "errorRowEnabled", "export", "filterBuilder", "filterBuilderPopup", "filterPanel", "filterRow", "filterSyncEnabled", "filterValue", "filterValueChange", "focusStateEnabled", "focusedColumnIndex", "focusedColumnIndexChange", "focusedRowEnabled", "focusedRowIndex", "focusedRowIndexChange", "focusedRowKey", "focusedRowKeyChange", "groupPanel", "grouping", "headerFilter", "height", "highlightChanges", "hint", "hoverStateEnabled", "keyExpr", "keyboardNavigation", "loadPanel", "loadingTimeout", "masterDetail", "noDataText", "onAdaptiveDetailRowPreparing", "onCellClick", "onCellDblClick", "onCellHoverChanged", "onCellPrepared", "onClick", "onContextMenuPreparing", "onDataErrorOccurred", "onEditingStart", "onEditorPrepared", "onEditorPreparing", "onExported", "onExporting", "onFileSaving", "onFocusedCellChanged", "onFocusedCellChanging", "onFocusedRowChanged", "onFocusedRowChanging", "onInitNewRow", "onKeyDown", "onRowClick", "onRowCollapsed", "onRowCollapsing", "onRowDblClick", "onRowExpanded", "onRowExpanding", "onRowInserted", "onRowInserting", "onRowPrepared", "onRowRemoved", "onRowRemoving", "onRowUpdated", "onRowUpdating", "onRowValidating", "onSaved", "onSaving", "onSelectionChanged", "onToolbarPreparing", "pager", "paging", "remoteOperations", "renderAsync", "repaintChangesOnly", "rowAlternationEnabled", "rowDragging", "rowTemplate", "rtlEnabled", "scrolling", "searchPanel", "selectedRowKeys", "selectedRowKeysChange", "selection", "selectionFilter", "selectionFilterChange", "showBorders", "showColumnHeaders", "showColumnLines", "showRowLines", "sortByGroupSummaryInfo", "sorting", "stateStoring", "summary", "tabIndex", "toolbar", "twoWayBindingEnabled", "useKeyboard", "visible", "width", "wordWrapEnabled"];
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -246,6 +246,7 @@ var DataGrid = /*#__PURE__*/function (_InfernoWrapperCompon) {
     _this.isScrollbarVisible = _this.isScrollbarVisible.bind(_assertThisInitialized(_this));
     _this.getTopVisibleRowData = _this.getTopVisibleRowData.bind(_assertThisInitialized(_this));
     _this.getScrollbarWidth = _this.getScrollbarWidth.bind(_assertThisInitialized(_this));
+    _this.getDataProvider = _this.getDataProvider.bind(_assertThisInitialized(_this));
     _this.updateOptions = _this.updateOptions.bind(_assertThisInitialized(_this));
     _this.dispose = _this.dispose.bind(_assertThisInitialized(_this));
     _this.setupInstance = _this.setupInstance.bind(_assertThisInitialized(_this));
@@ -426,7 +427,7 @@ var DataGrid = /*#__PURE__*/function (_InfernoWrapperCompon) {
         }
       }
 
-      if (e.fullName === "filterValue") {
+      if (e.fullName === "filterValue" && (this.props.filterValue !== undefined ? this.props.filterValue : this.state.filterValue) !== e.value) {
         {
           var _newValue3;
 
@@ -906,6 +907,12 @@ var DataGrid = /*#__PURE__*/function (_InfernoWrapperCompon) {
     return (_this$state$instance68 = this.state.instance) === null || _this$state$instance68 === void 0 ? void 0 : _this$state$instance68.getScrollbarWidth(isHorizontal);
   };
 
+  _proto.getDataProvider = function getDataProvider(selectedRowsOnly) {
+    var _this$state$instance69;
+
+    return (_this$state$instance69 = this.state.instance) === null || _this$state$instance69 === void 0 ? void 0 : _this$state$instance69.getDataProvider(selectedRowsOnly);
+  };
+
   _proto.render = function render() {
     var props = this.props;
     return viewFunction({
@@ -1033,6 +1040,8 @@ var DataGrid = /*#__PURE__*/function (_InfernoWrapperCompon) {
           onRowUpdated = _this$props$filterVal2.onRowUpdated,
           onRowUpdating = _this$props$filterVal2.onRowUpdating,
           onRowValidating = _this$props$filterVal2.onRowValidating,
+          onSaved = _this$props$filterVal2.onSaved,
+          onSaving = _this$props$filterVal2.onSaving,
           onSelectionChanged = _this$props$filterVal2.onSelectionChanged,
           onToolbarPreparing = _this$props$filterVal2.onToolbarPreparing,
           pager = _this$props$filterVal2.pager,

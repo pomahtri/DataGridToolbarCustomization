@@ -1,7 +1,7 @@
 /**
 * DevExtreme (renovation/component_wrapper/data_grid.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -10,11 +10,17 @@
 
 exports.default = void 0;
 
+var _data = require("../../core/utils/data");
+
 var _component = _interopRequireDefault(require("./common/component"));
 
 var _uiData_grid = _interopRequireDefault(require("../../ui/data_grid/ui.data_grid.core"));
 
 var _update_props_immutable = require("./utils/update_props_immutable");
+
+var _themes_callback = require("../../ui/themes_callback");
+
+var _component_registrator_callbacks = _interopRequireDefault(require("../../core/component_registrator_callbacks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24,13 +30,23 @@ function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.crea
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
+var dataGridClass = null;
+
+_component_registrator_callbacks.default.add(function (name, componentClass) {
+  if (name === "dxDataGrid") {
+    dataGridClass = componentClass;
+  }
+});
+
 var DataGridWrapper = /*#__PURE__*/function (_Component) {
   _inheritsLoose(DataGridWrapper, _Component);
 
-  function DataGridWrapper() {
+  function DataGridWrapper(element, options) {
+    var _dataGridClass;
+
     var _this;
 
-    _this = _Component.apply(this, arguments) || this;
+    _this = _Component.call(this, element, ((_dataGridClass = dataGridClass) !== null && _dataGridClass !== void 0 && _dataGridClass.defaultOptions({}), options)) || this;
     _this._skipInvalidate = false;
     return _this;
   }
@@ -101,9 +117,13 @@ var DataGridWrapper = /*#__PURE__*/function (_Component) {
     _Component.prototype._optionChanging.call(this, fullName, prevValue, value);
 
     if (this.viewRef && prevValue !== value) {
-      var name = fullName.split(/[.[]/)[0];
+      var name = (0, _data.getPathParts)(fullName)[0];
 
       var prevProps = _extends({}, this.viewRef.prevProps);
+
+      if (name === "editing" && name !== fullName) {
+        (0, _update_props_immutable.updatePropsImmutable)(prevProps, this.option(), name, name);
+      }
 
       (0, _update_props_immutable.updatePropsImmutable)(prevProps, this.option(), name, fullName);
       this.viewRef.prevProps = prevProps;
@@ -111,12 +131,10 @@ var DataGridWrapper = /*#__PURE__*/function (_Component) {
   };
 
   _proto._optionChanged = function _optionChanged(e) {
-    var _this$viewRef2, _this$viewRef2$getCom;
+    var internalInstance = this._getInternalInstance();
 
-    var gridInstance = (_this$viewRef2 = this.viewRef) === null || _this$viewRef2 === void 0 ? void 0 : (_this$viewRef2$getCom = _this$viewRef2.getComponentInstance) === null || _this$viewRef2$getCom === void 0 ? void 0 : _this$viewRef2$getCom.call(_this$viewRef2);
-
-    if (e.fullName === "dataSource" && e.value === (gridInstance === null || gridInstance === void 0 ? void 0 : gridInstance.option("dataSource"))) {
-      gridInstance === null || gridInstance === void 0 ? void 0 : gridInstance.option("dataSource", e.value);
+    if (internalInstance && e.fullName === "dataSource" && e.value === internalInstance.option("dataSource")) {
+      internalInstance.option("dataSource", e.value);
     }
 
     _Component.prototype._optionChanged.call(this, e);
@@ -135,7 +153,19 @@ var DataGridWrapper = /*#__PURE__*/function (_Component) {
   };
 
   _proto._patchOptionValues = function _patchOptionValues(options) {
+    var _this2 = this;
+
     options.onInitialized = this._onInitialized;
+    var exportOptions = options.export;
+    var originalCustomizeExcelCell = exportOptions === null || exportOptions === void 0 ? void 0 : exportOptions.customizeExcelCell;
+
+    if (originalCustomizeExcelCell) {
+      exportOptions.customizeExcelCell = function (e) {
+        e.component = _this2;
+        return originalCustomizeExcelCell(e);
+      };
+    }
+
     return _Component.prototype._patchOptionValues.call(this, options);
   };
 
@@ -204,5 +234,8 @@ var DataGridWrapper = /*#__PURE__*/function (_Component) {
 
 exports.default = DataGridWrapper;
 DataGridWrapper.registerModule = _uiData_grid.default.registerModule.bind(_uiData_grid.default);
+
+_themes_callback.themeReadyCallback.add();
+
 module.exports = exports.default;
 module.exports.default = exports.default;

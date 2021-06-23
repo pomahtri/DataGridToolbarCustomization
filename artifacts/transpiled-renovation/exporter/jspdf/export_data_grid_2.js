@@ -55,7 +55,22 @@ function exportDataGrid(doc, dataGrid, options) {
               pdfCell.colSpan = cellMerging.colspan;
             }
           } else if (rowType === 'group') {
-            pdfCell.colSpan = columns.length - 1;
+            pdfCell.drawLeftBorder = false;
+            pdfCell.drawRightBorder = false;
+
+            if (cellIndex > 0) {
+              var isEmptyCellsExceptFirst = currentRow.slice(1).reduce(function (accumulate, pdfCell) {
+                return accumulate && !(0, _type.isDefined)(pdfCell.text);
+              }, true);
+
+              if (!(0, _type.isDefined)(pdfCell.text) && isEmptyCellsExceptFirst) {
+                for (var i = 0; i < currentRow.length; i++) {
+                  currentRow[i].colSpan = currentRow.length;
+                }
+
+                pdfCell.colSpan = currentRow.length;
+              }
+            }
           }
 
           if (options.onCellExporting) {
@@ -68,6 +83,20 @@ function exportDataGrid(doc, dataGrid, options) {
           }
 
           currentRow.push(pdfCell);
+        }
+
+        if (rowType === 'group') {
+          currentRow[0].drawLeftBorder = true;
+
+          if (currentRow[0].colSpan === currentRow.length - 1) {
+            currentRow[0].drawRightBorder = true;
+          }
+
+          var lastCell = currentRow[currentRow.length - 1];
+
+          if (!(0, _type.isDefined)(lastCell.colSpan)) {
+            lastCell.drawRightBorder = true;
+          }
         }
 
         rowsIndents.push(groupLevel * options.indent);

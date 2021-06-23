@@ -1,22 +1,20 @@
 /**
 * DevExtreme (esm/renovation/ui/editors/check_box.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 import _objectWithoutPropertiesLoose from "@babel/runtime/helpers/esm/objectWithoutPropertiesLoose";
 import _extends from "@babel/runtime/helpers/esm/extends";
-var _excluded = ["accessKey", "activeStateEnabled", "className", "defaultValue", "disabled", "focusStateEnabled", "height", "hint", "hoverStateEnabled", "isValid", "name", "onClick", "onFocusIn", "onKeyDown", "readOnly", "rtlEnabled", "saveValueChangeEvent", "tabIndex", "text", "useInkRipple", "validationError", "validationErrors", "validationMessageMode", "validationStatus", "value", "valueChange", "visible", "width"];
+var _excluded = ["accessKey", "activeStateEnabled", "className", "defaultValue", "disabled", "focusStateEnabled", "height", "hint", "hoverStateEnabled", "isValid", "name", "onClick", "onFocusIn", "onKeyDown", "readOnly", "rtlEnabled", "saveValueChangeEvent", "tabIndex", "text", "validationError", "validationErrors", "validationMessageMode", "validationStatus", "value", "valueChange", "visible", "width"];
 import { createVNode, createComponentVNode, normalizeProps } from "inferno";
 import { InfernoEffect, InfernoWrapperComponent } from "@devextreme/vdom";
 import { createDefaultOptionRules, convertRulesToOptions } from "../../../core/options/utils";
 import devices from "../../../core/devices";
 import Guid from "../../../core/guid";
-import { InkRipple } from "../common/ink_ripple";
 import { Widget } from "../common/widget";
-import { isMaterial, current } from "../../../ui/themes";
 import { BaseWidgetProps } from "../common/base_props";
 import { combineClasses } from "../../utils/combine_classes";
 import { ValidationMessage } from "../overlays/validation_message";
@@ -33,7 +31,7 @@ var getCssClasses = model => {
   var classesMap = {
     "dx-checkbox": true,
     "dx-state-readonly": !!readOnly,
-    "dx-checkbox-checked": !!checked,
+    "dx-checkbox-checked": checked === true,
     "dx-checkbox-has-text": !!text,
     "dx-invalid": !isValid,
     "dx-checkbox-indeterminate": indeterminate
@@ -41,12 +39,6 @@ var getCssClasses = model => {
   return combineClasses(classesMap);
 };
 
-var inkRippleConfig = {
-  waveSizeCoefficient: 2.5,
-  useHoldAnimation: false,
-  wavesNumber: 2,
-  isCentered: true
-};
 export var viewFunction = viewModel => {
   var {
     name,
@@ -63,12 +55,9 @@ export var viewFunction = viewModel => {
     "height": viewModel.props.height,
     "hint": viewModel.props.hint,
     "hoverStateEnabled": viewModel.props.hoverStateEnabled,
-    "onActive": viewModel.onActive,
     "onFocusIn": viewModel.onFocusIn,
-    "onFocusOut": viewModel.onFocusOut,
     "aria": viewModel.aria,
     "onClick": viewModel.onWidgetClick,
-    "onInactive": viewModel.onInactive,
     "onKeyDown": viewModel.onWidgetKeyDown,
     "rtlEnabled": viewModel.props.rtlEnabled,
     "tabIndex": viewModel.props.tabIndex,
@@ -80,9 +69,7 @@ export var viewFunction = viewModel => {
       "value": "".concat(viewModel.props.value)
     }, name && {
       name
-    }), null, viewModel.inputRef)), createVNode(1, "div", "dx-checkbox-container", [createVNode(1, "span", "dx-checkbox-icon", null, 1, null, null, viewModel.iconRef), text && createVNode(1, "span", "dx-checkbox-text", text, 0)], 0), viewModel.props.useInkRipple && createComponentVNode(2, InkRipple, {
-      "config": inkRippleConfig
-    }, null, viewModel.inkRippleRef), viewModel.showValidationMessage && createComponentVNode(2, ValidationMessage, {
+    }), null, viewModel.inputRef)), createVNode(1, "div", "dx-checkbox-container", [createVNode(1, "span", "dx-checkbox-icon", null, 1, null, null, viewModel.iconRef), text && createVNode(1, "span", "dx-checkbox-text", text, 0)], 0), viewModel.showValidationMessage && createComponentVNode(2, ValidationMessage, {
       "validationErrors": viewModel.validationErrors,
       "mode": viewModel.props.validationMessageMode,
       "positionRequest": "below",
@@ -104,7 +91,6 @@ export var CheckBoxProps = _extends({}, BaseWidgetProps, {
   name: "",
   readOnly: false,
   isValid: true,
-  useInkRipple: false,
   defaultValue: false,
   valueChange: () => {}
 });
@@ -113,11 +99,6 @@ export var defaultOptionRules = createDefaultOptionRules([{
   options: {
     focusStateEnabled: true
   }
-}, {
-  device: () => isMaterial(current()),
-  options: {
-    useInkRipple: false
-  }
 }]);
 import { createReRenderEffect } from "@devextreme/vdom";
 import { createRef as infernoCreateRef } from "inferno";
@@ -125,7 +106,6 @@ export class CheckBox extends InfernoWrapperComponent {
   constructor(props) {
     super(props);
     this.iconRef = infernoCreateRef();
-    this.inkRippleRef = infernoCreateRef();
     this.inputRef = infernoCreateRef();
     this.widgetRef = infernoCreateRef();
     this.target = infernoCreateRef();
@@ -135,13 +115,9 @@ export class CheckBox extends InfernoWrapperComponent {
     };
     this.updateValidationMessageVisibility = this.updateValidationMessageVisibility.bind(this);
     this.focus = this.focus.bind(this);
-    this.onActive = this.onActive.bind(this);
-    this.onInactive = this.onInactive.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
-    this.onFocusOut = this.onFocusOut.bind(this);
     this.onWidgetClick = this.onWidgetClick.bind(this);
     this.onWidgetKeyDown = this.onWidgetKeyDown.bind(this);
-    this.wave = this.wave.bind(this);
   }
 
   createEffects() {
@@ -161,35 +137,21 @@ export class CheckBox extends InfernoWrapperComponent {
     return undefined;
   }
 
-  onActive(event) {
-    var waveId = 1;
-    this.wave(event, "showWave", waveId);
-  }
-
-  onInactive(event) {
-    var waveId = 1;
-    this.wave(event, "hideWave", waveId);
-  }
-
   onFocusIn(event) {
-    var waveId = 0;
     var {
       onFocusIn
     } = this.props;
-    this.wave(event, "showWave", waveId);
     onFocusIn === null || onFocusIn === void 0 ? void 0 : onFocusIn(event);
   }
 
-  onFocusOut(event) {
-    var waveId = 0;
-    this.wave(event, "hideWave", waveId);
-  }
-
   onWidgetClick(event) {
+    var _ref;
+
     var {
       readOnly,
       saveValueChangeEvent
     } = this.props;
+    var value = (_ref = this.props.value !== undefined ? this.props.value : this.state.value) !== null && _ref !== void 0 ? _ref : false;
 
     if (!readOnly) {
       saveValueChangeEvent === null || saveValueChangeEvent === void 0 ? void 0 : saveValueChangeEvent(event);
@@ -197,7 +159,7 @@ export class CheckBox extends InfernoWrapperComponent {
         var __newValue;
 
         this.setState(state => {
-          __newValue = !(this.props.value !== undefined ? this.props.value : state.value);
+          __newValue = !value;
           return {
             value: __newValue
           };
@@ -207,7 +169,7 @@ export class CheckBox extends InfernoWrapperComponent {
     }
   }
 
-  onWidgetKeyDown(options) {
+  onWidgetKeyDown(e) {
     var {
       onKeyDown
     } = this.props;
@@ -215,8 +177,8 @@ export class CheckBox extends InfernoWrapperComponent {
       keyName,
       originalEvent,
       which
-    } = options;
-    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(options);
+    } = e;
+    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(e);
 
     if (result !== null && result !== void 0 && result.cancel) {
       return result;
@@ -243,7 +205,8 @@ export class CheckBox extends InfernoWrapperComponent {
       isValid,
       validationStatus
     } = this.props;
-    return !isValid && validationStatus === "invalid" && !!((_this$validationError = this.validationErrors) !== null && _this$validationError !== void 0 && _this$validationError.length);
+    var validationErrors = (_this$validationError = this.validationErrors) !== null && _this$validationError !== void 0 ? _this$validationError : [];
+    return !isValid && validationStatus === "invalid" && validationErrors.length > 0;
   }
 
   get aria() {
@@ -251,7 +214,7 @@ export class CheckBox extends InfernoWrapperComponent {
       isValid,
       readOnly
     } = this.props;
-    var checked = !!(this.props.value !== undefined ? this.props.value : this.state.value);
+    var checked = (this.props.value !== undefined ? this.props.value : this.state.value) === true;
     var indeterminate = (this.props.value !== undefined ? this.props.value : this.state.value) === null;
     var result = {
       role: "checkbox",
@@ -287,17 +250,6 @@ export class CheckBox extends InfernoWrapperComponent {
     return (_this$target = this.target) === null || _this$target === void 0 ? void 0 : _this$target.current;
   }
 
-  wave(event, type, waveId) {
-    var {
-      useInkRipple
-    } = this.props;
-    useInkRipple && this.inkRippleRef.current[type]({
-      element: this.iconRef.current,
-      event,
-      wave: waveId
-    });
-  }
-
   get restAttributes() {
     var _this$props$value = _extends({}, this.props, {
       value: this.props.value !== undefined ? this.props.value : this.state.value
@@ -321,12 +273,8 @@ export class CheckBox extends InfernoWrapperComponent {
       iconRef: this.iconRef,
       inputRef: this.inputRef,
       target: this.target,
-      inkRippleRef: this.inkRippleRef,
       widgetRef: this.widgetRef,
-      onActive: this.onActive,
-      onInactive: this.onInactive,
       onFocusIn: this.onFocusIn,
-      onFocusOut: this.onFocusOut,
       onWidgetClick: this.onWidgetClick,
       onWidgetKeyDown: this.onWidgetKeyDown,
       cssClasses: this.cssClasses,
@@ -334,7 +282,6 @@ export class CheckBox extends InfernoWrapperComponent {
       aria: this.aria,
       validationErrors: this.validationErrors,
       targetCurrent: this.targetCurrent,
-      wave: this.wave,
       restAttributes: this.restAttributes
     });
   }

@@ -4,7 +4,7 @@ import { each } from '../core/utils/iterator';
 import { getWindow } from '../core/utils/window';
 var window = getWindow();
 import domAdapter from '../core/dom_adapter';
-import { isWindow } from '../core/utils/type';
+import { isWindow, isDefined } from '../core/utils/type';
 import { extend } from '../core/utils/extend';
 import { getBoundingRect } from '../core/utils/position';
 import browser from '../core/utils/browser';
@@ -14,7 +14,7 @@ import devices from '../core/devices';
 var horzRe = /left|right/;
 var vertRe = /top|bottom/;
 var collisionRe = /fit|flip|none/;
-var scaleRe = /scale(.+)/;
+var scaleRe = /scale\(.+?\)/;
 var IS_SAFARI = browser.safari;
 
 var normalizeAlign = function normalizeAlign(raw) {
@@ -355,10 +355,24 @@ var calculatePosition = function calculatePosition(what, options) {
     precise: options.precise
   });
   return result;
+}; // NOTE: Setting the 'element.style.transform.scale' requires the inline style when both of the conditions met:
+//       - a form contains an input with the name property set to "style";
+//       - a form contains a dx-validator (or other popup widget).
+//       T941581
+
+
+var setScaleProperty = function setScaleProperty(element, scale, transformProp, styleAttr, isEmpty) {
+  var stylePropIsValid = isDefined(element.style) && !domAdapter.isNode(element.style);
+
+  if (stylePropIsValid) {
+    element.style.transform = isEmpty ? transformProp.replace(scale, '') : transformProp;
+  } else {
+    element.setAttribute('style', isEmpty ? styleAttr.replace(scale, '') : styleAttr);
+  }
 };
 
 var getOffsetWithoutScale = function getOffsetWithoutScale($startElement) {
-  var _currentElement$getAt, _style$match;
+  var _currentElement$getAt, _currentElement$style, _style$match;
 
   var $currentElement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : $startElement;
   var currentElement = $currentElement.get(0);
@@ -368,13 +382,14 @@ var getOffsetWithoutScale = function getOffsetWithoutScale($startElement) {
   }
 
   var style = ((_currentElement$getAt = currentElement.getAttribute) === null || _currentElement$getAt === void 0 ? void 0 : _currentElement$getAt.call(currentElement, 'style')) || '';
+  var transform = (_currentElement$style = currentElement.style) === null || _currentElement$style === void 0 ? void 0 : _currentElement$style.transform;
   var scale = (_style$match = style.match(scaleRe)) === null || _style$match === void 0 ? void 0 : _style$match[0];
   var offset;
 
   if (scale) {
-    currentElement.setAttribute('style', style.replace(scale, ''));
+    setScaleProperty(currentElement, scale, transform, style, true);
     offset = getOffsetWithoutScale($startElement, $currentElement.parent());
-    currentElement.setAttribute('style', style);
+    setScaleProperty(currentElement, scale, transform, style, false);
   } else {
     offset = getOffsetWithoutScale($startElement, $currentElement.parent());
   }

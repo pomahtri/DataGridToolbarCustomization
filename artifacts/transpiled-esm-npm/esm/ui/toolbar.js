@@ -29,7 +29,8 @@ var Toolbar = ToolbarBase.inherit({
       * @hidden
       */
       submenuType: 'dropDownMenu',
-      menuContainer: undefined
+      menuContainer: undefined,
+      overflowMenuVisible: false
       /**
       * @name dxToolbarOptions.selectedIndex
       * @type number
@@ -89,8 +90,6 @@ var Toolbar = ToolbarBase.inherit({
     if (dimension === 'height') {
       return;
     }
-
-    this._menuStrategy.toggleMenuVisibility(false, true);
 
     this.callBase();
 
@@ -261,19 +260,14 @@ var Toolbar = ToolbarBase.inherit({
     return itemData.location === undefined || itemData.locateInMenu === 'never';
   },
   _optionChanged: function _optionChanged(args) {
-    var name = args.name;
-    var value = args.value;
+    var {
+      name,
+      value
+    } = args;
 
     switch (name) {
       case 'submenuType':
         this._invalidate();
-
-        break;
-
-      case 'visible':
-        this.callBase.apply(this, arguments);
-
-        this._menuStrategy.handleToolbarVisibilityChange(value);
 
         break;
 
@@ -290,6 +284,11 @@ var Toolbar = ToolbarBase.inherit({
 
       case 'menuContainer':
         this._changeMenuOption('container', value);
+
+        break;
+
+      case 'overflowMenuVisible':
+        this._changeMenuOption(this._menuStrategy.NAME === 'dropDownMenu' ? 'opened' : 'visible', value);
 
         break;
 

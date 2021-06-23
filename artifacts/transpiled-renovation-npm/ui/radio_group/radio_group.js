@@ -1,7 +1,5 @@
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 exports.default = void 0;
 
 var _renderer = _interopRequireDefault(require("../../core/renderer"));
@@ -14,8 +12,6 @@ var _common = require("../../core/utils/common");
 
 var _type = require("../../core/utils/type");
 
-var inkRipple = _interopRequireWildcard(require("../widget/utils.ink_ripple"));
-
 var _component_registrator = _interopRequireDefault(require("../../core/component_registrator"));
 
 var _uiCollection_widget = _interopRequireDefault(require("../collection/ui.collection_widget.edit"));
@@ -25,10 +21,6 @@ var _ui = _interopRequireDefault(require("../editor/ui.data_expression"));
 var _editor = _interopRequireDefault(require("../editor/editor"));
 
 var _deferred = require("../../core/utils/deferred");
-
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -147,12 +139,6 @@ var RadioGroup = /*#__PURE__*/function (_Editor) {
 
   var _proto2 = RadioGroup.prototype;
 
-  _proto2._clean = function _clean() {
-    delete this._inkRipple;
-
-    _Editor.prototype._clean.call(this);
-  };
-
   _proto2._dataSourceOptions = function _dataSourceOptions() {
     return {
       paginate: false
@@ -197,8 +183,7 @@ var RadioGroup = /*#__PURE__*/function (_Editor) {
     return (0, _extend.extend)(defaultOptions, (0, _extend.extend)(_ui.default._dataExpressionDefaultOptions(), {
       hoverStateEnabled: true,
       activeStateEnabled: true,
-      layout: 'vertical',
-      useInkRipple: false
+      layout: 'vertical'
     }));
   };
 
@@ -227,8 +212,6 @@ var RadioGroup = /*#__PURE__*/function (_Editor) {
     this.setAria('role', 'radiogroup');
 
     this._renderRadios();
-
-    this.option('useInkRipple') && this._renderInkRipple();
 
     this._renderLayout();
 
@@ -262,7 +245,6 @@ var RadioGroup = /*#__PURE__*/function (_Editor) {
     this._dataExpressionOptionChanged(args);
 
     switch (name) {
-      case 'useInkRipple':
       case 'dataSource':
         this._invalidate();
 
@@ -322,14 +304,6 @@ var RadioGroup = /*#__PURE__*/function (_Editor) {
     _Editor.prototype._render.call(this);
 
     this._updateItemsSize();
-  };
-
-  _proto2._renderInkRipple = function _renderInkRipple() {
-    this._inkRipple = inkRipple.render({
-      waveSizeCoefficient: 3.3,
-      useHoldAnimation: false,
-      isCentered: true
-    });
   };
 
   _proto2._renderLayout = function _renderLayout() {
@@ -407,18 +381,6 @@ var RadioGroup = /*#__PURE__*/function (_Editor) {
 
   _proto2._setCollectionWidgetOption = function _setCollectionWidgetOption() {
     this._areRadiosCreated.done(this._setWidgetOption.bind(this, '_radios', arguments));
-  };
-
-  _proto2._toggleActiveState = function _toggleActiveState($element, value, e) {
-    _Editor.prototype._toggleActiveState.call(this, $element, value, e);
-
-    if (this._inkRipple) {
-      var event = {
-        element: $element.find(".".concat(RADIO_BUTTON_ICON_CLASS)),
-        event: e
-      };
-      value ? this._inkRipple.showWave(event) : this._inkRipple.hideWave(event);
-    }
   };
 
   _proto2._updateItemsSize = function _updateItemsSize() {

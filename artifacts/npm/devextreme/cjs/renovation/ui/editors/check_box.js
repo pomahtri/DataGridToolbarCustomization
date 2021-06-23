@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/ui/editors/check_box.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -21,11 +21,7 @@ var _devices = _interopRequireDefault(require("../../../core/devices"));
 
 var _guid = _interopRequireDefault(require("../../../core/guid"));
 
-var _ink_ripple = require("../common/ink_ripple");
-
 var _widget = require("../common/widget");
-
-var _themes = require("../../../ui/themes");
 
 var _base_props = require("../common/base_props");
 
@@ -33,7 +29,7 @@ var _combine_classes = require("../../utils/combine_classes");
 
 var _validation_message = require("../overlays/validation_message");
 
-var _excluded = ["accessKey", "activeStateEnabled", "className", "defaultValue", "disabled", "focusStateEnabled", "height", "hint", "hoverStateEnabled", "isValid", "name", "onClick", "onFocusIn", "onKeyDown", "readOnly", "rtlEnabled", "saveValueChangeEvent", "tabIndex", "text", "useInkRipple", "validationError", "validationErrors", "validationMessageMode", "validationStatus", "value", "valueChange", "visible", "width"];
+var _excluded = ["accessKey", "activeStateEnabled", "className", "defaultValue", "disabled", "focusStateEnabled", "height", "hint", "hoverStateEnabled", "isValid", "name", "onClick", "onFocusIn", "onKeyDown", "readOnly", "rtlEnabled", "saveValueChangeEvent", "tabIndex", "text", "validationError", "validationErrors", "validationMessageMode", "validationStatus", "value", "valueChange", "visible", "width"];
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -63,19 +59,12 @@ var getCssClasses = function getCssClasses(model) {
   var classesMap = {
     "dx-checkbox": true,
     "dx-state-readonly": !!readOnly,
-    "dx-checkbox-checked": !!checked,
+    "dx-checkbox-checked": checked === true,
     "dx-checkbox-has-text": !!text,
     "dx-invalid": !isValid,
     "dx-checkbox-indeterminate": indeterminate
   };
   return (0, _combine_classes.combineClasses)(classesMap);
-};
-
-var inkRippleConfig = {
-  waveSizeCoefficient: 2.5,
-  useHoldAnimation: false,
-  wavesNumber: 2,
-  isCentered: true
 };
 
 var viewFunction = function viewFunction(viewModel) {
@@ -93,12 +82,9 @@ var viewFunction = function viewFunction(viewModel) {
     "height": viewModel.props.height,
     "hint": viewModel.props.hint,
     "hoverStateEnabled": viewModel.props.hoverStateEnabled,
-    "onActive": viewModel.onActive,
     "onFocusIn": viewModel.onFocusIn,
-    "onFocusOut": viewModel.onFocusOut,
     "aria": viewModel.aria,
     "onClick": viewModel.onWidgetClick,
-    "onInactive": viewModel.onInactive,
     "onKeyDown": viewModel.onWidgetKeyDown,
     "rtlEnabled": viewModel.props.rtlEnabled,
     "tabIndex": viewModel.props.tabIndex,
@@ -110,9 +96,7 @@ var viewFunction = function viewFunction(viewModel) {
       "value": "".concat(viewModel.props.value)
     }, name && {
       name: name
-    }), null, viewModel.inputRef)), (0, _inferno.createVNode)(1, "div", "dx-checkbox-container", [(0, _inferno.createVNode)(1, "span", "dx-checkbox-icon", null, 1, null, null, viewModel.iconRef), text && (0, _inferno.createVNode)(1, "span", "dx-checkbox-text", text, 0)], 0), viewModel.props.useInkRipple && (0, _inferno.createComponentVNode)(2, _ink_ripple.InkRipple, {
-      "config": inkRippleConfig
-    }, null, viewModel.inkRippleRef), viewModel.showValidationMessage && (0, _inferno.createComponentVNode)(2, _validation_message.ValidationMessage, {
+    }), null, viewModel.inputRef)), (0, _inferno.createVNode)(1, "div", "dx-checkbox-container", [(0, _inferno.createVNode)(1, "span", "dx-checkbox-icon", null, 1, null, null, viewModel.iconRef), text && (0, _inferno.createVNode)(1, "span", "dx-checkbox-text", text, 0)], 0), viewModel.showValidationMessage && (0, _inferno.createComponentVNode)(2, _validation_message.ValidationMessage, {
       "validationErrors": viewModel.validationErrors,
       "mode": viewModel.props.validationMessageMode,
       "positionRequest": "below",
@@ -137,7 +121,6 @@ var CheckBoxProps = _extends({}, _base_props.BaseWidgetProps, {
   name: "",
   readOnly: false,
   isValid: true,
-  useInkRipple: false,
   defaultValue: false,
   valueChange: function valueChange() {}
 });
@@ -150,13 +133,6 @@ var defaultOptionRules = (0, _utils.createDefaultOptionRules)([{
   options: {
     focusStateEnabled: true
   }
-}, {
-  device: function device() {
-    return (0, _themes.isMaterial)((0, _themes.current)());
-  },
-  options: {
-    useInkRipple: false
-  }
 }]);
 exports.defaultOptionRules = defaultOptionRules;
 
@@ -168,7 +144,6 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
 
     _this = _InfernoWrapperCompon.call(this, props) || this;
     _this.iconRef = (0, _inferno.createRef)();
-    _this.inkRippleRef = (0, _inferno.createRef)();
     _this.inputRef = (0, _inferno.createRef)();
     _this.widgetRef = (0, _inferno.createRef)();
     _this.target = (0, _inferno.createRef)();
@@ -178,13 +153,9 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
     };
     _this.updateValidationMessageVisibility = _this.updateValidationMessageVisibility.bind(_assertThisInitialized(_this));
     _this.focus = _this.focus.bind(_assertThisInitialized(_this));
-    _this.onActive = _this.onActive.bind(_assertThisInitialized(_this));
-    _this.onInactive = _this.onInactive.bind(_assertThisInitialized(_this));
     _this.onFocusIn = _this.onFocusIn.bind(_assertThisInitialized(_this));
-    _this.onFocusOut = _this.onFocusOut.bind(_assertThisInitialized(_this));
     _this.onWidgetClick = _this.onWidgetClick.bind(_assertThisInitialized(_this));
     _this.onWidgetKeyDown = _this.onWidgetKeyDown.bind(_assertThisInitialized(_this));
-    _this.wave = _this.wave.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -211,34 +182,18 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
     return undefined;
   };
 
-  _proto.onActive = function onActive(event) {
-    var waveId = 1;
-    this.wave(event, "showWave", waveId);
-  };
-
-  _proto.onInactive = function onInactive(event) {
-    var waveId = 1;
-    this.wave(event, "hideWave", waveId);
-  };
-
   _proto.onFocusIn = function onFocusIn(event) {
-    var waveId = 0;
     var onFocusIn = this.props.onFocusIn;
-    this.wave(event, "showWave", waveId);
     onFocusIn === null || onFocusIn === void 0 ? void 0 : onFocusIn(event);
   };
 
-  _proto.onFocusOut = function onFocusOut(event) {
-    var waveId = 0;
-    this.wave(event, "hideWave", waveId);
-  };
-
   _proto.onWidgetClick = function onWidgetClick(event) {
-    var _this3 = this;
+    var _ref;
 
     var _this$props = this.props,
         readOnly = _this$props.readOnly,
         saveValueChangeEvent = _this$props.saveValueChangeEvent;
+    var value = (_ref = this.props.value !== undefined ? this.props.value : this.state.value) !== null && _ref !== void 0 ? _ref : false;
 
     if (!readOnly) {
       saveValueChangeEvent === null || saveValueChangeEvent === void 0 ? void 0 : saveValueChangeEvent(event);
@@ -246,7 +201,7 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
         var __newValue;
 
         this.setState(function (state) {
-          __newValue = !(_this3.props.value !== undefined ? _this3.props.value : state.value);
+          __newValue = !value;
           return {
             value: __newValue
           };
@@ -256,12 +211,12 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
     }
   };
 
-  _proto.onWidgetKeyDown = function onWidgetKeyDown(options) {
+  _proto.onWidgetKeyDown = function onWidgetKeyDown(e) {
     var onKeyDown = this.props.onKeyDown;
-    var keyName = options.keyName,
-        originalEvent = options.originalEvent,
-        which = options.which;
-    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(options);
+    var keyName = e.keyName,
+        originalEvent = e.originalEvent,
+        which = e.which;
+    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(e);
 
     if (result !== null && result !== void 0 && result.cancel) {
       return result;
@@ -273,15 +228,6 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
     }
 
     return undefined;
-  };
-
-  _proto.wave = function wave(event, type, waveId) {
-    var useInkRipple = this.props.useInkRipple;
-    useInkRipple && this.inkRippleRef.current[type]({
-      element: this.iconRef.current,
-      event: event,
-      wave: waveId
-    });
   };
 
   _proto.focus = function focus() {
@@ -298,12 +244,8 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
       iconRef: this.iconRef,
       inputRef: this.inputRef,
       target: this.target,
-      inkRippleRef: this.inkRippleRef,
       widgetRef: this.widgetRef,
-      onActive: this.onActive,
-      onInactive: this.onInactive,
       onFocusIn: this.onFocusIn,
-      onFocusOut: this.onFocusOut,
       onWidgetClick: this.onWidgetClick,
       onWidgetKeyDown: this.onWidgetKeyDown,
       cssClasses: this.cssClasses,
@@ -311,7 +253,6 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
       aria: this.aria,
       validationErrors: this.validationErrors,
       targetCurrent: this.targetCurrent,
-      wave: this.wave,
       restAttributes: this.restAttributes
     });
   };
@@ -331,7 +272,8 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
       var _this$props2 = this.props,
           isValid = _this$props2.isValid,
           validationStatus = _this$props2.validationStatus;
-      return !isValid && validationStatus === "invalid" && !!((_this$validationError = this.validationErrors) !== null && _this$validationError !== void 0 && _this$validationError.length);
+      var validationErrors = (_this$validationError = this.validationErrors) !== null && _this$validationError !== void 0 ? _this$validationError : [];
+      return !isValid && validationStatus === "invalid" && validationErrors.length > 0;
     }
   }, {
     key: "aria",
@@ -339,7 +281,7 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
       var _this$props3 = this.props,
           isValid = _this$props3.isValid,
           readOnly = _this$props3.readOnly;
-      var checked = !!(this.props.value !== undefined ? this.props.value : this.state.value);
+      var checked = (this.props.value !== undefined ? this.props.value : this.state.value) === true;
       var indeterminate = (this.props.value !== undefined ? this.props.value : this.state.value) === null;
       var result = {
         role: "checkbox",
@@ -400,7 +342,6 @@ var CheckBox = /*#__PURE__*/function (_InfernoWrapperCompon) {
           saveValueChangeEvent = _this$props$value.saveValueChangeEvent,
           tabIndex = _this$props$value.tabIndex,
           text = _this$props$value.text,
-          useInkRipple = _this$props$value.useInkRipple,
           validationError = _this$props$value.validationError,
           validationErrors = _this$props$value.validationErrors,
           validationMessageMode = _this$props$value.validationMessageMode,

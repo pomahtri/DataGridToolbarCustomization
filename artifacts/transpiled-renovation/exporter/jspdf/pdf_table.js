@@ -64,7 +64,8 @@ var PdfTable = /*#__PURE__*/function () {
     for (var i = 0; i < cells.length; i++) {
       var currentCell = cells[i];
 
-      if (currentCell.drawLeftBorder === false) {
+      if (currentCell.drawLeftBorder === false && !(0, _type.isDefined)(currentCell.colSpan)) {
+        // TODO
         if (i >= 1) {
           cells[i - 1].drawRightBorder = false;
         }

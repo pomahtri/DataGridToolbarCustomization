@@ -22,10 +22,10 @@ class SchedulerWorkspaceVertical extends SchedulerWorkSpaceIndicator {
     };
 
     var options = super.generateRenderOptions();
-    options.cellDataGetters.push((_, rowIndex, cellIndex) => {
+    options.cellDataGetters.push((_, rowIndex, columnIndex) => {
       return {
         value: {
-          text: _getTimeText(rowIndex, cellIndex)
+          text: _getTimeText(rowIndex, columnIndex)
         }
       };
     });

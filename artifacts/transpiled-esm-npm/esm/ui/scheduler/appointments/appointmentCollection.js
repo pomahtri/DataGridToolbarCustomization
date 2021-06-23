@@ -21,6 +21,7 @@ import timeZoneUtils from '../utils.timeZone.js';
 import { APPOINTMENT_SETTINGS_KEY } from '../constants';
 import { APPOINTMENT_ITEM_CLASS, APPOINTMENT_DRAG_SOURCE_CLASS } from '../classes';
 import { createAgendaAppointmentLayout, createAppointmentLayout } from './appointmentLayout';
+import { getTimeZoneCalculator } from '../instanceFactory';
 var COMPONENT_CLASS = 'dx-scheduler-scrollable-appointments';
 var DBLCLICK_EVENT_NAME = addNamespace(dblclickEvent, 'dxSchedulerAppointment');
 var toMs = dateUtils.dateToMilliseconds;
@@ -36,6 +37,7 @@ class SchedulerAppointments extends CollectionWidget {
 
   constructor(element, options) {
     super(element, options);
+    this.key = options.key;
     this._virtualAppointments = {};
   }
 
@@ -696,7 +698,7 @@ class SchedulerAppointments extends CollectionWidget {
     var isRecurrent = recurrenceProcessor.isValidRecurrenceRule(recurrenceRule);
 
     if (!e.handles.top && !isRecurrent && !isAllDay) {
-      startDate = scheduler.timeZoneCalculator.createDate(appointmentAdapter.startDate, {
+      startDate = getTimeZoneCalculator(this.key).createDate(appointmentAdapter.startDate, {
         appointmentTimeZone: startDateTimeZone,
         path: 'toGrid'
       });
@@ -926,7 +928,7 @@ class SchedulerAppointments extends CollectionWidget {
     var partCount = parts.length;
     var endViewDate = this.invoke('getEndViewDate').getTime();
     var startViewDate = this.invoke('getStartViewDate').getTime();
-    var timeZoneCalculator = this.invoke('getTimeZoneCalculator');
+    var timeZoneCalculator = getTimeZoneCalculator(this.key);
     result = result || {
       parts: []
     };
@@ -1020,7 +1022,7 @@ class SchedulerAppointments extends CollectionWidget {
     var endDayHour = this.invoke('getEndDayHour');
     var appointmentIsLong = this.invoke('getAppointmentDataProvider').appointmentTakesSeveralDays(appointment);
     var result = [];
-    var timeZoneCalculator = this.invoke('getTimeZoneCalculator');
+    var timeZoneCalculator = getTimeZoneCalculator(this.key);
     startDate = timeZoneCalculator.createDate(startDate, {
       path: 'toGrid'
     });

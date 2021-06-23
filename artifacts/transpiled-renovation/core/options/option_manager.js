@@ -42,7 +42,7 @@ var OptionManager = /*#__PURE__*/function () {
     var previousValue = this.get(this._options, name, false);
 
     if (!(0, _comparator.equals)(previousValue, value)) {
-      var path = name.split(/[.[]/);
+      var path = (0, _data.getPathParts)(name);
       !silent && this._changingCallback(name, previousValue, value);
       cachedSetters[name] = cachedSetters[name] || (0, _data.compileSetter)(name);
       cachedSetters[name](this._options, value, {

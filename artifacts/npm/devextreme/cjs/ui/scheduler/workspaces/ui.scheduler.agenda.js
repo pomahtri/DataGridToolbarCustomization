@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.agenda.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -31,6 +31,10 @@ var _date = _interopRequireDefault(require("../../../localization/date"));
 var _table_creator = _interopRequireDefault(require("../table_creator"));
 
 var _classes = require("../classes");
+
+var _instanceFactory = require("../instanceFactory");
+
+var _agenda = require("./utils/agenda");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -143,10 +147,8 @@ var SchedulerAgenda = /*#__PURE__*/function (_WorkSpace) {
     return AGENDA_CLASS;
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    this._firstViewDate = new Date(this.option('currentDate'));
-
-    this._setStartDayHour(this._firstViewDate);
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _agenda.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'));
   };
 
   _proto._getRowCount = function _getRowCount() {
@@ -193,8 +195,7 @@ var SchedulerAgenda = /*#__PURE__*/function (_WorkSpace) {
   };
 
   _proto._renderView = function _renderView() {
-    this._setFirstViewDate();
-
+    this._startViewDate = this._calculateStartViewDate();
     this._rows = [];
   };
 
@@ -595,8 +596,8 @@ var SchedulerAgenda = /*#__PURE__*/function (_WorkSpace) {
   };
 
   _proto.updateScrollPosition = function updateScrollPosition(date) {
-    var scheduler = this.option('observer');
-    var newDate = scheduler.timeZoneCalculator.createDate(date, {
+    var timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.option('key'));
+    var newDate = timeZoneCalculator.createDate(date, {
       path: 'toGrid'
     });
     var bounds = this.getVisibleBounds();

@@ -21,10 +21,10 @@ export class GroupedDataMapProvider {
     var lastRow = this.getLastGroupRow(groupIndex);
 
     if (lastRow) {
-      var lastCellIndex = lastRow.length - 1;
+      var lastColumnIndex = lastRow.length - 1;
       var {
         cellData
-      } = lastRow[lastCellIndex];
+      } = lastRow[lastColumnIndex];
       var {
         endDate
       } = cellData;
@@ -39,10 +39,10 @@ export class GroupedDataMapProvider {
 
     var groupData = this.getGroupFromDateTableGroupMap(groupIndex);
 
-    var checkCellStartDate = (rowIndex, cellIndex) => {
+    var checkCellStartDate = (rowIndex, columnIndex) => {
       var {
         cellData
-      } = groupData[rowIndex][cellIndex];
+      } = groupData[rowIndex][columnIndex];
       var {
         startDate: secondMin,
         endDate: secondMax
@@ -61,9 +61,9 @@ export class GroupedDataMapProvider {
     var searchVertical = () => {
       var cellCount = groupData[0].length;
 
-      for (var cellIndex = 0; cellIndex < cellCount; ++cellIndex) {
+      for (var columnIndex = 0; columnIndex < cellCount; ++columnIndex) {
         for (var rowIndex = 0; rowIndex < groupData.length; ++rowIndex) {
-          var result = checkCellStartDate(rowIndex, cellIndex);
+          var result = checkCellStartDate(rowIndex, columnIndex);
           if (result) return result;
         }
       }
@@ -73,8 +73,8 @@ export class GroupedDataMapProvider {
       for (var rowIndex = 0; rowIndex < groupData.length; ++rowIndex) {
         var row = groupData[rowIndex];
 
-        for (var cellIndex = 0; cellIndex < row.length; ++cellIndex) {
-          var result = checkCellStartDate(rowIndex, cellIndex);
+        for (var columnIndex = 0; columnIndex < row.length; ++columnIndex) {
+          var result = checkCellStartDate(rowIndex, columnIndex);
           if (result) return result;
         }
       }
@@ -118,8 +118,8 @@ export class GroupedDataMapProvider {
     for (var rowIndex = 0; rowIndex < rows.length; ++rowIndex) {
       var row = rows[rowIndex];
 
-      for (var cellIndex = 0; cellIndex < row.length; ++cellIndex) {
-        var cell = row[cellIndex];
+      for (var columnIndex = 0; columnIndex < row.length; ++columnIndex) {
+        var cell = row[columnIndex];
         var {
           cellData
         } = cell;

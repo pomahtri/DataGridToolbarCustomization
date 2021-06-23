@@ -48,6 +48,8 @@ var _classes = require("../classes");
 
 var _appointmentLayout = require("./appointmentLayout");
 
+var _instanceFactory = require("../instanceFactory");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -69,6 +71,7 @@ var SchedulerAppointments = /*#__PURE__*/function (_CollectionWidget) {
     var _this;
 
     _this = _CollectionWidget.call(this, element, options) || this;
+    _this.key = options.key;
     _this._virtualAppointments = {};
     return _this;
   }
@@ -735,7 +738,7 @@ var SchedulerAppointments = /*#__PURE__*/function (_CollectionWidget) {
     var isRecurrent = recurrenceProcessor.isValidRecurrenceRule(recurrenceRule);
 
     if (!e.handles.top && !isRecurrent && !isAllDay) {
-      startDate = scheduler.timeZoneCalculator.createDate(appointmentAdapter.startDate, {
+      startDate = (0, _instanceFactory.getTimeZoneCalculator)(this.key).createDate(appointmentAdapter.startDate, {
         appointmentTimeZone: startDateTimeZone,
         path: 'toGrid'
       });
@@ -967,7 +970,7 @@ var SchedulerAppointments = /*#__PURE__*/function (_CollectionWidget) {
     var partCount = parts.length;
     var endViewDate = this.invoke('getEndViewDate').getTime();
     var startViewDate = this.invoke('getStartViewDate').getTime();
-    var timeZoneCalculator = this.invoke('getTimeZoneCalculator');
+    var timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key);
     result = result || {
       parts: []
     };
@@ -1065,7 +1068,7 @@ var SchedulerAppointments = /*#__PURE__*/function (_CollectionWidget) {
     var endDayHour = this.invoke('getEndDayHour');
     var appointmentIsLong = this.invoke('getAppointmentDataProvider').appointmentTakesSeveralDays(appointment);
     var result = [];
-    var timeZoneCalculator = this.invoke('getTimeZoneCalculator');
+    var timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key);
     startDate = timeZoneCalculator.createDate(startDate, {
       path: 'toGrid'
     });

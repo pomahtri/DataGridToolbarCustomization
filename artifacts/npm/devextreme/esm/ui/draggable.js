@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/draggable.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -46,6 +46,8 @@ var getMousePosition = event => ({
 });
 
 var GESTURE_COVER_CLASS = 'dx-gesture-cover';
+var OVERLAY_WRAPPER_CLASS = 'dx-overlay-wrapper';
+var OVERLAY_CONTENT_CLASS = 'dx-overlay-content';
 
 class ScrollHelper {
   constructor(orientation, component) {
@@ -76,11 +78,16 @@ class ScrollHelper {
   }
 
   updateScrollable(elements, mousePosition) {
-    var that = this;
+    var needResetScrollable = !elements.some(element => {
+      var $element = $(element);
+      var isTargetOverOverlayWrapper = $element.hasClass(OVERLAY_WRAPPER_CLASS);
+      var isTargetOverOverlayContent = $element.hasClass(OVERLAY_CONTENT_CLASS);
+      return isTargetOverOverlayWrapper || isTargetOverOverlayContent || this._trySetScrollable(element, mousePosition);
+    });
 
-    if (!elements.some(element => that._trySetScrollable(element, mousePosition))) {
-      that._$scrollableAtPointer = null;
-      that._scrollSpeed = 0;
+    if (needResetScrollable) {
+      this._$scrollableAtPointer = null;
+      this._scrollSpeed = 0;
     }
   }
 

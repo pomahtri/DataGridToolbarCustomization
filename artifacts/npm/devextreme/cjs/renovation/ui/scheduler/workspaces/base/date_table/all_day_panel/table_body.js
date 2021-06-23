@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/ui/scheduler/workspaces/base/date_table/all_day_panel/table_body.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -51,7 +51,9 @@ var viewFunction = function viewFunction(viewModel) {
           groups = _ref.groups,
           cellIndex = _ref.index,
           isFirstGroupCell = _ref.isFirstGroupCell,
+          isFocused = _ref.isFocused,
           isLastGroupCell = _ref.isLastGroupCell,
+          isSelected = _ref.isSelected,
           key = _ref.key,
           startDate = _ref.startDate;
       return (0, _inferno.createComponentVNode)(2, _cell.AllDayPanelCell, {
@@ -62,7 +64,9 @@ var viewFunction = function viewFunction(viewModel) {
         "groups": groups,
         "groupIndex": cellGroupIndex,
         "index": cellIndex,
-        "dataCellTemplate": viewModel.props.dataCellTemplate
+        "dataCellTemplate": viewModel.props.dataCellTemplate,
+        "isSelected": isSelected,
+        "isFocused": isFocused
       }, key);
     })
   });

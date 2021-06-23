@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/pivot_grid/ui.pivot_grid.data_controller.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -476,7 +476,7 @@ export var DataController = Class.inherit(function () {
         var dataIndex = (dataFieldAreaInRows ? rowInfo.dataIndex : columnInfo.dataIndex) || 0;
         var dataField = dataFields[dataIndex];
 
-        if (columnInfo.isLast && dataField) {
+        if (columnInfo.isLast && dataField && dataField.visible !== false) {
           var cell = dataRow[columnInfo.dataSourceIndex >= 0 ? columnInfo.dataSourceIndex : data.grandTotalColumnIndex];
 
           if (!Array.isArray(cell)) {

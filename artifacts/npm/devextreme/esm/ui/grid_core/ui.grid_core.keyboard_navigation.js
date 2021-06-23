@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/grid_core/ui.grid_core.keyboard_navigation.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -1206,7 +1206,7 @@ var KeyboardNavigationController = core.ViewController.inherit({
       var editingController = this._editingController;
       var isCellEditMode = editingController.getEditMode() === EDIT_MODE_CELL;
 
-      if (!this.option('repaintChangesOnly') && isCellEditMode && editingController.hasChanges()) {
+      if (isCellEditMode && editingController.hasChanges()) {
         editingController._focusEditingCell();
 
         return;

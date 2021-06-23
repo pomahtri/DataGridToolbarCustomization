@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/diagram/ui.diagram.toolbox.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -278,7 +278,7 @@ class DiagramToolbox extends DiagramFloatingPanel {
       var title = $target.attr('title');
 
       if (title) {
-        var $tooltip = $('<div>').html(title).appendTo($container);
+        var $tooltip = $('<div>').text(title).appendTo($container);
 
         this._createComponent($tooltip, Tooltip, {
           target: $target.get(0),

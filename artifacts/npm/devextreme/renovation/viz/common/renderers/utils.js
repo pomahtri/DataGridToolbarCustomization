@@ -1,7 +1,7 @@
 /**
 * DevExtreme (renovation/viz/common/renderers/utils.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -335,9 +335,9 @@ var removeExtraAttrs = function removeExtraAttrs(html) {
   var findTagAttrs = /(?:(<[a-z0-9]+\s*))([\s\S]*?)(>|\/>)/gi;
   var findStyleAndClassAttrs = /(style|class)\s*=\s*(["'])(?:(?!\2).)*\2\s?/gi;
   return html.replace(findTagAttrs, function (_, p1, p2, p3) {
-    var _p;
+    var _p2$match, _p;
 
-    p2 = (((_p = p2) === null || _p === void 0 ? void 0 : _p.match(findStyleAndClassAttrs)) || []).map(function (str) {
+    p2 = ((_p2$match = (_p = p2) === null || _p === void 0 ? void 0 : _p.match(findStyleAndClassAttrs)) !== null && _p2$match !== void 0 ? _p2$match : []).map(function (str) {
       return str;
     }).join(" ");
     return p1 + p2 + p3;
@@ -400,7 +400,7 @@ var getItemLineHeight = function getItemLineHeight(item, defaultValue) {
 exports.getItemLineHeight = getItemLineHeight;
 
 var getLineHeight = function getLineHeight(styles) {
-  return styles && !isNaN(parseFloat(styles[KEY_FONT_SIZE])) ? parseFloat(styles[KEY_FONT_SIZE]) : DEFAULT_FONT_SIZE;
+  return styles && !Number.isNaN(parseFloat(styles[KEY_FONT_SIZE])) ? parseFloat(styles[KEY_FONT_SIZE]) : DEFAULT_FONT_SIZE;
 };
 
 exports.getLineHeight = getLineHeight;

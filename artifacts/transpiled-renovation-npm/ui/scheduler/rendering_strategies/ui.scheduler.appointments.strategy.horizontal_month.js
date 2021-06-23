@@ -101,7 +101,7 @@ var HorizontalMonthRenderingStrategy = /*#__PURE__*/function (_HorizontalMonthLi
         width: isTailChunk ? tailChunkWidth : weekWidth,
         appointmentReduced: isTailChunk ? 'tail' : 'body',
         rowIndex: ++settings.rowIndex,
-        cellIndex: 0
+        columnIndex: 0
       }));
     }
 

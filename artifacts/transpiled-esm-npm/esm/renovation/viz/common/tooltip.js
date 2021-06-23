@@ -58,6 +58,7 @@ export var viewFunction = _ref => {
     cssClassName,
     customizedOptions,
     filterId,
+    fontStyles,
     htmlRef,
     isEmptyContainer,
     pointerEvents,
@@ -127,14 +128,9 @@ export var viewFunction = _ref => {
         "rotateY": correctedCoordinates.y
       }), customizedOptions.html || TooltipTemplate ? null : createVNode(32, "g", null, createComponentVNode(2, TextSvgElement, {
         "text": customizedOptions.text,
-        "styles": {
-          fill: customizedOptions.fontColor,
-          fontFamily: font.family,
-          fontSize: font.size,
-          fontWeight: font.weight,
-          opacity: font.opacity,
+        "styles": _extends({}, fontStyles, {
           pointerEvents
-        }
+        })
       }), 2, {
         "text-anchor": "middle",
         "transform": "translate(".concat(correctedCoordinates.x, ", ").concat(correctedCoordinates.y - textSize.height / 2 - textSize.y, ")")
@@ -406,6 +402,19 @@ export class Tooltip extends InfernoComponent {
     return combineClasses(classesMap);
   }
 
+  get fontStyles() {
+    var {
+      font
+    } = this.props;
+    var result = {};
+    font.family !== undefined && (result.fontFamily = font.family);
+    font.size !== undefined && (result.fontSize = String(font.size));
+    font.weight !== undefined && (result.fontWeight = String(font.weight));
+    font.opacity !== undefined && (result.opacity = String(font.opacity));
+    this.customizedOptions.fontColor !== undefined && (result.fill = this.customizedOptions.fontColor);
+    return result;
+  }
+
   get correctedCoordinates() {
     var {
       arrowLength,
@@ -492,6 +501,7 @@ export class Tooltip extends InfernoComponent {
       margins: this.margins,
       pointerEvents: this.pointerEvents,
       cssClassName: this.cssClassName,
+      fontStyles: this.fontStyles,
       correctedCoordinates: this.correctedCoordinates,
       calculateContentSize: this.calculateContentSize,
       calculateCloudSize: this.calculateCloudSize,

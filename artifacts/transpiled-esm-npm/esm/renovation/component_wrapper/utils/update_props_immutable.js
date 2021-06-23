@@ -1,12 +1,19 @@
 import _extends from "@babel/runtime/helpers/esm/extends";
 import { isPlainObject } from "../../../core/utils/type";
+import { getPathParts } from "../../../core/utils/data";
 
-function cloneObjectProp(value, fullNameParts) {
-  var result = _extends({}, value);
+function cloneObjectValue(value) {
+  return Array.isArray(value) ? [...value] : _extends({}, value);
+}
+
+function cloneObjectProp(value, prevValue, fullNameParts) {
+  var result = fullNameParts.length > 0 && prevValue && value !== prevValue ? cloneObjectValue(prevValue) : cloneObjectValue(value);
+  var name = fullNameParts[0];
 
   if (fullNameParts.length > 1) {
-    var name = fullNameParts[0];
-    result[name] = cloneObjectProp(value[name], fullNameParts.slice(1));
+    result[name] = cloneObjectProp(value[name], prevValue === null || prevValue === void 0 ? void 0 : prevValue[name], fullNameParts.slice(1));
+  } else if (name) {
+    result[name] = value[name];
   }
 
   return result;
@@ -14,28 +21,11 @@ function cloneObjectProp(value, fullNameParts) {
 
 export function updatePropsImmutable(props, option, name, fullName) {
   var currentPropsValue = option[name];
+  var prevPropsValue = props[name];
   var result = props;
 
-  if (name !== fullName) {
-    if (Array.isArray(currentPropsValue)) {
-      var matchIndex = /\[\s*(\d+)\s*\]/g.exec(fullName);
-
-      if (matchIndex) {
-        var newArray = [...currentPropsValue];
-        var index = parseInt(matchIndex[1], 10);
-        result[name] = newArray;
-
-        if (isPlainObject(newArray[index])) {
-          newArray[index] = _extends({}, currentPropsValue[index]);
-        }
-      }
-
-      return;
-    }
-  }
-
-  if (isPlainObject(currentPropsValue)) {
-    result[name] = cloneObjectProp(currentPropsValue, fullName.split(".").slice(1));
+  if (isPlainObject(currentPropsValue) || name !== fullName && Array.isArray(currentPropsValue)) {
+    result[name] = cloneObjectProp(currentPropsValue, prevPropsValue, getPathParts(fullName).slice(1));
   } else {
     result[name] = currentPropsValue;
   }

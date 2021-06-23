@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/toolbar/ui.toolbar.strategy.action_sheet.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -10,13 +10,19 @@
 
 exports.default = void 0;
 
+var _renderer = _interopRequireDefault(require("../../core/renderer"));
+
 var _uiToolbar = _interopRequireDefault(require("./ui.toolbar.strategy"));
 
 var _extend = require("../../core/utils/extend");
 
 var _action_sheet = _interopRequireDefault(require("../action_sheet"));
 
+var _button = _interopRequireDefault(require("../button"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var TOOLBAR_MENU_BUTTON_CLASS = 'dx-toolbar-menu-button';
 
 var ActionSheetStrategy = _uiToolbar.default.inherit({
   NAME: 'actionSheet',
@@ -28,31 +34,45 @@ var ActionSheetStrategy = _uiToolbar.default.inherit({
       return;
     }
 
-    this.callBase();
+    this._renderMenuButton();
+
+    this._renderWidget();
   },
-  _menuWidgetClass: function _menuWidgetClass() {
+  _renderMenuButton: function _renderMenuButton() {
+    var _this = this;
+
+    this._renderMenuButtonContainer();
+
+    this._$button = (0, _renderer.default)('<div>').appendTo(this._$menuButtonContainer).addClass(TOOLBAR_MENU_BUTTON_CLASS);
+
+    this._toolbar._createComponent(this._$button, _button.default, {
+      icon: 'overflow',
+      onClick: function onClick() {
+        _this._toolbar.option('overflowMenuVisible', !_this._toolbar.option('overflowMenuVisible'));
+      }
+    });
+  },
+  _menuWidget: function _menuWidget() {
     return _action_sheet.default;
   },
   _menuContainer: function _menuContainer() {
     return this._toolbar.$element();
   },
   _widgetOptions: function _widgetOptions() {
-    return (0, _extend.extend)({}, this.callBase(), {
+    var _this2 = this;
+
+    return (0, _extend.extend)(this.callBase(), {
       target: this._$button,
-      showTitle: false
-    });
-  },
-  _menuButtonOptions: function _menuButtonOptions() {
-    return (0, _extend.extend)({}, this.callBase(), {
-      icon: 'overflow'
-    });
-  },
-  _toggleMenu: function _toggleMenu() {
-    this.callBase.apply(this, arguments);
+      showTitle: false,
+      onOptionChanged: function onOptionChanged(_ref) {
+        var name = _ref.name,
+            value = _ref.value;
 
-    this._menu.toggle(this._menuShown);
-
-    this._menuShown = false;
+        if (name === 'visible') {
+          _this2._toolbar.option('overflowMenuVisible', value);
+        }
+      }
+    });
   }
 });
 

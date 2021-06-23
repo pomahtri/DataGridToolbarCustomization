@@ -23,13 +23,13 @@ class VerticalGroupedStrategy {
 
     return {
       rowIndex: rowIndex,
-      cellIndex: cellCoordinates.cellIndex
+      columnIndex: cellCoordinates.columnIndex
     };
   }
 
-  calculateCellIndex(rowIndex, cellIndex) {
+  calculateCellIndex(rowIndex, columnIndex) {
     rowIndex = rowIndex % this._workSpace._getRowCount();
-    return this._workSpace._getRowCount() * cellIndex + rowIndex;
+    return this._workSpace._getRowCount() * columnIndex + rowIndex;
   }
 
   getGroupIndex(rowIndex) {

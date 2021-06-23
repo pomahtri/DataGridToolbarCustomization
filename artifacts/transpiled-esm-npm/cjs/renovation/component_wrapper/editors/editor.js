@@ -103,7 +103,7 @@ var Editor = /*#__PURE__*/function (_Component) {
         previousValue = option.previousValue,
         value = option.value;
 
-    if (name && this._getActionConfigs()[name]) {
+    if (name && this._getActionConfigs()[name] !== undefined) {
       this._addAction(name);
     }
 

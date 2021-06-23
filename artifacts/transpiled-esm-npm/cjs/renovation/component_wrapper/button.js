@@ -55,7 +55,7 @@ var ButtonWrapper = /*#__PURE__*/function (_Component) {
       if (needValidate) {
         var validationGroup = _this._validationGroupConfig;
 
-        if (validationGroup) {
+        if (validationGroup !== undefined && validationGroup !== "") {
           var _validationGroup$vali = validationGroup.validate(),
               complete = _validationGroup$vali.complete,
               status = _validationGroup$vali.status;
@@ -121,7 +121,8 @@ var ButtonWrapper = /*#__PURE__*/function (_Component) {
 
   _proto._findGroup = function _findGroup() {
     var $element = this.$element();
-    return this.option("validationGroup") || _validation_engine.default.findGroup($element, this._modelByElement($element));
+    var validationGroup = this.option("validationGroup");
+    return validationGroup !== undefined && validationGroup !== "" ? validationGroup : _validation_engine.default.findGroup($element, this._modelByElement($element));
   };
 
   _createClass(ButtonWrapper, [{

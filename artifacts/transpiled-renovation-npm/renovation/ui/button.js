@@ -74,7 +74,7 @@ var viewFunction = function viewFunction(viewModel) {
       ButtonTemplate = _viewModel$props.template,
       templateData = _viewModel$props.templateData,
       text = _viewModel$props.text;
-  var renderText = !viewModel.props.template && !children && text;
+  var renderText = !viewModel.props.template && !children && text !== "";
   var isIconLeft = iconPosition === "left";
   var iconComponent = !viewModel.props.template && !children && viewModel.iconSource && (0, _inferno.createComponentVNode)(2, _icon2.Icon, {
     "source": viewModel.iconSource,
@@ -121,6 +121,7 @@ var ButtonProps = _extends({}, _base_props.BaseWidgetProps, {
   hoverStateEnabled: true,
   icon: "",
   iconPosition: "left",
+  stylingMode: "contained",
   text: "",
   type: "normal",
   useInkRipple: false,
@@ -244,12 +245,12 @@ var Button = /*#__PURE__*/function (_InfernoWrapperCompon) {
     useSubmitBehavior && this.submitInputRef.current.click();
   };
 
-  _proto.onWidgetKeyDown = function onWidgetKeyDown(options) {
+  _proto.onWidgetKeyDown = function onWidgetKeyDown(e) {
     var onKeyDown = this.props.onKeyDown;
-    var keyName = options.keyName,
-        originalEvent = options.originalEvent,
-        which = options.which;
-    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(options);
+    var keyName = e.keyName,
+        originalEvent = e.originalEvent,
+        which = e.which;
+    var result = onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(e);
 
     if (result !== null && result !== void 0 && result.cancel) {
       return result;

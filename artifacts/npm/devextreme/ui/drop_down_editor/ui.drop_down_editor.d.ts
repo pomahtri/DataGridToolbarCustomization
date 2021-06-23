@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/drop_down_editor/ui.drop_down_editor.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -179,6 +179,7 @@ export default class dxDropDownEditor<TProperties> extends dxTextBox<TProperties
     open(): void;
 }
 
-type Properties = dxDropDownEditorOptions<dxDropDownEditor<Properties>>;
+interface DropDownEditorInstance extends dxDropDownEditor<Properties> { }
+type Properties = dxDropDownEditorOptions<DropDownEditorInstance>;
 export type Options = Properties;
 export type IOptions = Properties;

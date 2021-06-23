@@ -8,7 +8,7 @@ var _vdom = require("@devextreme/vdom");
 
 var _utils = require("../utils");
 
-var _excluded = ["allDay", "children", "className", "contentTemplate", "contentTemplateProps", "endDate", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "startDate", "text"];
+var _excluded = ["allDay", "ariaLabel", "children", "className", "contentTemplate", "contentTemplateProps", "endDate", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "startDate", "text"];
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -26,7 +26,9 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 var viewFunction = function viewFunction(viewModel) {
   var ContentTemplate = viewModel.props.contentTemplate;
-  return (0, _inferno.createVNode)(1, "td", viewModel.classes, [!viewModel.props.contentTemplate && viewModel.props.children, viewModel.props.contentTemplate && ContentTemplate(_extends({}, viewModel.props.contentTemplateProps))], 0);
+  return (0, _inferno.createVNode)(1, "td", viewModel.classes, [!viewModel.props.contentTemplate && viewModel.props.children, viewModel.props.contentTemplate && ContentTemplate(_extends({}, viewModel.props.contentTemplateProps))], 0, {
+    "aria-label": viewModel.props.ariaLabel
+  });
 };
 
 exports.viewFunction = viewFunction;
@@ -90,6 +92,7 @@ var CellBase = /*#__PURE__*/function (_BaseInfernoComponent) {
     get: function get() {
       var _this$props2 = this.props,
           allDay = _this$props2.allDay,
+          ariaLabel = _this$props2.ariaLabel,
           children = _this$props2.children,
           className = _this$props2.className,
           contentTemplate = _this$props2.contentTemplate,

@@ -1,6 +1,6 @@
 import _objectWithoutPropertiesLoose from "@babel/runtime/helpers/esm/objectWithoutPropertiesLoose";
 import _extends from "@babel/runtime/helpers/esm/extends";
-var _excluded = ["allDay", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "otherMonth", "startDate", "text", "today"];
+var _excluded = ["allDay", "ariaLabel", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isFocused", "isLastGroupCell", "isSelected", "otherMonth", "startDate", "text", "today"];
 import { createVNode, createComponentVNode, normalizeProps } from "inferno";
 import { BaseInfernoComponent } from "@devextreme/vdom";
 import { combineClasses } from "../../../../../utils/combine_classes";
@@ -16,7 +16,9 @@ export var viewFunction = _ref => {
       groups,
       index,
       isFirstGroupCell,
+      isFocused,
       isLastGroupCell,
+      isSelected,
       startDate,
       text
     }
@@ -32,6 +34,8 @@ export var viewFunction = _ref => {
     "index": index,
     "isFirstGroupCell": isFirstGroupCell,
     "isLastGroupCell": isLastGroupCell,
+    "isSelected": isSelected,
+    "isFocused": isFocused,
     "contentTemplateProps": contentTemplateProps,
     children: createVNode(1, "div", "dx-scheduler-date-table-cell-text", text, 0)
   });

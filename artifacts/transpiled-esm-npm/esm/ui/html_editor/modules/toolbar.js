@@ -592,6 +592,8 @@ if (Quill) {
           placeholder: localize(name),
           onValueChanged: e => {
             if (!this._isReset) {
+              this._hideAdaptiveMenu();
+
               this._applyFormat([name, e.value, USER_ACTION], e.event);
 
               this._setValueSilent(e.component, e.value);
@@ -599,6 +601,12 @@ if (Quill) {
           }
         }
       }, item);
+    }
+
+    _hideAdaptiveMenu() {
+      if (this.toolbarInstance.option('overflowMenuVisible')) {
+        this.toolbarInstance.option('overflowMenuVisible', false);
+      }
     }
 
     _prepareColorClickHandler(name) {

@@ -28,6 +28,8 @@ var _type = require("./utils/type");
 
 var _common = require("./utils/common");
 
+var _data = require("./utils/data");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var getEventName = function getEventName(actionName) {
@@ -250,7 +252,7 @@ var Component = _class.default.inherit({
       for (var i = 0; i < optionNames.length; i++) {
         var name = optionNames[i];
         var args = {
-          name: name.split(/[.[]/)[0],
+          name: (0, _data.getPathParts)(name)[0],
           fullName: name,
           value: value,
           previousValue: previousValue

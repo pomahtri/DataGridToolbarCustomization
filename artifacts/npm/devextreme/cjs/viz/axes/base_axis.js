@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/axes/base_axis.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -2640,6 +2640,8 @@ Axis.prototype = {
     }
 
     that._checkBoundedLabelsOverlapping(majorTicks, boxes, mode);
+
+    that._checkShiftedLabels(majorTicks, boxes, labelOpt.minSpacing, labelOpt.alignment);
   },
   _applyLabelMode: function _applyLabelMode(mode, step, boxes, behavior, notRecastStep) {
     var that = this;
@@ -2779,6 +2781,7 @@ Axis.prototype = {
   getSpiderTicks: _common.noop,
   setSpiderTicks: _common.noop,
   _checkBoundedLabelsOverlapping: _common.noop,
+  _checkShiftedLabels: _common.noop,
   drawScaleBreaks: _common.noop,
   _visualRange: _common.noop,
   _rotateConstantLine: _common.noop,

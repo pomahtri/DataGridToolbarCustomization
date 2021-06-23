@@ -24,6 +24,8 @@ var _fx = _interopRequireDefault(require("../../animation/fx"));
 
 var _translator = require("../../animation/translator");
 
+var _restore_location = require("../../renovation/ui/scroll_view/utils/restore_location");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
@@ -49,36 +51,29 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
 
   _proto._getDefaultOptions = function _getDefaultOptions() {
     return (0, _extend.extend)(_Scrollable.prototype._getDefaultOptions.call(this), {
-      showScrollbar: false,
+      showScrollbar: 'never',
       useNative: false,
       selectedIndex: 0,
       bounceEnabled: false,
       items: [],
       showOnClick: false,
       onClick: null,
-      onSelectedIndexChanged: null
+      onSelectedIndexChanged: null,
+      scrollByContent: true
     });
-  };
-
-  _proto._defaultOptionsRules = function _defaultOptionsRules() {
-    return _Scrollable.prototype._defaultOptionsRules.call(this).concat([{
-      device: {
-        platform: 'generic'
-      },
-      options: {
-        scrollByContent: true
-      }
-    }]);
   };
 
   _proto._init = function _init() {
     _Scrollable.prototype._init.call(this);
 
-    this._renderSelectedItemFrame();
+    this.option('onVisibilityChange', this._visibilityChangedHandler.bind(this));
+    this.option('onEnd', this._endActionHandler.bind(this));
   };
 
   _proto._render = function _render() {
     _Scrollable.prototype._render.call(this);
+
+    this._renderSelectedItemFrame();
 
     this.$element().addClass(DATEVIEW_ROLLER_CLASS);
 
@@ -91,8 +86,6 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
     this._renderItemsClick();
 
     this._renderWheelEvent();
-
-    this._wrapAction('_endAction', this._endActionHandler.bind(this));
 
     this._renderSelectedIndexChanged();
   };
@@ -125,16 +118,6 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
         event: e
       });
     });
-  };
-
-  _proto._wrapAction = function _wrapAction(actionName, callback) {
-    var strategy = this._strategy;
-    var originalAction = strategy[actionName];
-
-    strategy[actionName] = function () {
-      callback.apply(this, arguments);
-      return originalAction.apply(this, arguments);
-    };
   };
 
   _proto._renderItems = function _renderItems() {
@@ -221,17 +204,15 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
   };
 
   _proto._moveTo = function _moveTo(targetLocation) {
-    targetLocation = this._normalizeLocation(targetLocation);
-
-    var location = this._location();
-
+    targetLocation = (0, _restore_location.restoreLocation)(targetLocation);
+    var location = this.scrollOffset();
     var delta = {
-      x: -(location.left - targetLocation.left),
-      y: -(location.top - targetLocation.top)
+      x: location.left + targetLocation.left,
+      y: location.top + targetLocation.top
     };
 
     if (this._isVisible() && (delta.x || delta.y)) {
-      this._strategy._prepareDirections(true);
+      this._prepareDirections(true);
 
       if (this._animation && !this._shouldScrollToNeighborItem()) {
         var that = this;
@@ -246,8 +227,7 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
           },
           complete: function complete() {
             (0, _translator.resetPosition)((0, _renderer.default)(that.content()));
-
-            that._strategy.handleMove({
+            that.handleMove({
               delta: delta
             });
           }
@@ -255,7 +235,7 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
 
         delete this._animation;
       } else {
-        this._strategy.handleMove({
+        this.handleMove({
           delta: delta
         });
       }
@@ -263,7 +243,7 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
   };
 
   _proto._validate = function _validate(e) {
-    return this._strategy.validate(e);
+    return this._moveIsAllowed(e);
   };
 
   _proto._fitSelectedIndexInRange = function _fitSelectedIndexInRange(index) {
@@ -277,7 +257,7 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
   };
 
   _proto._getSelectedIndexAfterScroll = function _getSelectedIndexAfterScroll(currentSelectedIndex) {
-    var locationTop = -this._location().top;
+    var locationTop = this.scrollOffset().top;
 
     var currentSelectedIndexPosition = currentSelectedIndex * this._itemHeight();
 
@@ -301,7 +281,7 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
 
     this._animation = true;
 
-    var ratio = -this._location().top / this._itemHeight();
+    var ratio = this.scrollOffset().top / this._itemHeight();
 
     return Math.round(ratio);
   };
@@ -345,8 +325,17 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
   _proto._visibilityChanged = function _visibilityChanged(visible) {
     _Scrollable.prototype._visibilityChanged.call(this, visible);
 
+    this._visibilityChangedHandler(visible);
+  };
+
+  _proto._visibilityChangedHandler = function _visibilityChangedHandler(visible) {
+    var _this2 = this;
+
     if (visible) {
-      this._renderSelectedValue(this.option('selectedIndex'));
+      // TODO: for renovated code, avoid async
+      this._visibilityTimer = setTimeout(function () {
+        _this2._renderSelectedValue(_this2.option('selectedIndex'));
+      });
     }
 
     this.toggleActiveState(false);
@@ -399,6 +388,12 @@ var DateViewRoller = /*#__PURE__*/function (_Scrollable) {
         _Scrollable.prototype._optionChanged.call(this, args);
 
     }
+  };
+
+  _proto._dispose = function _dispose() {
+    clearTimeout(this._visibilityTimer);
+
+    _Scrollable.prototype._dispose.call(this);
   };
 
   return DateViewRoller;

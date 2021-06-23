@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/scroll_view/ui.scrollable.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -211,4 +211,6 @@ export default class dxScrollable<TProperties = Properties> extends DOMComponent
     update(): DxPromise<void>;
 }
 
-type Properties = dxScrollableOptions<dxScrollable<Properties>>;
+interface ScrollableInstance extends dxScrollable<Properties> { }
+
+type Properties = dxScrollableOptions<ScrollableInstance>;

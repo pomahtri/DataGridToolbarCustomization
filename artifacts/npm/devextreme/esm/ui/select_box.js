@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/select_box.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -16,7 +16,6 @@ import { Deferred, fromPromise } from '../core/utils/deferred';
 import { getPublicElement } from '../core/element';
 import errors from '../core/errors';
 import domAdapter from '../core/dom_adapter';
-import { render } from './widget/utils.ink_ripple';
 import messageLocalization from '../localization/message';
 import registerComponent from '../core/component_registrator';
 import DropDownList from './drop_down_editor/ui.drop_down_list';
@@ -181,7 +180,6 @@ var SelectBox = DropDownList.inherit({
       openOnFieldClick: true,
       showDropDownButton: true,
       displayCustomValue: false,
-      useInkRipple: false,
       useHiddenSubmitElement: true
     });
   },
@@ -195,31 +193,9 @@ var SelectBox = DropDownList.inherit({
 
     this._renderTooltip();
 
-    this.option('useInkRipple') && this._renderInkRipple();
     this.callBase();
 
     this._$container.addClass(SELECTBOX_CONTAINER_CLASS);
-  },
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = render();
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase.apply(this, arguments);
-
-    if (!this._inkRipple || this._isEditable()) {
-      return;
-    }
-
-    var config = {
-      element: this._inputWrapper(),
-      event: e
-    };
-
-    if (value) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
-    }
   },
   _createPopup: function _createPopup() {
     this.callBase();
@@ -848,7 +824,6 @@ var SelectBox = DropDownList.inherit({
       case 'displayCustomValue':
       case 'acceptCustomValue':
       case 'showSelectionControls':
-      case 'useInkRipple':
         this._invalidate();
 
         break;
@@ -859,10 +834,6 @@ var SelectBox = DropDownList.inherit({
       default:
         this.callBase(args);
     }
-  },
-  _clean: function _clean() {
-    delete this._inkRipple;
-    this.callBase();
   }
 });
 registerComponent('dxSelectBox', SelectBox);

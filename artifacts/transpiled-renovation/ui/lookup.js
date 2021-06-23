@@ -18,8 +18,6 @@ var _iterator = require("../core/utils/iterator");
 
 var _extend = require("../core/utils/extend");
 
-var _utils = require("./widget/utils.ink_ripple");
-
 var _message = _interopRequireDefault(require("../localization/message"));
 
 var _devices = _interopRequireDefault(require("../core/devices"));
@@ -44,7 +42,7 @@ var _translator = require("../animation/translator");
 
 var _type = require("../core/utils/type");
 
-var _utils2 = require("./drop_down_editor/utils");
+var _utils = require("./drop_down_editor/utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -280,8 +278,7 @@ var Lookup = _ui.default.inherit({
           },
           height: 'auto'
         },
-        usePopover: true,
-        useInkRipple: false
+        usePopover: true
       }
     }, {
       device: function device() {
@@ -303,7 +300,7 @@ var Lookup = _ui.default.inherit({
         dropDownOptions: {
           closeOnOutsideClick: true,
           width: function width() {
-            return (0, _utils2.getElementWidth)(_this.$element());
+            return (0, _utils.getElementWidth)(_this.$element());
           },
           height: function () {
             return this._getPopupHeight();
@@ -387,37 +384,15 @@ var Lookup = _ui.default.inherit({
 
     var $arrow = (0, _renderer.default)('<div>').addClass(LOOKUP_ARROW_CLASS);
     this._$fieldWrapper = (0, _renderer.default)('<div>').addClass(LOOKUP_FIELD_WRAPPER_CLASS).append(this._$field).append($arrow).appendTo(this.$element());
-    this.option('useInkRipple') && this._renderInkRipple();
   },
   _getInputContainer: function _getInputContainer() {
     return this._$fieldWrapper;
-  },
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = (0, _utils.render)();
   },
   _toggleOpenState: function _toggleOpenState() {
     this.callBase();
 
     if (!this.option('dropDownOptions.fullScreen') && this.option('_scrollToSelectedItemEnabled')) {
       this._setPopupPosition();
-    }
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase.apply(this, arguments);
-
-    if (!this._inkRipple) {
-      return;
-    }
-
-    var config = {
-      element: this._inputWrapper(),
-      event: e
-    };
-
-    if (value) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
     }
   },
   _renderField: function _renderField() {
@@ -991,7 +966,6 @@ var Lookup = _ui.default.inherit({
     this._$fieldWrapper.remove();
 
     this._$searchBox = null;
-    delete this._inkRipple;
     this.callBase();
   },
   _setDeprecatedOptions: function _setDeprecatedOptions() {

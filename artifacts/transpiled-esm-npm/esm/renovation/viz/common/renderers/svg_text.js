@@ -188,7 +188,8 @@ export class TextSvgElement extends InfernoComponent {
       var textWidth = getTextWidth(item);
 
       if (maxTextWidth !== 0 && maxTextWidth !== textWidth) {
-        setTextNodeAttribute(item, "dx", direction * (Math.round((maxTextWidth - textWidth) / 2 * 10) / 10));
+        var value = direction * (Math.round((maxTextWidth - textWidth) / 2 * 10) / 10);
+        setTextNodeAttribute(item, "dx", String(value));
       }
     }
   }
@@ -201,16 +202,16 @@ export class TextSvgElement extends InfernoComponent {
     } = this.props;
     var lineHeight = getLineHeight(styles !== null && styles !== void 0 ? styles : {});
     var item = items[0];
-    setTextNodeAttribute(item, "x", x);
-    setTextNodeAttribute(item, "y", y);
+    setTextNodeAttribute(item, "x", String(x));
+    setTextNodeAttribute(item, "y", String(y));
 
     for (var i = 1, ii = items.length; i < ii; ++i) {
       item = items[i];
 
       if (isDefined(item.height) && item.height >= 0) {
-        setTextNodeAttribute(item, "x", x);
+        setTextNodeAttribute(item, "x", String(x));
         var height = getItemLineHeight(item, lineHeight);
-        setTextNodeAttribute(item, "dy", height);
+        setTextNodeAttribute(item, "dy", String(height));
       }
     }
   }
@@ -225,10 +226,13 @@ export class TextSvgElement extends InfernoComponent {
 
     for (var i = 0, ii = items.length; i < ii; ++i) {
       var tspan = items[i].stroke;
-      tspan.setAttribute(KEY_STROKE, stroke);
-      tspan.setAttribute("stroke-width", strokeWidth.toString());
-      tspan.setAttribute("stroke-opacity", strokeOpacity.toString());
-      tspan.setAttribute("stroke-linejoin", "round");
+
+      if (tspan) {
+        tspan.setAttribute(KEY_STROKE, String(stroke));
+        tspan.setAttribute("stroke-width", String(strokeWidth));
+        tspan.setAttribute("stroke-opacity", String(strokeOpacity));
+        tspan.setAttribute("stroke-linejoin", "round");
+      }
     }
   }
 

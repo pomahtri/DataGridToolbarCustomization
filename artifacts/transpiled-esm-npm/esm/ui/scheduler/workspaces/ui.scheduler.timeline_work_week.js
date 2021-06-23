@@ -1,7 +1,7 @@
 import registerComponent from '../../../core/component_registrator';
 import SchedulerTimelineWeek from './ui.scheduler.timeline_week';
 import dateUtils from '../../../core/utils/date';
-import workWeekUtils from './utils.work_week';
+import { getWeekendsCount, isDataOnWeekend, getFirstDayOfWeek, calculateStartViewDate } from './utils/work_week';
 var toMs = dateUtils.dateToMilliseconds;
 var TIMELINE_CLASS = 'dx-scheduler-timeline-work-week';
 var LAST_DAY_WEEK_INDEX = 5;
@@ -9,8 +9,8 @@ var LAST_DAY_WEEK_INDEX = 5;
 class SchedulerTimelineWorkWeek extends SchedulerTimelineWeek {
   constructor() {
     super(...arguments);
-    this._getWeekendsCount = workWeekUtils.getWeekendsCount;
-    this._isSkippedData = workWeekUtils.isDataOnWeekend;
+    this._getWeekendsCount = getWeekendsCount;
+    this._isSkippedData = isDataOnWeekend;
   }
 
   _getElementClass() {
@@ -22,11 +22,11 @@ class SchedulerTimelineWorkWeek extends SchedulerTimelineWeek {
   }
 
   _firstDayOfWeek() {
-    return workWeekUtils.getFirstDayOfWeek(this.option('firstDayOfWeek'));
+    return getFirstDayOfWeek(this.option('firstDayOfWeek'));
   }
 
   _isSkippedData() {
-    return workWeekUtils.isDataOnWeekend;
+    return isDataOnWeekend;
   }
 
   _incrementDate(date) {
@@ -44,10 +44,8 @@ class SchedulerTimelineWorkWeek extends SchedulerTimelineWeek {
     return toMs('day') * weekendCount * 2;
   }
 
-  _setFirstViewDate() {
-    this._firstViewDate = workWeekUtils.getFirstViewDate(this.option('currentDate'), this._firstDayOfWeek());
-
-    this._setStartDayHour(this._firstViewDate);
+  _calculateStartViewDate() {
+    return calculateStartViewDate(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration(), this.option('firstDayOfWeek'));
   }
 
 }

@@ -15,7 +15,9 @@ exports.getCurrentDate = getCurrentDate;
 
 var getFirstDayOfWeek = function getFirstDayOfWeek(includedDays, firstDayOfWeek) {
   var isFirstDayOfWeekInIncludedDays = includedDays.includes(firstDayOfWeek);
-  var sortedIncludedDays = includedDays.slice().sort();
+  var sortedIncludedDays = includedDays.slice().sort(function (a, b) {
+    return a - b;
+  });
   return isFirstDayOfWeekInIncludedDays ? firstDayOfWeek : sortedIncludedDays[0];
 };
 

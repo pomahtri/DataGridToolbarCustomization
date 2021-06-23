@@ -1,7 +1,7 @@
 /**
 * DevExtreme (core/dom_component.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -133,7 +133,9 @@ export type ComponentClass<TProperties> = {
     getInstance: (widgetRef: HTMLDivElement) => DOMComponent<TProperties>;
 }
 
-type Properties = DOMComponentOptions<DOMComponent<Properties>>;
+interface DOMComponentInstance extends DOMComponent<Properties> { }
+
+type Properties = DOMComponentOptions<DOMComponentInstance>;
 
 /** @deprecated use Properties instead */
 export type Options = Properties;

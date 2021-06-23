@@ -18,6 +18,8 @@ var _window = require("../../../core/utils/window");
 
 var _classes = require("../classes");
 
+var _instanceFactory = require("../instanceFactory");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -50,7 +52,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
   var _proto = SchedulerWorkSpaceIndicator.prototype;
 
   _proto._getTimeZoneCalculator = function _getTimeZoneCalculator() {
-    return this.invoke('getTimeZoneCalculator');
+    return (0, _instanceFactory.getTimeZoneCalculator)(this.option('key'));
   };
 
   _proto._getToday = function _getToday() {
@@ -69,7 +71,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
 
       var endViewDate = _date.default.trimTime(this.getEndViewDate());
 
-      return _date.default.dateInRange(today, this._firstViewDate, new Date(endViewDate.getTime() + toMs('day')));
+      return _date.default.dateInRange(today, this._startViewDate, new Date(endViewDate.getTime() + toMs('day')));
     }
 
     return false;
@@ -186,7 +188,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
   _proto._getIndicatorDuration = function _getIndicatorDuration() {
     var today = this._getToday();
 
-    var firstViewDate = new Date(this._firstViewDate);
+    var firstViewDate = new Date(this._startViewDate);
     var timeDiff = today.getTime() - firstViewDate.getTime();
 
     if (this.option('type') === 'workWeek') {
@@ -200,7 +202,7 @@ var SchedulerWorkSpaceIndicator = /*#__PURE__*/function (_SchedulerWorkSpace) {
     var today = this._getToday();
 
     var cellHeight = this.getCellHeight();
-    var date = new Date(this._firstViewDate);
+    var date = new Date(this._startViewDate);
 
     if (this.isIndicationOnView()) {
       date.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.timeline_month.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -17,6 +17,12 @@ var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.timeline"));
 var _date = _interopRequireDefault(require("../../../core/utils/date"));
 
 var _layout = _interopRequireDefault(require("../../../renovation/ui/scheduler/workspaces/base/header_panel/layout.j"));
+
+var _month = require("./utils/month");
+
+var _timeline_month = require("./utils/timeline_month");
+
+var _base = require("./utils/base");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -92,10 +98,8 @@ var SchedulerTimelineMonth = /*#__PURE__*/function (_SchedulerTimeline) {
     return cellCount;
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    this._firstViewDate = _date.default.getFirstMonthDate(this.option('currentDate'));
-
-    this._setStartDayHour(this._firstViewDate);
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _timeline_month.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this.option('intervalCount'));
   };
 
   _proto._getFormat = function _getFormat() {
@@ -103,8 +107,8 @@ var SchedulerTimelineMonth = /*#__PURE__*/function (_SchedulerTimeline) {
   };
 
   _proto._getDateByIndex = function _getDateByIndex(headerIndex) {
-    var resultDate = new Date(this._firstViewDate);
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex);
+    var resultDate = new Date(this._startViewDate);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex);
     return resultDate;
   };
 
@@ -129,12 +133,10 @@ var SchedulerTimelineMonth = /*#__PURE__*/function (_SchedulerTimeline) {
     return 0;
   };
 
-  _proto._getDateByCellIndexes = function _getDateByCellIndexes(rowIndex, cellIndex) {
-    var date = _SchedulerTimeline.prototype._getDateByCellIndexes.call(this, rowIndex, cellIndex);
+  _proto._getDateByCellIndexes = function _getDateByCellIndexes(rowIndex, columnIndex) {
+    var date = _SchedulerTimeline.prototype._getDateByCellIndexes.call(this, rowIndex, columnIndex);
 
-    this._setStartDayHour(date);
-
-    return date;
+    return (0, _base.setStartDayHour)(date, this.option('startDayHour'));
   };
 
   _proto.getPositionShift = function getPositionShift() {
@@ -143,6 +145,10 @@ var SchedulerTimelineMonth = /*#__PURE__*/function (_SchedulerTimeline) {
       left: 0,
       cellPosition: 0
     };
+  };
+
+  _proto._getViewStartByOptions = function _getViewStartByOptions() {
+    return (0, _month.getViewStartByOptions)(this.option('startDate'), this.option('currentDate'), this.option('intervalCount'), _date.default.getFirstMonthDate(this.option('startDate')));
   };
 
   _createClass(SchedulerTimelineMonth, [{

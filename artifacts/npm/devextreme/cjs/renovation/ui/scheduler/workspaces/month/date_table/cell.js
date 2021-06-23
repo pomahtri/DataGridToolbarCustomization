@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/renovation/ui/scheduler/workspaces/month/date_table/cell.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -18,7 +18,7 @@ var _combine_classes = require("../../../../../utils/combine_classes");
 
 var _cell = require("../../base/date_table/cell");
 
-var _excluded = ["allDay", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "otherMonth", "startDate", "text", "today"];
+var _excluded = ["allDay", "ariaLabel", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isFocused", "isLastGroupCell", "isSelected", "otherMonth", "startDate", "text", "today"];
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -46,7 +46,9 @@ var viewFunction = function viewFunction(_ref) {
       groups = _ref$props.groups,
       index = _ref$props.index,
       isFirstGroupCell = _ref$props.isFirstGroupCell,
+      isFocused = _ref$props.isFocused,
       isLastGroupCell = _ref$props.isLastGroupCell,
+      isSelected = _ref$props.isSelected,
       startDate = _ref$props.startDate,
       text = _ref$props.text;
   return (0, _inferno.createComponentVNode)(2, _cell.DateTableCellBase, {
@@ -60,6 +62,8 @@ var viewFunction = function viewFunction(_ref) {
     "index": index,
     "isFirstGroupCell": isFirstGroupCell,
     "isLastGroupCell": isLastGroupCell,
+    "isSelected": isSelected,
+    "isFocused": isFocused,
     "contentTemplateProps": contentTemplateProps,
     children: (0, _inferno.createVNode)(1, "div", "dx-scheduler-date-table-cell-text", text, 0)
   });
@@ -131,6 +135,7 @@ var MonthDateTableCell = /*#__PURE__*/function (_BaseInfernoComponent) {
     get: function get() {
       var _this$props3 = this.props,
           allDay = _this$props3.allDay,
+          ariaLabel = _this$props3.ariaLabel,
           children = _this$props3.children,
           className = _this$props3.className,
           contentTemplate = _this$props3.contentTemplate,
@@ -142,7 +147,9 @@ var MonthDateTableCell = /*#__PURE__*/function (_BaseInfernoComponent) {
           groups = _this$props3.groups,
           index = _this$props3.index,
           isFirstGroupCell = _this$props3.isFirstGroupCell,
+          isFocused = _this$props3.isFocused,
           isLastGroupCell = _this$props3.isLastGroupCell,
+          isSelected = _this$props3.isSelected,
           otherMonth = _this$props3.otherMonth,
           startDate = _this$props3.startDate,
           text = _this$props3.text,

@@ -111,6 +111,15 @@ export var DataGridProps = _extends({}, BaseWidgetProps, {
     enterKeyDirection: "none",
     editOnKeyPress: false
   },
+  loadPanel: {
+    enabled: "auto",
+    text: messageLocalization.format("Loading"),
+    width: 200,
+    height: 90,
+    showIndicator: true,
+    indicatorSrc: "",
+    showPane: true
+  },
   searchPanel: {
     visible: false,
     width: 160,

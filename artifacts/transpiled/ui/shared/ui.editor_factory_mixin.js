@@ -176,10 +176,9 @@ var EditorFactoryMixin = function () {
       var stopWatch = options.row.watch(function () {
         dataSource = options.lookup.dataSource(options.row);
         return dataSource && dataSource.filter;
-      }, function () {
-        selectBox.option('dataSource', dataSource);
-      }, function (row) {
+      }, function (newValue, row) {
         options.row = row;
+        selectBox.option('dataSource', dataSource);
       });
     }
   }

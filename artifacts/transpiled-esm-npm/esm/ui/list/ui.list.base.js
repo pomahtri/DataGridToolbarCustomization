@@ -979,6 +979,9 @@ export var ListBase = CollectionWidget.inherit({
     var $item = this._editStrategy.getItemElement(itemElement);
 
     this._scrollView.scrollToElement($item);
+  },
+  _dimensionChanged: function _dimensionChanged() {
+    this.updateDimensions();
   }
 }).include(DataConverterMixin);
 ListBase.ItemClass = ListItem;

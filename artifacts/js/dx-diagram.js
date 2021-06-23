@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.1.18
- * Build date: Fri Jun 11 2021
+ * Version: 2.1.19
+ * Build date: Thu Jun 17 2021
  * 
  * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -37418,7 +37418,7 @@ var TextToolbox = /** @class */ (function (_super) {
             var itemEl = document.createElement("div");
             itemEl.setAttribute("class", "toolbox-text-item");
             itemEl.setAttribute("data-tb-type", shapeType);
-            itemEl.innerHTML = description.getDefaultText() || description.getTitle();
+            itemEl.textContent = description.getDefaultText() || description.getTitle();
             element.appendChild(itemEl);
         });
     };
@@ -37426,7 +37426,7 @@ var TextToolbox = /** @class */ (function (_super) {
         var element = document.createElement("DIV");
         element.setAttribute("class", "dxdi-toolbox-drag-text-item");
         var shapeDescription = this.shapeDescriptionManager.get(draggingObject.evt.data);
-        element.innerHTML = shapeDescription.getDefaultText() || shapeDescription.getTitle();
+        element.textContent = shapeDescription.getDefaultText() || shapeDescription.getTitle();
         document.body.appendChild(element);
         return element;
     };

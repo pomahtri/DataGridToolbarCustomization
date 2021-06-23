@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/view_model/grouped_data_map_provider.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -36,8 +36,8 @@ var GroupedDataMapProvider = /*#__PURE__*/function () {
     var lastRow = this.getLastGroupRow(groupIndex);
 
     if (lastRow) {
-      var lastCellIndex = lastRow.length - 1;
-      var cellData = lastRow[lastCellIndex].cellData;
+      var lastColumnIndex = lastRow.length - 1;
+      var cellData = lastRow[lastColumnIndex].cellData;
       var endDate = cellData.endDate;
       return endDate;
     }
@@ -50,8 +50,8 @@ var GroupedDataMapProvider = /*#__PURE__*/function () {
 
     var groupData = this.getGroupFromDateTableGroupMap(groupIndex);
 
-    var checkCellStartDate = function checkCellStartDate(rowIndex, cellIndex) {
-      var cellData = groupData[rowIndex][cellIndex].cellData;
+    var checkCellStartDate = function checkCellStartDate(rowIndex, columnIndex) {
+      var cellData = groupData[rowIndex][columnIndex].cellData;
       var secondMin = cellData.startDate,
           secondMax = cellData.endDate;
 
@@ -68,9 +68,9 @@ var GroupedDataMapProvider = /*#__PURE__*/function () {
     var searchVertical = function searchVertical() {
       var cellCount = groupData[0].length;
 
-      for (var cellIndex = 0; cellIndex < cellCount; ++cellIndex) {
+      for (var columnIndex = 0; columnIndex < cellCount; ++columnIndex) {
         for (var rowIndex = 0; rowIndex < groupData.length; ++rowIndex) {
-          var result = checkCellStartDate(rowIndex, cellIndex);
+          var result = checkCellStartDate(rowIndex, columnIndex);
           if (result) return result;
         }
       }
@@ -80,8 +80,8 @@ var GroupedDataMapProvider = /*#__PURE__*/function () {
       for (var rowIndex = 0; rowIndex < groupData.length; ++rowIndex) {
         var row = groupData[rowIndex];
 
-        for (var cellIndex = 0; cellIndex < row.length; ++cellIndex) {
-          var result = checkCellStartDate(rowIndex, cellIndex);
+        for (var columnIndex = 0; columnIndex < row.length; ++columnIndex) {
+          var result = checkCellStartDate(rowIndex, columnIndex);
           if (result) return result;
         }
       }
@@ -124,8 +124,8 @@ var GroupedDataMapProvider = /*#__PURE__*/function () {
     for (var rowIndex = 0; rowIndex < rows.length; ++rowIndex) {
       var row = rows[rowIndex];
 
-      for (var cellIndex = 0; cellIndex < row.length; ++cellIndex) {
-        var cell = row[cellIndex];
+      for (var columnIndex = 0; columnIndex < row.length; ++columnIndex) {
+        var cell = row[columnIndex];
         var cellData = cell.cellData;
 
         if (this._isSameGroupIndexAndIndex(cellData, groupIndex, index)) {

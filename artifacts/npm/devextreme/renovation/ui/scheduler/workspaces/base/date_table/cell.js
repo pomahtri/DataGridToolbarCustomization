@@ -1,7 +1,7 @@
 /**
 * DevExtreme (renovation/ui/scheduler/workspaces/base/date_table/cell.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -18,7 +18,7 @@ var _cell = require("../cell");
 
 var _combine_classes = require("../../../../../utils/combine_classes");
 
-var _excluded = ["allDay", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "otherMonth", "startDate", "text", "today"];
+var _excluded = ["allDay", "ariaLabel", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isFocused", "isLastGroupCell", "isSelected", "otherMonth", "startDate", "text", "today"];
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -36,14 +36,25 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-var viewFunction = function viewFunction(viewModel) {
+var ADD_APPOINTMENT_LABEL = "Add appointment";
+
+var viewFunction = function viewFunction(_ref) {
+  var ariaLabel = _ref.ariaLabel,
+      classes = _ref.classes,
+      dataCellTemplateProps = _ref.dataCellTemplateProps,
+      _ref$props = _ref.props,
+      children = _ref$props.children,
+      dataCellTemplate = _ref$props.dataCellTemplate,
+      isFirstGroupCell = _ref$props.isFirstGroupCell,
+      isLastGroupCell = _ref$props.isLastGroupCell;
   return (0, _inferno.createComponentVNode)(2, _cell.CellBase, {
-    "isFirstGroupCell": viewModel.props.isFirstGroupCell,
-    "isLastGroupCell": viewModel.props.isLastGroupCell,
-    "contentTemplate": viewModel.props.dataCellTemplate,
-    "contentTemplateProps": viewModel.dataCellTemplateProps,
-    "className": viewModel.classes,
-    children: viewModel.props.children
+    "isFirstGroupCell": isFirstGroupCell,
+    "isLastGroupCell": isLastGroupCell,
+    "contentTemplate": dataCellTemplate,
+    "contentTemplateProps": dataCellTemplateProps,
+    "className": classes,
+    "ariaLabel": ariaLabel,
+    children: children
   });
 };
 
@@ -52,7 +63,9 @@ exports.viewFunction = viewFunction;
 var DateTableCellBaseProps = _extends({}, _cell.CellBaseProps, {
   otherMonth: false,
   today: false,
-  firstDayOfMonth: false
+  firstDayOfMonth: false,
+  isSelected: false,
+  isFocused: false
 });
 
 exports.DateTableCellBaseProps = DateTableCellBaseProps;
@@ -85,6 +98,7 @@ var DateTableCellBase = /*#__PURE__*/function (_BaseInfernoComponent) {
       }),
       classes: this.classes,
       dataCellTemplateProps: this.dataCellTemplateProps,
+      ariaLabel: this.ariaLabel,
       restAttributes: this.restAttributes
     });
   };
@@ -94,11 +108,15 @@ var DateTableCellBase = /*#__PURE__*/function (_BaseInfernoComponent) {
     get: function get() {
       var _this$props = this.props,
           allDay = _this$props.allDay,
-          className = _this$props.className;
+          className = _this$props.className,
+          isFocused = _this$props.isFocused,
+          isSelected = _this$props.isSelected;
       return (0, _combine_classes.combineClasses)(_defineProperty({
         "dx-scheduler-cell-sizes-horizontal": true,
         "dx-scheduler-cell-sizes-vertical": !allDay,
-        "dx-scheduler-date-table-cell": !allDay
+        "dx-scheduler-date-table-cell": !allDay,
+        "dx-state-focused": isSelected,
+        "dx-scheduler-focused-cell": isFocused
       }, className, true));
     }
   }, {
@@ -125,10 +143,16 @@ var DateTableCellBase = /*#__PURE__*/function (_BaseInfernoComponent) {
       };
     }
   }, {
+    key: "ariaLabel",
+    get: function get() {
+      return this.props.isSelected ? ADD_APPOINTMENT_LABEL : undefined;
+    }
+  }, {
     key: "restAttributes",
     get: function get() {
       var _this$props3 = this.props,
           allDay = _this$props3.allDay,
+          ariaLabel = _this$props3.ariaLabel,
           children = _this$props3.children,
           className = _this$props3.className,
           contentTemplate = _this$props3.contentTemplate,
@@ -140,7 +164,9 @@ var DateTableCellBase = /*#__PURE__*/function (_BaseInfernoComponent) {
           groups = _this$props3.groups,
           index = _this$props3.index,
           isFirstGroupCell = _this$props3.isFirstGroupCell,
+          isFocused = _this$props3.isFocused,
           isLastGroupCell = _this$props3.isLastGroupCell,
+          isSelected = _this$props3.isSelected,
           otherMonth = _this$props3.otherMonth,
           startDate = _this$props3.startDate,
           text = _this$props3.text,

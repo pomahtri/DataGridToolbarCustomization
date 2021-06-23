@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/ui/scheduler/view_model/views/common.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -13,7 +13,7 @@ export var getCurrentDate = (currentDate, startDate) => {
 };
 export var getFirstDayOfWeek = (includedDays, firstDayOfWeek) => {
   var isFirstDayOfWeekInIncludedDays = includedDays.includes(firstDayOfWeek);
-  var sortedIncludedDays = includedDays.slice().sort();
+  var sortedIncludedDays = includedDays.slice().sort((a, b) => a - b);
   return isFirstDayOfWeekInIncludedDays ? firstDayOfWeek : sortedIncludedDays[0];
 };
 export var getStartViewDate = (_startDayHour, _firstDayOfWeek, currentDate) => currentDate;

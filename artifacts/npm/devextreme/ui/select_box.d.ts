@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/select_box.d.ts)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -191,8 +191,10 @@ export interface dxSelectBoxOptions<TComponent> extends dxDropDownListOptions<TC
  */
 export default class dxSelectBox<TProperties = Properties> extends dxDropDownList<TProperties> { }
 
+interface SelectBoxInstance extends dxSelectBox<Properties> { }
+
 /** @public */
-export type Properties = dxSelectBoxOptions<dxSelectBox<Properties>>;
+export type Properties = dxSelectBoxOptions<SelectBoxInstance>;
 
 /** @deprecated use Properties instead */
 export type Options = Properties;

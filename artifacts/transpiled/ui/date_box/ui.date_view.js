@@ -114,7 +114,8 @@ var DateView = _editor.default.inherit({
       that._rollers[that._rollerConfigs[name].type] = that._createComponent($roller, _ui.default, {
         items: that._rollerConfigs[name].displayItems,
         selectedIndex: that._rollerConfigs[name].selectedIndex,
-        showScrollbar: false,
+        showScrollbar: 'never',
+        scrollByContent: true,
         onStart: function onStart(e) {
           var roller = e.component;
 

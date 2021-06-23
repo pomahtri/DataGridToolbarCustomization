@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/switch.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -10,7 +10,6 @@ import $ from '../core/renderer';
 import eventsEngine from '../events/core/events_engine';
 import devices from '../core/devices';
 import { extend } from '../core/utils/extend';
-import { render } from './widget/utils.ink_ripple';
 import registerComponent from '../core/component_registrator';
 import Editor from './editor/editor';
 import { addNamespace } from '../events/utils/index';
@@ -68,8 +67,7 @@ var Switch = Editor.inherit({
       activeStateEnabled: true,
       switchedOnText: messageLocalization.format('dxSwitch-switchedOnText'),
       switchedOffText: messageLocalization.format('dxSwitch-switchedOffText'),
-      value: false,
-      useInkRipple: false
+      value: false
     });
   },
   _defaultOptionsRules: function _defaultOptionsRules() {
@@ -87,7 +85,6 @@ var Switch = Editor.inherit({
   _initMarkup: function _initMarkup() {
     this._renderContainers();
 
-    this.option('useInkRipple') && this._renderInkRipple();
     this.$element().addClass(SWITCH_CLASS).append(this._$switchWrapper);
 
     this._renderSubmitElement();
@@ -154,41 +151,6 @@ var Switch = Editor.inherit({
   },
   _getSubmitElement: function _getSubmitElement() {
     return this._$submitElement;
-  },
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = render({
-      waveSizeCoefficient: 1.7,
-      isCentered: true,
-      useHoldAnimation: false,
-      wavesNumber: 2
-    });
-  },
-  _renderInkWave: function _renderInkWave(element, dxEvent, doRender, waveIndex) {
-    if (!this._inkRipple) {
-      return;
-    }
-
-    var config = {
-      element: element,
-      event: dxEvent,
-      wave: waveIndex
-    };
-
-    if (doRender) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
-    }
-  },
-  _updateFocusState: function _updateFocusState(e, value) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$handle, e, value, 0);
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$handle, e, value, 1);
   },
   _offsetDirection: function _offsetDirection() {
     return this.option('rtlEnabled') ? -1 : 1;
@@ -352,11 +314,6 @@ var Switch = Editor.inherit({
   },
   _optionChanged: function _optionChanged(args) {
     switch (args.name) {
-      case 'useInkRipple':
-        this._invalidate();
-
-        break;
-
       case 'width':
         delete this._marginBound;
 
@@ -379,10 +336,6 @@ var Switch = Editor.inherit({
       default:
         this.callBase(args);
     }
-  },
-  _clean: function _clean() {
-    delete this._inkRipple;
-    this.callBase();
   }
 });
 registerComponent('dxSwitch', Switch);

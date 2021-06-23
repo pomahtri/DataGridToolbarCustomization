@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/scheduler/workspaces/ui.scheduler.work_space.indicator.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -14,13 +14,14 @@ import { extend } from '../../../core/utils/extend';
 import { getBoundingRect } from '../../../core/utils/position';
 import { hasWindow } from '../../../core/utils/window';
 import { HEADER_CURRENT_TIME_CELL_CLASS } from '../classes';
+import { getTimeZoneCalculator } from '../instanceFactory';
 var toMs = dateUtils.dateToMilliseconds;
 var SCHEDULER_DATE_TIME_INDICATOR_CLASS = 'dx-scheduler-date-time-indicator';
 var TIME_PANEL_CURRENT_TIME_CELL_CLASS = 'dx-scheduler-time-panel-current-time-cell';
 
 class SchedulerWorkSpaceIndicator extends SchedulerWorkSpace {
   _getTimeZoneCalculator() {
-    return this.invoke('getTimeZoneCalculator');
+    return getTimeZoneCalculator(this.option('key'));
   }
 
   _getToday() {
@@ -38,7 +39,7 @@ class SchedulerWorkSpaceIndicator extends SchedulerWorkSpace {
       var today = this._getToday();
 
       var endViewDate = dateUtils.trimTime(this.getEndViewDate());
-      return dateUtils.dateInRange(today, this._firstViewDate, new Date(endViewDate.getTime() + toMs('day')));
+      return dateUtils.dateInRange(today, this._startViewDate, new Date(endViewDate.getTime() + toMs('day')));
     }
 
     return false;
@@ -155,7 +156,7 @@ class SchedulerWorkSpaceIndicator extends SchedulerWorkSpace {
   _getIndicatorDuration() {
     var today = this._getToday();
 
-    var firstViewDate = new Date(this._firstViewDate);
+    var firstViewDate = new Date(this._startViewDate);
     var timeDiff = today.getTime() - firstViewDate.getTime();
 
     if (this.option('type') === 'workWeek') {
@@ -169,7 +170,7 @@ class SchedulerWorkSpaceIndicator extends SchedulerWorkSpace {
     var today = this._getToday();
 
     var cellHeight = this.getCellHeight();
-    var date = new Date(this._firstViewDate);
+    var date = new Date(this._startViewDate);
 
     if (this.isIndicationOnView()) {
       date.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());

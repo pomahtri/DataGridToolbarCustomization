@@ -152,6 +152,15 @@ var DataGridProps = _extends({}, _base_props.BaseWidgetProps, {
     enterKeyDirection: "none",
     editOnKeyPress: false
   },
+  loadPanel: {
+    enabled: "auto",
+    text: _message.default.format("Loading"),
+    width: 200,
+    height: 90,
+    showIndicator: true,
+    indicatorSrc: "",
+    showPane: true
+  },
   searchPanel: {
     visible: false,
     width: 160,

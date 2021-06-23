@@ -203,7 +203,7 @@ var VerticalRenderingStrategy = /*#__PURE__*/function (_BaseAppointmentsStra) {
         width: width,
         appointmentReduced: 'tail',
         rowIndex: 0,
-        cellIndex: appointmentSettings.cellIndex + cellsDiff
+        columnIndex: appointmentSettings.columnIndex + cellsDiff
       }));
     }
 

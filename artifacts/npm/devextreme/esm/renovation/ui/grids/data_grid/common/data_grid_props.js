@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/renovation/ui/grids/data_grid/common/data_grid_props.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -118,6 +118,15 @@ export var DataGridProps = _extends({}, BaseWidgetProps, {
     enterKeyAction: "startEdit",
     enterKeyDirection: "none",
     editOnKeyPress: false
+  },
+  loadPanel: {
+    enabled: "auto",
+    text: messageLocalization.format("Loading"),
+    width: 200,
+    height: 90,
+    showIndicator: true,
+    indicatorSrc: "",
+    showPane: true
   },
   searchPanel: {
     visible: false,

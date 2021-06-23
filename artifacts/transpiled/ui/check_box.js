@@ -10,8 +10,6 @@ var _devices = _interopRequireDefault(require("../core/devices"));
 
 var _extend = require("../core/utils/extend");
 
-var _utils = require("./widget/utils.ink_ripple");
-
 var _editor = _interopRequireDefault(require("./editor/editor"));
 
 var _component_registrator = _interopRequireDefault(require("../core/component_registrator"));
@@ -51,8 +49,7 @@ var CheckBox = _editor.default.inherit({
       hoverStateEnabled: true,
       activeStateEnabled: true,
       value: false,
-      text: '',
-      useInkRipple: false
+      text: ''
     });
   },
   _defaultOptionsRules: function _defaultOptionsRules() {
@@ -85,7 +82,6 @@ var CheckBox = _editor.default.inherit({
 
     this._renderText();
 
-    this.option('useInkRipple') && this._renderInkRipple();
     this.$element().append(this._$container);
     this.callBase();
   },
@@ -99,41 +95,6 @@ var CheckBox = _editor.default.inherit({
   },
   _getSubmitElement: function _getSubmitElement() {
     return this._$submitElement;
-  },
-  _renderInkRipple: function _renderInkRipple() {
-    this._inkRipple = (0, _utils.render)({
-      waveSizeCoefficient: 2.5,
-      useHoldAnimation: false,
-      wavesNumber: 2,
-      isCentered: true
-    });
-  },
-  _renderInkWave: function _renderInkWave(element, dxEvent, doRender, waveIndex) {
-    if (!this._inkRipple) {
-      return;
-    }
-
-    var config = {
-      element: element,
-      event: dxEvent,
-      wave: waveIndex
-    };
-
-    if (doRender) {
-      this._inkRipple.showWave(config);
-    } else {
-      this._inkRipple.hideWave(config);
-    }
-  },
-  _updateFocusState: function _updateFocusState(e, value) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$icon, e, value, 0);
-  },
-  _toggleActiveState: function _toggleActiveState($element, value, e) {
-    this.callBase.apply(this, arguments);
-
-    this._renderInkWave(this._$icon, e, value, 1);
   },
   _renderIcon: function _renderIcon() {
     this._$icon = (0, _renderer.default)('<span>').addClass(CHECKBOX_ICON_CLASS).prependTo(this._$container);
@@ -194,11 +155,6 @@ var CheckBox = _editor.default.inherit({
   },
   _optionChanged: function _optionChanged(args) {
     switch (args.name) {
-      case 'useInkRipple':
-        this._invalidate();
-
-        break;
-
       case 'value':
         this._renderValue();
 
@@ -215,10 +171,6 @@ var CheckBox = _editor.default.inherit({
       default:
         this.callBase(args);
     }
-  },
-  _clean: function _clean() {
-    delete this._inkRipple;
-    this.callBase();
   }
 });
 

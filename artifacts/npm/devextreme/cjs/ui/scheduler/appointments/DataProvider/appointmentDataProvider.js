@@ -1,26 +1,18 @@
 /**
 * DevExtreme (cjs/ui/scheduler/appointments/DataProvider/appointmentDataProvider.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
 
-exports.removeAppointmentDataProvider = exports.getAppointmentDataProvider = exports.createAppointmentDataProvider = exports.AppointmentDataProvider = void 0;
+exports.AppointmentDataProvider = void 0;
 
 var _appointmentDataSource = require("./appointmentDataSource");
 
 var _appointmentFilter = require("./appointmentFilter");
-
-var _resourceManager = require("../../resources/resourceManager");
-
-var _extend = require("../../../../core/utils/extend");
-
-var _iterator = require("../../../../core/utils/iterator");
-
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
@@ -33,52 +25,51 @@ var FilterStrategies = {
 
 var AppointmentDataProvider = /*#__PURE__*/function () {
   function AppointmentDataProvider(options) {
-    this.key = options.key;
-    this.scheduler = options.scheduler;
-    this.dataSource = options.dataSource;
-    this.dataAccessors = this.combineDataAccessors(options.appointmentDataAccessors);
+    this.options = options;
+    this.key = this.options.key;
+    this.scheduler = this.options.scheduler;
+    this.dataSource = this.options.dataSource;
+    this.dataAccessors = this.options.getDataAccessors(this.key);
     this.filteredItems = [];
     this.appointmentDataSource = new _appointmentDataSource.AppointmentDataSource(this.dataSource);
-    this.initStrategy();
+    this.initFilterStrategy();
   }
 
   var _proto = AppointmentDataProvider.prototype;
 
   _proto.getFilterStrategy = function getFilterStrategy() {
     if (!this.filterStrategy || this.filterStrategy.strategyName !== this.filterStrategyName) {
-      this.initStrategy();
+      this.initFilterStrategy();
     }
 
     return this.filterStrategy;
   };
 
-  _proto.initStrategy = function initStrategy() {
-    this.filterStrategy = this.filterStrategyName === FilterStrategies.virtual ? new _appointmentFilter.AppointmentFilterVirtualStrategy(this.scheduler, this.dataSource, this.dataAccessors) : new _appointmentFilter.AppointmentFilterBaseStrategy(this.scheduler, this.dataSource, this.dataAccessors);
+  _proto.initFilterStrategy = function initFilterStrategy() {
+    var filterOptions = {
+      key: this.key,
+      scheduler: this.scheduler,
+      dataSource: this.dataSource,
+      dataAccessors: this.dataAccessors,
+      startDayHour: this.options.startDayHour,
+      endDayHour: this.options.endDayHour,
+      appointmentDuration: this.options.appointmentDuration,
+      showAllDayPanel: this.options.showAllDayPanel,
+      timeZoneCalculator: this.options.timeZoneCalculator,
+      resourceManager: this.options.resourceManager
+    };
+    this.filterStrategy = this.filterStrategyName === FilterStrategies.virtual ? new _appointmentFilter.AppointmentFilterVirtualStrategy(filterOptions) : new _appointmentFilter.AppointmentFilterBaseStrategy(filterOptions);
   };
 
   _proto.setDataSource = function setDataSource(dataSource) {
     this.dataSource = dataSource;
-    this.initStrategy();
+    this.initFilterStrategy();
     this.appointmentDataSource.setDataSource(this.dataSource);
   };
 
-  _proto.updateDataAccessors = function updateDataAccessors(appointmentDataAccessors) {
-    this.dataAccessors = this.combineDataAccessors(appointmentDataAccessors);
-    this.initStrategy();
-  };
-
-  _proto.combineDataAccessors = function combineDataAccessors(appointmentDataAccessors) {
-    // TODO move to utils or get rid of it
-    var result = (0, _extend.extend)(true, {}, appointmentDataAccessors);
-    var resourceManager = (0, _resourceManager.getResourceManager)(this.key);
-
-    if (appointmentDataAccessors && resourceManager) {
-      (0, _iterator.each)(resourceManager._dataAccessors, function (type, accessor) {
-        result[type].resources = accessor;
-      });
-    }
-
-    return result;
+  _proto.updateDataAccessors = function updateDataAccessors(dataAccessors) {
+    this.dataAccessors = dataAccessors;
+    this.initFilterStrategy();
   } // Filter mapping
   ;
 
@@ -153,7 +144,7 @@ var AppointmentDataProvider = /*#__PURE__*/function () {
   }, {
     key: "filterStrategyName",
     get: function get() {
-      return this.scheduler.isVirtualScrolling() ? FilterStrategies.virtual : FilterStrategies.standard;
+      return this.options.getIsVirtualScrolling() ? FilterStrategies.virtual : FilterStrategies.standard;
     }
   }]);
 
@@ -161,26 +152,3 @@ var AppointmentDataProvider = /*#__PURE__*/function () {
 }();
 
 exports.AppointmentDataProvider = AppointmentDataProvider;
-var appointmentDataProviders = {};
-
-var createAppointmentDataProvider = function createAppointmentDataProvider(key, options) {
-  var validKey = key || 0;
-  appointmentDataProviders[validKey] = new AppointmentDataProvider(_extends({
-    key: key
-  }, options));
-};
-
-exports.createAppointmentDataProvider = createAppointmentDataProvider;
-
-var getAppointmentDataProvider = function getAppointmentDataProvider() {
-  var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-  return appointmentDataProviders[key];
-};
-
-exports.getAppointmentDataProvider = getAppointmentDataProvider;
-
-var removeAppointmentDataProvider = function removeAppointmentDataProvider(key) {
-  return appointmentDataProviders[key] = null;
-};
-
-exports.removeAppointmentDataProvider = removeAppointmentDataProvider;

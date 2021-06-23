@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/workspaces/ui.scheduler.work_space_work_week.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -14,7 +14,7 @@ var _component_registrator = _interopRequireDefault(require("../../../core/compo
 
 var _date = _interopRequireDefault(require("../../../core/utils/date"));
 
-var _utils = _interopRequireDefault(require("./utils.work_week"));
+var _work_week = require("./utils/work_week");
 
 var _uiScheduler = _interopRequireDefault(require("./ui.scheduler.work_space_week"));
 
@@ -40,8 +40,8 @@ var SchedulerWorkSpaceWorkWeek = /*#__PURE__*/function (_SchedulerWorkSpaceWe) {
     }
 
     _this = _SchedulerWorkSpaceWe.call.apply(_SchedulerWorkSpaceWe, [this].concat(args)) || this;
-    _this._isSkippedData = _utils.default.isDataOnWeekend;
-    _this._getWeekendsCount = _utils.default.getWeekendsCount;
+    _this._isSkippedData = _work_week.isDataOnWeekend;
+    _this._getWeekendsCount = _work_week.getWeekendsCount;
     return _this;
   }
 
@@ -56,17 +56,17 @@ var SchedulerWorkSpaceWorkWeek = /*#__PURE__*/function (_SchedulerWorkSpaceWe) {
   };
 
   _proto._firstDayOfWeek = function _firstDayOfWeek() {
-    return _utils.default.getFirstDayOfWeek(this.option('firstDayOfWeek'));
+    return (0, _work_week.getFirstDayOfWeek)(this.option('firstDayOfWeek'));
   };
 
   _proto._getDateByIndex = function _getDateByIndex(headerIndex) {
-    var resultDate = new Date(this._firstViewDate);
+    var resultDate = new Date(this._startViewDate);
 
     if (headerIndex % this._getCellCount() === 0) {
       weekCounter = 0;
     }
 
-    resultDate.setDate(this._firstViewDate.getDate() + headerIndex + weekCounter);
+    resultDate.setDate(this._startViewDate.getDate() + headerIndex + weekCounter);
     var index = resultDate.getDay();
 
     while (dayIndexes.indexOf(index) === -1) {
@@ -84,10 +84,8 @@ var SchedulerWorkSpaceWorkWeek = /*#__PURE__*/function (_SchedulerWorkSpaceWe) {
     _SchedulerWorkSpaceWe.prototype._renderView.call(this);
   };
 
-  _proto._setFirstViewDate = function _setFirstViewDate() {
-    this._firstViewDate = _utils.default.getFirstViewDate(this._getViewStartByOptions(), this._firstDayOfWeek());
-
-    this._setStartDayHour(this._firstViewDate);
+  _proto._calculateStartViewDate = function _calculateStartViewDate() {
+    return (0, _work_week.calculateStartViewDate)(this.option('currentDate'), this.option('startDayHour'), this.option('startDate'), this._getIntervalDuration(), this.option('firstDayOfWeek'));
   };
 
   _proto._getOffsetByCount = function _getOffsetByCount(cellIndex) {

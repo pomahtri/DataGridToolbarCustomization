@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/viz/chart_components/advanced_chart.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -141,6 +141,12 @@ var AdvancedChart = _base_chart.BaseChart.inherit({
     disposeObjectsInArray.call(panesClipRects, 'base');
     disposeObjectsInArray.call(panesClipRects, 'wide');
     this._panesClipRects = null;
+
+    this._labelsAxesGroup.linkOff();
+
+    this._labelsAxesGroup.dispose();
+
+    this._labelsAxesGroup = null;
   },
   _dispose: function _dispose() {
     var that = this;

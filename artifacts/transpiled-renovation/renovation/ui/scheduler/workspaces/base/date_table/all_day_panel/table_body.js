@@ -43,7 +43,9 @@ var viewFunction = function viewFunction(viewModel) {
           groups = _ref.groups,
           cellIndex = _ref.index,
           isFirstGroupCell = _ref.isFirstGroupCell,
+          isFocused = _ref.isFocused,
           isLastGroupCell = _ref.isLastGroupCell,
+          isSelected = _ref.isSelected,
           key = _ref.key,
           startDate = _ref.startDate;
       return (0, _inferno.createComponentVNode)(2, _cell.AllDayPanelCell, {
@@ -54,7 +56,9 @@ var viewFunction = function viewFunction(viewModel) {
         "groups": groups,
         "groupIndex": cellGroupIndex,
         "index": cellIndex,
-        "dataCellTemplate": viewModel.props.dataCellTemplate
+        "dataCellTemplate": viewModel.props.dataCellTemplate,
+        "isSelected": isSelected,
+        "isFocused": isFocused
       }, key);
     })
   });

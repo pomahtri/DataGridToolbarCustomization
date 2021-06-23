@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/subscribes.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -34,24 +34,19 @@ var _utils = _interopRequireDefault(require("./utils.timeZone"));
 
 var _classes = require("./classes");
 
-var _utils2 = _interopRequireDefault(require("./utils"));
+var _utils2 = require("./utils");
 
-var _resourceManager = require("./resources/resourceManager");
-
-var _appointmentDataProvider = require("./appointments/DataProvider/appointmentDataProvider");
+var _instanceFactory = require("./instanceFactory");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var toMs = _date.default.dateToMilliseconds;
 var subscribes = {
   getResourceManager: function getResourceManager() {
-    return (0, _resourceManager.getResourceManager)(this.key);
+    return (0, _instanceFactory.getResourceManager)(this.key);
   },
   getAppointmentDataProvider: function getAppointmentDataProvider() {
-    return (0, _appointmentDataProvider.getAppointmentDataProvider)(this.key);
-  },
-  getTimeZoneCalculator: function getTimeZoneCalculator() {
-    return this.timeZoneCalculator;
+    return (0, _instanceFactory.getAppointmentDataProvider)(this.key);
   },
   isCurrentViewAgenda: function isCurrentViewAgenda() {
     return this.option('currentView') === 'agenda';
@@ -89,11 +84,12 @@ var subscribes = {
   },
   showAddAppointmentPopup: function showAddAppointmentPopup(cellData, cellGroups) {
     var appointmentAdapter = this.createAppointmentAdapter({});
+    var timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key);
     appointmentAdapter.allDay = cellData.allDay;
-    appointmentAdapter.startDate = this.timeZoneCalculator.createDate(cellData.startDate, {
+    appointmentAdapter.startDate = timeZoneCalculator.createDate(cellData.startDate, {
       path: 'fromGrid'
     });
-    appointmentAdapter.endDate = this.timeZoneCalculator.createDate(cellData.endDate, {
+    appointmentAdapter.endDate = timeZoneCalculator.createDate(cellData.endDate, {
       path: 'fromGrid'
     });
     var resultAppointment = (0, _extend.extend)(appointmentAdapter.source(), cellGroups);
@@ -104,7 +100,7 @@ var subscribes = {
     this.showAppointmentPopup(options.data, false, targetedData);
   },
   updateAppointmentAfterResize: function updateAppointmentAfterResize(options) {
-    var info = _utils2.default.dataAccessors.getAppointmentInfo(options.$appointment);
+    var info = _utils2.utils.dataAccessors.getAppointmentInfo(options.$appointment);
 
     var exceptionDate = info.sourceAppointment.exceptionDate;
 
@@ -123,7 +119,7 @@ var subscribes = {
         rawAppointment = _ref.rawAppointment,
         coordinates = _ref.coordinates;
 
-    var info = _utils2.default.dataAccessors.getAppointmentInfo(element);
+    var info = _utils2.utils.dataAccessors.getAppointmentInfo(element);
 
     var appointment = this.createAppointmentAdapter(rawAppointment);
     var targetedAppointment = this.createAppointmentAdapter((0, _extend.extend)({}, rawAppointment, this._getUpdatedData(rawAppointment)));
@@ -158,12 +154,13 @@ var subscribes = {
   getTextAndFormatDate: function getTextAndFormatDate(appointmentRaw, targetedAppointmentRaw, format) {
     // TODO: rename to createFormattedDateText
     var appointmentAdapter = this.createAppointmentAdapter(appointmentRaw);
-    var targetedAdapter = this.createAppointmentAdapter(targetedAppointmentRaw || appointmentRaw); // TODO pull out time zone converting from appointment adapter for knockout(T947938)
+    var targetedAdapter = this.createAppointmentAdapter(targetedAppointmentRaw || appointmentRaw);
+    var timeZoneCalculator = (0, _instanceFactory.getTimeZoneCalculator)(this.key); // TODO pull out time zone converting from appointment adapter for knockout(T947938)
 
-    var startDate = this.timeZoneCalculator.createDate(targetedAdapter.startDate, {
+    var startDate = timeZoneCalculator.createDate(targetedAdapter.startDate, {
       path: 'toGrid'
     });
-    var endDate = this.timeZoneCalculator.createDate(targetedAdapter.endDate, {
+    var endDate = timeZoneCalculator.createDate(targetedAdapter.endDate, {
       path: 'toGrid'
     });
     var formatType = format || this.fire('_getTypeFormat', startDate, endDate, targetedAdapter.allDay);

@@ -773,6 +773,9 @@ var dxChart = _advanced_chart.AdvancedChart.inherit({
       that._scrollBar = null;
     }
   },
+  _executeAppendAfterSeries: function _executeAppendAfterSeries(append) {
+    append();
+  },
   _prepareToRender: function _prepareToRender(drawOptions) {
     var panesBorderOptions = this._createPanesBorderOptions();
 

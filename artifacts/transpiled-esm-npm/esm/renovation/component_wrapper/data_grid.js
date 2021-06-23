@@ -1,10 +1,21 @@
 import _extends from "@babel/runtime/helpers/esm/extends";
+import { getPathParts } from "../../core/utils/data";
 import Component from "./common/component";
 import gridCore from "../../ui/data_grid/ui.data_grid.core";
 import { updatePropsImmutable } from "./utils/update_props_immutable";
+import { themeReadyCallback } from "../../ui/themes_callback";
+import componentRegistratorCallbacks from "../../core/component_registrator_callbacks";
+var dataGridClass = null;
+componentRegistratorCallbacks.add((name, componentClass) => {
+  if (name === "dxDataGrid") {
+    dataGridClass = componentClass;
+  }
+});
 export default class DataGridWrapper extends Component {
-  constructor() {
-    super(...arguments);
+  constructor(element, options) {
+    var _dataGridClass;
+
+    super(element, ((_dataGridClass = dataGridClass) !== null && _dataGridClass !== void 0 && _dataGridClass.defaultOptions({}), options));
     this._skipInvalidate = false;
   }
 
@@ -70,9 +81,13 @@ export default class DataGridWrapper extends Component {
     super._optionChanging(fullName, prevValue, value);
 
     if (this.viewRef && prevValue !== value) {
-      var name = fullName.split(/[.[]/)[0];
+      var name = getPathParts(fullName)[0];
 
       var prevProps = _extends({}, this.viewRef.prevProps);
+
+      if (name === "editing" && name !== fullName) {
+        updatePropsImmutable(prevProps, this.option(), name, name);
+      }
 
       updatePropsImmutable(prevProps, this.option(), name, fullName);
       this.viewRef.prevProps = prevProps;
@@ -80,12 +95,10 @@ export default class DataGridWrapper extends Component {
   }
 
   _optionChanged(e) {
-    var _this$viewRef2, _this$viewRef2$getCom;
+    var internalInstance = this._getInternalInstance();
 
-    var gridInstance = (_this$viewRef2 = this.viewRef) === null || _this$viewRef2 === void 0 ? void 0 : (_this$viewRef2$getCom = _this$viewRef2.getComponentInstance) === null || _this$viewRef2$getCom === void 0 ? void 0 : _this$viewRef2$getCom.call(_this$viewRef2);
-
-    if (e.fullName === "dataSource" && e.value === (gridInstance === null || gridInstance === void 0 ? void 0 : gridInstance.option("dataSource"))) {
-      gridInstance === null || gridInstance === void 0 ? void 0 : gridInstance.option("dataSource", e.value);
+    if (internalInstance && e.fullName === "dataSource" && e.value === internalInstance.option("dataSource")) {
+      internalInstance.option("dataSource", e.value);
     }
 
     super._optionChanged(e);
@@ -105,6 +118,16 @@ export default class DataGridWrapper extends Component {
 
   _patchOptionValues(options) {
     options.onInitialized = this._onInitialized;
+    var exportOptions = options.export;
+    var originalCustomizeExcelCell = exportOptions === null || exportOptions === void 0 ? void 0 : exportOptions.customizeExcelCell;
+
+    if (originalCustomizeExcelCell) {
+      exportOptions.customizeExcelCell = e => {
+        e.component = this;
+        return originalCustomizeExcelCell(e);
+      };
+    }
+
     return super._patchOptionValues(options);
   }
 
@@ -170,3 +193,4 @@ export default class DataGridWrapper extends Component {
 
 }
 DataGridWrapper.registerModule = gridCore.registerModule.bind(gridCore);
+themeReadyCallback.add();

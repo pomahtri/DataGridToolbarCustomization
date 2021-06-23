@@ -8,7 +8,7 @@ var _vdom = require("@devextreme/vdom");
 
 var _cell = require("../cell");
 
-var _excluded = ["allDay", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isLastGroupCell", "otherMonth", "startDate", "text", "today"];
+var _excluded = ["allDay", "ariaLabel", "children", "className", "contentTemplate", "contentTemplateProps", "dataCellTemplate", "endDate", "firstDayOfMonth", "groupIndex", "groups", "index", "isFirstGroupCell", "isFocused", "isLastGroupCell", "isSelected", "otherMonth", "startDate", "text", "today"];
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -24,18 +24,32 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-var viewFunction = function viewFunction(viewModel) {
+var viewFunction = function viewFunction(_ref) {
+  var _ref$props = _ref.props,
+      className = _ref$props.className,
+      dataCellTemplate = _ref$props.dataCellTemplate,
+      endDate = _ref$props.endDate,
+      groupIndex = _ref$props.groupIndex,
+      groups = _ref$props.groups,
+      index = _ref$props.index,
+      isFirstGroupCell = _ref$props.isFirstGroupCell,
+      isFocused = _ref$props.isFocused,
+      isLastGroupCell = _ref$props.isLastGroupCell,
+      isSelected = _ref$props.isSelected,
+      startDate = _ref$props.startDate;
   return (0, _inferno.createComponentVNode)(2, _cell.DateTableCellBase, {
-    "className": "dx-scheduler-all-day-table-cell ".concat(viewModel.props.className),
-    "startDate": viewModel.props.startDate,
-    "endDate": viewModel.props.endDate,
-    "groups": viewModel.props.groups,
-    "groupIndex": viewModel.props.groupIndex,
+    "className": "dx-scheduler-all-day-table-cell ".concat(className),
+    "startDate": startDate,
+    "endDate": endDate,
+    "groups": groups,
+    "groupIndex": groupIndex,
     "allDay": true,
-    "isFirstGroupCell": viewModel.props.isFirstGroupCell,
-    "isLastGroupCell": viewModel.props.isLastGroupCell,
-    "index": viewModel.props.index,
-    "dataCellTemplate": viewModel.props.dataCellTemplate
+    "isFirstGroupCell": isFirstGroupCell,
+    "isLastGroupCell": isLastGroupCell,
+    "index": index,
+    "dataCellTemplate": dataCellTemplate,
+    "isSelected": isSelected,
+    "isFocused": isFocused
   });
 };
 
@@ -76,6 +90,7 @@ var AllDayPanelCell = /*#__PURE__*/function (_BaseInfernoComponent) {
     get: function get() {
       var _this$props = this.props,
           allDay = _this$props.allDay,
+          ariaLabel = _this$props.ariaLabel,
           children = _this$props.children,
           className = _this$props.className,
           contentTemplate = _this$props.contentTemplate,
@@ -87,7 +102,9 @@ var AllDayPanelCell = /*#__PURE__*/function (_BaseInfernoComponent) {
           groups = _this$props.groups,
           index = _this$props.index,
           isFirstGroupCell = _this$props.isFirstGroupCell,
+          isFocused = _this$props.isFocused,
           isLastGroupCell = _this$props.isLastGroupCell,
+          isSelected = _this$props.isSelected,
           otherMonth = _this$props.otherMonth,
           startDate = _this$props.startDate,
           text = _this$props.text,

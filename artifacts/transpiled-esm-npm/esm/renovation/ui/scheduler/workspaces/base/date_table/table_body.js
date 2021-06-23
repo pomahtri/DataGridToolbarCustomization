@@ -45,7 +45,9 @@ export var viewFunction = _ref => {
           groups,
           index: cellIndex,
           isFirstGroupCell,
+          isFocused,
           isLastGroupCell,
+          isSelected,
           key,
           otherMonth,
           startDate,
@@ -65,7 +67,9 @@ export var viewFunction = _ref => {
           text: text,
           today: today,
           otherMonth: otherMonth,
-          firstDayOfMonth: firstDayOfMonth
+          firstDayOfMonth: firstDayOfMonth,
+          isSelected: isSelected,
+          isFocused: isFocused
         });
       })
     }, cellsRow[0].key - viewData.leftVirtualCellCount))], 0, getKeyByGroup(groupIndex, groupOrientation));

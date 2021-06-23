@@ -1,7 +1,7 @@
 /**
 * DevExtreme (cjs/ui/scheduler/rendering_strategies/ui.scheduler.appointments.strategy.base.js)
 * Version: 21.2.0
-* Build date: Fri Jun 18 2021
+* Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -144,7 +144,7 @@ var BaseRenderingStrategy = /*#__PURE__*/function () {
       var appointmentReduced = null;
       var multiWeekAppointmentParts = [];
       var initialRowIndex = position[j].rowIndex;
-      var initialCellIndex = position[j].cellIndex;
+      var initialColumnIndex = position[j].columnIndex;
 
       if (this._needVerifyItemSize() || allDay) {
         var currentMaxAllowedPosition = position[j].hMax;
@@ -155,7 +155,7 @@ var BaseRenderingStrategy = /*#__PURE__*/function () {
         })) {
           appointmentReduced = 'head';
           initialRowIndex = position[j].rowIndex;
-          initialCellIndex = position[j].cellIndex;
+          initialColumnIndex = position[j].columnIndex;
           resultWidth = this._reduceMultiWeekAppointment(width, {
             left: position[j].left,
             right: currentMaxAllowedPosition
@@ -177,7 +177,7 @@ var BaseRenderingStrategy = /*#__PURE__*/function () {
         width: resultWidth,
         allDay: allDay,
         rowIndex: initialRowIndex,
-        cellIndex: initialCellIndex,
+        columnIndex: initialColumnIndex,
         appointmentReduced: appointmentReduced
       });
       result = this._getAppointmentPartsPosition(multiWeekAppointmentParts, position[j], result);
@@ -263,10 +263,10 @@ var BaseRenderingStrategy = /*#__PURE__*/function () {
       return Math.round(value * 100) / 100;
     };
 
-    var createItem = function createItem(rowIndex, cellIndex, top, left, bottom, right, position, allDay) {
+    var createItem = function createItem(rowIndex, columnIndex, top, left, bottom, right, position, allDay) {
       return {
         i: rowIndex,
-        j: cellIndex,
+        j: columnIndex,
         top: round(top),
         left: round(left),
         bottom: round(bottom),
@@ -277,15 +277,15 @@ var BaseRenderingStrategy = /*#__PURE__*/function () {
     };
 
     for (var rowIndex = 0, rowCount = positionList.length; rowIndex < rowCount; rowIndex++) {
-      for (var cellIndex = 0, cellCount = positionList[rowIndex].length; cellIndex < cellCount; cellIndex++) {
-        var _positionList$rowInde = positionList[rowIndex][cellIndex],
+      for (var columnIndex = 0, cellCount = positionList[rowIndex].length; columnIndex < cellCount; columnIndex++) {
+        var _positionList$rowInde = positionList[rowIndex][columnIndex],
             top = _positionList$rowInde.top,
             left = _positionList$rowInde.left,
             height = _positionList$rowInde.height,
             width = _positionList$rowInde.width,
             cellPosition = _positionList$rowInde.cellPosition,
             allDay = _positionList$rowInde.allDay;
-        result.push(createItem(rowIndex, cellIndex, top, left, top + height, left + width, cellPosition, allDay));
+        result.push(createItem(rowIndex, columnIndex, top, left, top + height, left + width, cellPosition, allDay));
       }
     }
 
@@ -512,7 +512,7 @@ var BaseRenderingStrategy = /*#__PURE__*/function () {
       for (var k = 1; k < compactCount; k++) {
         var compactPart = (0, _extend.extend)(true, {}, item);
         compactPart.left = this._getCompactLeftCoordinate(item.left, k);
-        compactPart.cellIndex = compactPart.cellIndex + k;
+        compactPart.columnIndex = compactPart.columnIndex + k;
         compactPart.sortedIndex = null;
         result.push(compactPart);
       }
@@ -586,8 +586,8 @@ var BaseRenderingStrategy = /*#__PURE__*/function () {
   _proto._generateAppointmentCollectorIndex = function _generateAppointmentCollectorIndex(_ref, isAllDay) {
     var groupIndex = _ref.groupIndex,
         rowIndex = _ref.rowIndex,
-        cellIndex = _ref.cellIndex;
-    return "".concat(groupIndex, "-").concat(rowIndex, "-").concat(cellIndex, "-").concat(isAllDay);
+        columnIndex = _ref.columnIndex;
+    return "".concat(groupIndex, "-").concat(rowIndex, "-").concat(columnIndex, "-").concat(isAllDay);
   };
 
   _proto._getMaxAppointmentCountPerCellByType = function _getMaxAppointmentCountPerCellByType(isAllDay) {
