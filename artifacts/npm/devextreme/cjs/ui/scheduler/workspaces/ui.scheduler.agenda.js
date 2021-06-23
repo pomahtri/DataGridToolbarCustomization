@@ -32,6 +32,8 @@ var _table_creator = _interopRequireDefault(require("../table_creator"));
 
 var _classes = require("../classes");
 
+var _utils = require("../resources/utils");
+
 var _instanceFactory = require("../instanceFactory");
 
 var _agenda = require("./utils/agenda");
@@ -316,7 +318,7 @@ var SchedulerAgenda = /*#__PURE__*/function (_WorkSpace) {
         filteredItems = _this$invoke.filteredItems; // TODO refactoring
 
 
-    var resourceManager = this.invoke('getResourceManager');
+    var resourceManager = this.option('resourceManager');
     var tree = resourceManager.createReducedResourcesTree(filteredItems); // TODO refactoring
 
     var cellTemplate = this.option('resourceCellTemplate');
@@ -423,8 +425,7 @@ var SchedulerAgenda = /*#__PURE__*/function (_WorkSpace) {
     var groupsOpt = this.option('groups');
     var groups = {};
     var isGroupedView = !!groupsOpt.length;
-    var resourceManager = this.invoke('getResourceManager');
-    var path = isGroupedView && resourceManager._getPathToLeaf(rowIndex, groupsOpt) || [];
+    var path = isGroupedView && (0, _utils.getPathToLeaf)(rowIndex, groupsOpt) || [];
     path.forEach(function (resourceValue, resourceIndex) {
       var resourceName = groupsOpt[resourceIndex].name;
       groups[resourceName] = resourceValue;

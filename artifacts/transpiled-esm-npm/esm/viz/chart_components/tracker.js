@@ -261,7 +261,7 @@ var baseTrackerPrototype = {
 
       var y = _floor(e.pageY - rootOffset.top);
 
-      if (!inCanvas(that._mainCanvas, x, y) && !that._tooltip.isCursorOnTooltip(e.pageX, e.pageY)) {
+      if (!inCanvas(that._mainCanvas, x, y) && !that._isCursorOnTooltip(e)) {
         that._pointerOut();
 
         that._disableOutHandler();
@@ -270,6 +270,9 @@ var baseTrackerPrototype = {
 
     eventsEngine.on(domAdapter.getDocument(), POINTER_ACTION, handler);
     this._outHandler = handler;
+  },
+  _isCursorOnTooltip: function _isCursorOnTooltip(e) {
+    return this._tooltip.isEnabled() && this._tooltip.isCursorOnTooltip(e.pageX, e.pageY);
   },
   _disableOutHandler: function _disableOutHandler() {
     this._outHandler && eventsEngine.off(domAdapter.getDocument(), POINTER_ACTION, this._outHandler);

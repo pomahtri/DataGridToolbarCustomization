@@ -1,6 +1,6 @@
 import registerComponent from "../../../../../../../core/component_registrator";
 import BaseComponent from "../../../../../../component_wrapper/common/component";
-import { AllDayPanelLayout as AllDayPanelLayoutComponent, defaultOptions } from "./layout";
+import { AllDayPanelLayout as AllDayPanelLayoutComponent } from "./layout";
 export default class AllDayPanelLayout extends BaseComponent {
   get _propsInfo() {
     return {
@@ -18,4 +18,3 @@ export default class AllDayPanelLayout extends BaseComponent {
 
 }
 registerComponent("dxAllDayPanelLayout", AllDayPanelLayout);
-AllDayPanelLayout.defaultOptions = defaultOptions;

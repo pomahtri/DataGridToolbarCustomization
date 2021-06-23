@@ -48,6 +48,5 @@ var MonthDateTableLayout = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = MonthDateTableLayout;
 (0, _component_registrator.default)("dxMonthDateTableLayout", MonthDateTableLayout);
-MonthDateTableLayout.defaultOptions = _layout.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

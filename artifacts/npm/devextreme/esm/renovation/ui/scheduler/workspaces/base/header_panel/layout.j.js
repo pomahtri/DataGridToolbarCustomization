@@ -8,7 +8,7 @@
 */
 import registerComponent from "../../../../../../core/component_registrator";
 import HeaderPanel from "../../../../../component_wrapper/scheduler_header_panel";
-import { HeaderPanelLayout as HeaderPanelLayoutComponent, defaultOptions } from "./layout";
+import { HeaderPanelLayout as HeaderPanelLayoutComponent } from "./layout";
 export default class HeaderPanelLayout extends HeaderPanel {
   get _propsInfo() {
     return {
@@ -26,4 +26,3 @@ export default class HeaderPanelLayout extends HeaderPanel {
 
 }
 registerComponent("dxHeaderPanelLayout", HeaderPanelLayout);
-HeaderPanelLayout.defaultOptions = defaultOptions;

@@ -8,7 +8,7 @@
 */
 import registerComponent from "../../../core/component_registrator";
 import BaseComponent from "../../component_wrapper/common/component";
-import { Box as BoxComponent, defaultOptions } from "./box";
+import { Box as BoxComponent } from "./box";
 export default class Box extends BaseComponent {
   get _propsInfo() {
     return {
@@ -26,4 +26,3 @@ export default class Box extends BaseComponent {
 
 }
 registerComponent("dxBox", Box);
-Box.defaultOptions = defaultOptions;

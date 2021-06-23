@@ -8,7 +8,7 @@
 */
 import registerComponent from "../../../core/component_registrator";
 import BaseComponent from "../../component_wrapper/common/component";
-import { Widget as WidgetComponent, defaultOptions } from "./widget";
+import { Widget as WidgetComponent } from "./widget";
 export default class Widget extends BaseComponent {
   getProps() {
     var props = super.getProps();
@@ -64,4 +64,3 @@ export default class Widget extends BaseComponent {
 
 }
 registerComponent("dxWidget", Widget);
-Widget.defaultOptions = defaultOptions;

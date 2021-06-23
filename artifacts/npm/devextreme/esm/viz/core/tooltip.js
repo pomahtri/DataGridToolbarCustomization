@@ -389,7 +389,7 @@ Tooltip.prototype = {
     return this.plaque.clear().draw(parameters);
   },
   isCursorOnTooltip: function isCursorOnTooltip(x, y) {
-    if (this._options.interactive && this.isEnabled()) {
+    if (this._options.interactive) {
       var box = this.plaque.getBBox();
       return x > box.x && x < box.x + box.width && y > box.y && y < box.y + box.height;
     }

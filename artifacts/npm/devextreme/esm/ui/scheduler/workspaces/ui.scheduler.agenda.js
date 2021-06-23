@@ -17,6 +17,7 @@ import { extend } from '../../../core/utils/extend';
 import dateLocalization from '../../../localization/date';
 import tableCreatorModule from '../table_creator';
 import { TIME_PANEL_CLASS, DATE_TABLE_CLASS, DATE_TABLE_ROW_CLASS, GROUP_ROW_CLASS, GROUP_HEADER_CONTENT_CLASS } from '../classes';
+import { getPathToLeaf } from '../resources/utils';
 import { getTimeZoneCalculator } from '../instanceFactory';
 import { calculateStartViewDate } from './utils/agenda';
 var {
@@ -287,7 +288,7 @@ class SchedulerAgenda extends WorkSpace {
       filteredItems
     } = this.invoke('getAppointmentDataProvider'); // TODO refactoring
 
-    var resourceManager = this.invoke('getResourceManager');
+    var resourceManager = this.option('resourceManager');
     var tree = resourceManager.createReducedResourcesTree(filteredItems); // TODO refactoring
 
     var cellTemplate = this.option('resourceCellTemplate');
@@ -394,8 +395,7 @@ class SchedulerAgenda extends WorkSpace {
     var groupsOpt = this.option('groups');
     var groups = {};
     var isGroupedView = !!groupsOpt.length;
-    var resourceManager = this.invoke('getResourceManager');
-    var path = isGroupedView && resourceManager._getPathToLeaf(rowIndex, groupsOpt) || [];
+    var path = isGroupedView && getPathToLeaf(rowIndex, groupsOpt) || [];
     path.forEach(function (resourceValue, resourceIndex) {
       var resourceName = groupsOpt[resourceIndex].name;
       groups[resourceName] = resourceValue;

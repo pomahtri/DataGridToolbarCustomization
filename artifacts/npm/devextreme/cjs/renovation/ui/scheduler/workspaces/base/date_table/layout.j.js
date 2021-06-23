@@ -56,6 +56,5 @@ var DateTableLayoutBase = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = DateTableLayoutBase;
 (0, _component_registrator.default)("dxDateTableLayoutBase", DateTableLayoutBase);
-DateTableLayoutBase.defaultOptions = _layout.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

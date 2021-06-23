@@ -9,6 +9,7 @@
 import _extends from "@babel/runtime/helpers/esm/extends";
 import { isPlainObject } from "../../../core/utils/type";
 import { getPathParts } from "../../../core/utils/data";
+import { extend } from "../../../core/utils/extend";
 
 function cloneObjectValue(value) {
   return Array.isArray(value) ? [...value] : _extends({}, value);
@@ -21,7 +22,11 @@ function cloneObjectProp(value, prevValue, fullNameParts) {
   if (fullNameParts.length > 1) {
     result[name] = cloneObjectProp(value[name], prevValue === null || prevValue === void 0 ? void 0 : prevValue[name], fullNameParts.slice(1));
   } else if (name) {
-    result[name] = value[name];
+    if (isPlainObject(value[name])) {
+      result[name] = extend(true, {}, value[name]);
+    } else {
+      result[name] = value[name];
+    }
   }
 
   return result;

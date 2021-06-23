@@ -142,13 +142,15 @@ var DropDownBox = _ui.default.inherit({
 
     var currentValue = this._getCurrentValue();
 
-    var keys = (0, _common.ensureDefined)(currentValue, []);
+    var keys = currentValue !== null && currentValue !== void 0 ? currentValue : [];
     keys = Array.isArray(keys) ? keys : [keys];
     var itemLoadDeferreds = (0, _iterator.map)(keys, function (key) {
       return this._loadItem(key).always(function (item) {
         var displayValue = this._displayGetter(item);
 
-        values.push((0, _common.ensureDefined)(displayValue, key));
+        if ((0, _type.isDefined)(displayValue)) {
+          values.push(displayValue);
+        }
       }.bind(this));
     }.bind(this));
     return _deferred.when.apply(this, itemLoadDeferreds).always(function () {

@@ -34,7 +34,7 @@ function getDiffItem(key, value, previousValue) {
   };
 }
 
-function compare(resultPaths, item1, item2, key) {
+function compare(resultPaths, item1, item2, key, fullPropName) {
   var type1 = (0, _type.type)(item1);
   var type2 = (0, _type.type)(item2);
   if (item1 === item2) return;
@@ -45,7 +45,7 @@ function compare(resultPaths, item1, item2, key) {
     if (!(0, _type.isPlainObject)(item2)) {
       resultPaths.push(getDiffItem(key, item2, item1));
     } else {
-      var diffPaths = objectDiffs(item1, item2);
+      var diffPaths = objectDiffs(item1, item2, fullPropName);
       resultPaths.push.apply(resultPaths, _toConsumableArray(diffPaths.map(function (item) {
         return _extends({}, item, {
           path: "".concat(key, ".").concat(item.path)
@@ -53,12 +53,12 @@ function compare(resultPaths, item1, item2, key) {
       })));
     }
   } else if (type1 === "array") {
-    if (key !== "columns" && item1 !== item2) {
+    if (key !== "columns" && !(key === "items" && fullPropName.includes("toolbar")) && item1 !== item2) {
       resultPaths.push(getDiffItem(key, item2, item1));
     } else if (item1.length !== item2.length) {
       resultPaths.push(getDiffItem(key, item2, item1));
     } else {
-      var _diffPaths = objectDiffs(item1, item2);
+      var _diffPaths = objectDiffs(item1, item2, fullPropName);
 
       [].push.apply(resultPaths, _diffPaths.map(function (item) {
         return _extends({}, item, {
@@ -72,12 +72,12 @@ function compare(resultPaths, item1, item2, key) {
 }
 
 var objectDiffsFiltered = function objectDiffsFiltered(propsEnumerator) {
-  return function (oldProps, props) {
+  return function (oldProps, props, fullPropName) {
     var resultPaths = [];
     var processItem = !Array.isArray(oldProps) ? function (propName) {
-      return compare(resultPaths, oldProps[propName], props[propName], propName);
+      compare(resultPaths, oldProps[propName], props[propName], propName, "".concat(fullPropName, ".").concat(propName));
     } : function (propName) {
-      return compare(resultPaths, oldProps[propName], props[propName], "[".concat(propName, "]"));
+      compare(resultPaths, oldProps[propName], props[propName], "[".concat(propName, "]"), "".concat(fullPropName, ".").concat(propName));
     };
     propsEnumerator(oldProps).forEach(processItem);
     Object.keys(props).filter(function (propName) {
@@ -109,5 +109,5 @@ var objectDiffsWithoutReactProps = objectDiffsFiltered(function (prop) {
 });
 
 function getUpdatedOptions(oldProps, props) {
-  return objectDiffsWithoutReactProps(oldProps, props);
+  return objectDiffsWithoutReactProps(oldProps, props, "");
 }

@@ -48,6 +48,5 @@ var Box = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = Box;
 (0, _component_registrator.default)("dxBox", Box);
-Box.defaultOptions = _box.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

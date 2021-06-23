@@ -1,5 +1,5 @@
 /**
-* DevExtreme (cjs/ui/scheduler/appointment_form.js)
+* DevExtreme (cjs/ui/scheduler/appointmentPopup/form.js)
 * Version: 21.2.0
 * Build date: Wed Jun 23 2021
 *
@@ -10,29 +10,29 @@
 
 exports.AppointmentForm = exports.APPOINTMENT_FORM_GROUP_NAMES = void 0;
 
-var _form = _interopRequireDefault(require("../form"));
+var _form = _interopRequireDefault(require("../../form"));
 
-var _date_serialization = _interopRequireDefault(require("../../core/utils/date_serialization"));
+var _date_serialization = _interopRequireDefault(require("../../../core/utils/date_serialization"));
 
-var _message = _interopRequireDefault(require("../../localization/message"));
+var _message = _interopRequireDefault(require("../../../localization/message"));
 
-var _devices = _interopRequireDefault(require("../../core/devices"));
+var _devices = _interopRequireDefault(require("../../../core/devices"));
 
-var _data_source = _interopRequireDefault(require("../../data/data_source"));
+var _data_source = _interopRequireDefault(require("../../../data/data_source"));
 
-var _utils = _interopRequireDefault(require("./timezones/utils.timezones_data"));
+var _utils = _interopRequireDefault(require("../timezones/utils.timezones_data"));
 
-var _extend = require("../../core/utils/extend");
+var _extend = require("../../../core/utils/extend");
 
-require("./recurrence_editor");
+require("../recurrence_editor");
 
-require("../text_area");
+require("../../text_area");
 
-require("../tag_box");
+require("../../tag_box");
 
-require("../switch");
+require("../../switch");
 
-require("../select_box");
+require("../../select_box");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

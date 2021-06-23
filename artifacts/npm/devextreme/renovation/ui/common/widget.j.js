@@ -97,6 +97,5 @@ var Widget = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = Widget;
 (0, _component_registrator.default)("dxWidget", Widget);
-Widget.defaultOptions = _widget.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

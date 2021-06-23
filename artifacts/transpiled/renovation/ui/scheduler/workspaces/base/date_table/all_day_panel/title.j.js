@@ -48,6 +48,5 @@ var AllDayPanelTitle = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = AllDayPanelTitle;
 (0, _component_registrator.default)("dxAllDayPanelTitle", AllDayPanelTitle);
-AllDayPanelTitle.defaultOptions = _title.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

@@ -56,6 +56,5 @@ var ResponsiveBox = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = ResponsiveBox;
 (0, _component_registrator.default)("dxResponsiveBox", ResponsiveBox);
-ResponsiveBox.defaultOptions = _responsive_box.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

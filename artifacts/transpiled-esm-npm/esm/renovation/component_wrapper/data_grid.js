@@ -128,6 +128,17 @@ export default class DataGridWrapper extends Component {
       };
     }
 
+    var {
+      onInitialized
+    } = options;
+
+    if (onInitialized) {
+      options.onInitialized = e => {
+        e.component = this;
+        onInitialized(e);
+      };
+    }
+
     return super._patchOptionValues(options);
   }
 

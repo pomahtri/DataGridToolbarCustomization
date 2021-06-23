@@ -1,24 +1,24 @@
 /**
-* DevExtreme (esm/ui/scheduler/appointmentPopup.js)
+* DevExtreme (esm/ui/scheduler/appointmentPopup/popup.js)
 * Version: 21.2.0
 * Build date: Wed Jun 23 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
-import devices from '../../core/devices';
-import $ from '../../core/renderer';
-import dateUtils from '../../core/utils/date';
-import { Deferred, when } from '../../core/utils/deferred';
-import { extend } from '../../core/utils/extend';
-import { each } from '../../core/utils/iterator';
-import { isDefined, isEmptyObject } from '../../core/utils/type';
-import { getWindow, hasWindow } from '../../core/utils/window';
-import { triggerResizeEvent } from '../../events/visibility_change';
-import messageLocalization from '../../localization/message';
-import Popup from '../popup';
-import { AppointmentForm } from './appointment_form';
-import { hide as hideLoading, show as showLoading } from './loading';
+import devices from '../../../core/devices';
+import $ from '../../../core/renderer';
+import dateUtils from '../../../core/utils/date';
+import { Deferred, when } from '../../../core/utils/deferred';
+import { extend } from '../../../core/utils/extend';
+import { each } from '../../../core/utils/iterator';
+import { isDefined, isEmptyObject } from '../../../core/utils/type';
+import { getWindow, hasWindow } from '../../../core/utils/window';
+import { triggerResizeEvent } from '../../../events/visibility_change';
+import messageLocalization from '../../../localization/message';
+import Popup from '../../popup';
+import { AppointmentForm } from './form';
+import { hide as hideLoading, show as showLoading } from '../loading';
 var toMs = dateUtils.dateToMilliseconds;
 var WIDGET_CLASS = 'dx-scheduler';
 var APPOINTMENT_POPUP_CLASS = "".concat(WIDGET_CLASS, "-appointment-popup");

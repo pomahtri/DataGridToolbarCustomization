@@ -48,6 +48,5 @@ var GroupPanel = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = GroupPanel;
 (0, _component_registrator.default)("dxGroupPanel", GroupPanel);
-GroupPanel.defaultOptions = _group_panel.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

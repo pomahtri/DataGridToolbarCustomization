@@ -48,6 +48,5 @@ var TimePanelTableLayout = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = TimePanelTableLayout;
 (0, _component_registrator.default)("dxTimePanelTableLayout", TimePanelTableLayout);
-TimePanelTableLayout.defaultOptions = _layout.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

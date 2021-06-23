@@ -27,7 +27,7 @@ import { custom as customDialog } from '../dialog';
 import { isMaterial } from '../themes';
 import errors from '../widget/ui.errors';
 import Widget from '../widget/ui.widget';
-import AppointmentPopup from './appointmentPopup';
+import AppointmentPopup from './appointmentPopup/popup';
 import { CompactAppointmentsHelper } from './compactAppointmentsHelper';
 import { DesktopTooltipStrategy } from './tooltip_strategies/desktopTooltipStrategy';
 import { MobileTooltipStrategy } from './tooltip_strategies/mobileTooltipStrategy';
@@ -51,7 +51,8 @@ import AppointmentAdapter from './appointmentAdapter';
 import { AppointmentTooltipInfo } from './dataStructures';
 import { AppointmentSettingsGenerator } from './appointmentSettingsGenerator';
 import { utils } from './utils';
-import { createFactoryInstances, disposeFactoryInstances, getResourceManager, getAppointmentDataProvider, getTimeZoneCalculator } from './instanceFactory'; // STYLE scheduler
+import { createFactoryInstances, disposeFactoryInstances, getResourceManager, getAppointmentDataProvider, getTimeZoneCalculator } from './instanceFactory';
+import { getCellGroups } from './resources/utils'; // STYLE scheduler
 
 var MINUTES_IN_HOUR = 60;
 var WIDGET_CLASS = 'dx-scheduler';
@@ -1603,6 +1604,7 @@ class Scheduler extends Widget {
       groupByDate: this._getCurrentViewOption('groupByDate'),
       scrolling,
       draggingMode: this.option('_draggingMode'),
+      resourceManager: getResourceManager(this.key),
       // TODO: SSR does not work correctly with renovated render
       renovateRender: this._isRenovatedRender(isVirtualScrolling)
     }, currentViewOptions);
@@ -2110,7 +2112,7 @@ class Scheduler extends Widget {
         getGroups = function getGroups() {
           var apptSettings = this.getLayoutManager()._positionMap[appointmentIndex];
 
-          return getResourceManager(this.key).getCellGroups(apptSettings[0].groupIndex, this.getWorkSpace().option('groups'));
+          return getCellGroups(apptSettings[0].groupIndex, this.getWorkSpace().option('groups'));
         };
 
         setResourceCallback = function setResourceCallback(_, group) {

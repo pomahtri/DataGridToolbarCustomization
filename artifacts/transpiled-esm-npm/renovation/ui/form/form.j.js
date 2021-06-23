@@ -48,6 +48,5 @@ var Form = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = Form;
 (0, _component_registrator.default)("dxForm", Form);
-Form.defaultOptions = _form.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

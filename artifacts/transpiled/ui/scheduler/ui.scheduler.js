@@ -58,7 +58,7 @@ var _ui = _interopRequireDefault(require("../widget/ui.errors"));
 
 var _ui2 = _interopRequireDefault(require("../widget/ui.widget"));
 
-var _appointmentPopup = _interopRequireDefault(require("./appointmentPopup"));
+var _popup = _interopRequireDefault(require("./appointmentPopup/popup"));
 
 var _compactAppointmentsHelper = require("./compactAppointmentsHelper");
 
@@ -107,6 +107,8 @@ var _appointmentSettingsGenerator = require("./appointmentSettingsGenerator");
 var _utils2 = require("./utils");
 
 var _instanceFactory = require("./instanceFactory");
+
+var _utils3 = require("./resources/utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1366,7 +1368,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
     this._appointments.option('itemTemplate', this._getAppointmentTemplate('appointmentTemplate'));
 
     this._appointmentTooltip = new (this.option('adaptivityEnabled') ? _mobileTooltipStrategy.MobileTooltipStrategy : _desktopTooltipStrategy.DesktopTooltipStrategy)(this._getAppointmentTooltipOptions());
-    this._appointmentPopup = new _appointmentPopup.default(this);
+    this._appointmentPopup = new _popup.default(this);
 
     if (this._isLoaded() || this._isDataSourceLoading()) {
       this._initMarkupCore((0, _instanceFactory.getResourceManager)(this.key).loadedResources);
@@ -1700,6 +1702,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
       groupByDate: this._getCurrentViewOption('groupByDate'),
       scrolling: scrolling,
       draggingMode: this.option('_draggingMode'),
+      resourceManager: (0, _instanceFactory.getResourceManager)(this.key),
       // TODO: SSR does not work correctly with renovated render
       renovateRender: this._isRenovatedRender(isVirtualScrolling)
     }, currentViewOptions);
@@ -2242,7 +2245,7 @@ var Scheduler = /*#__PURE__*/function (_Widget) {
         getGroups = function getGroups() {
           var apptSettings = this.getLayoutManager()._positionMap[appointmentIndex];
 
-          return (0, _instanceFactory.getResourceManager)(this.key).getCellGroups(apptSettings[0].groupIndex, this.getWorkSpace().option('groups'));
+          return (0, _utils3.getCellGroups)(apptSettings[0].groupIndex, this.getWorkSpace().option('groups'));
         };
 
         setResourceCallback = function setResourceCallback(_, group) {

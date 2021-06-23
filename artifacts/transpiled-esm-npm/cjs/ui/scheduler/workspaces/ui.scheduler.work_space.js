@@ -86,6 +86,8 @@ var _instanceFactory = require("../instanceFactory");
 
 var _base = require("./utils/base");
 
+var _utils2 = require("../resources/utils");
+
 var _week = require("./utils/week");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -564,6 +566,7 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
 
         break;
 
+      case 'resourceManager':
       case 'allowMultipleCellSelection':
         break;
 
@@ -1312,8 +1315,7 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
 
   _proto2._getGroupIndexByResourceId = function _getGroupIndexByResourceId(id) {
     var groups = this.option('groups');
-    var resourceManager = this.invoke('getResourceManager');
-    var resourceTree = resourceManager.createResourcesTree(groups);
+    var resourceTree = (0, _utils2.createResourcesTree)(groups);
     if (!resourceTree.length) return 0;
     return this._getGroupIndexRecursively(resourceTree, id);
   };
@@ -1655,8 +1657,7 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
 
     if (this._isHorizontalGroupedWorkSpace() && !this.isGroupedByDate()) {
       groupIndex = this._getGroupIndex(0, templateIndex * indexMultiplier);
-      var resourceManager = this.invoke('getResourceManager');
-      var groupsArray = resourceManager.getCellGroups(groupIndex, this.option('groups'));
+      var groupsArray = (0, _utils2.getCellGroups)(groupIndex, this.option('groups'));
       groups = this._getGroupsObjectFromGroupsArray(groupsArray);
     }
 
@@ -1725,8 +1726,7 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
       allDay: true,
       groupIndex: cellGroupIndex
     };
-    var resourceManager = this.invoke('getResourceManager');
-    var groupsArray = resourceManager.getCellGroups(cellGroupIndex, this.option('groups'));
+    var groupsArray = (0, _utils2.getCellGroups)(cellGroupIndex, this.option('groups'));
 
     if (groupsArray.length) {
       data.groups = this._getGroupsObjectFromGroupsArray(groupsArray);
@@ -1787,9 +1787,7 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
 
       var groupIndex = _this8._getGroupIndex(rowIndex, 0);
 
-      var resourceManager = _this8.invoke('getResourceManager');
-
-      var groupsArray = resourceManager.getCellGroups(groupIndex, _this8.option('groups'));
+      var groupsArray = (0, _utils2.getCellGroups)(groupIndex, _this8.option('groups'));
 
       var groups = _this8._getGroupsObjectFromGroupsArray(groupsArray);
 
@@ -1903,8 +1901,7 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
       allDay: this._getTableAllDay(),
       groupIndex: groupIndex
     };
-    var resourceManager = this.invoke('getResourceManager');
-    var groupsArray = resourceManager.getCellGroups(groupIndex, this.option('groups'));
+    var groupsArray = (0, _utils2.getCellGroups)(groupIndex, this.option('groups'));
 
     if (groupsArray.length) {
       data.groups = this._getGroupsObjectFromGroupsArray(groupsArray);
@@ -1947,9 +1944,8 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
 
     var groupCount = this._getGroupCount();
 
-    var resourceManager = this.invoke('getResourceManager');
     return _toConsumableArray(new Array(groupCount)).map(function (_, groupIndex) {
-      var groupsArray = resourceManager.getCellGroups(groupIndex, _this9.option('groups'));
+      var groupsArray = (0, _utils2.getCellGroups)(groupIndex, _this9.option('groups'));
       return _this9._getGroupsObjectFromGroupsArray(groupsArray);
     });
   };
@@ -2301,18 +2297,6 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
     return Math.floor((fullInterval + startDayTime) / DAY_MS);
   };
 
-  _proto2._getGroupIndexes = function _getGroupIndexes(appointmentResources) {
-    var result = [];
-
-    if (this._isGroupsSpecified(appointmentResources)) {
-      var resourceManager = this.invoke('getResourceManager');
-      var tree = resourceManager.createResourcesTree(this.option('groups'));
-      result = resourceManager.getResourceTreeLeaves(tree, appointmentResources);
-    }
-
-    return result;
-  };
-
   _proto2._updateIndex = function _updateIndex(index) {
     return index * this._getRowCount();
   };
@@ -2651,7 +2635,7 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
     return false;
   };
 
-  _proto2.getCoordinatesByDateInGroup = function getCoordinatesByDateInGroup(startDate, appointmentResources, inAllDayRow, groupIndex) {
+  _proto2.getCoordinatesByDateInGroup = function getCoordinatesByDateInGroup(startDate, groupIndices, inAllDayRow, groupIndex) {
     var _this13 = this;
 
     var result = [];
@@ -2660,13 +2644,13 @@ var SchedulerWorkSpace = /*#__PURE__*/function (_WidgetObserver) {
       return result;
     }
 
-    var groupIndices = [groupIndex];
+    var validGroupIndices = [groupIndex];
 
     if (!(0, _type.isDefined)(groupIndex)) {
-      groupIndices = this._getGroupCount() ? this._getGroupIndexes(appointmentResources) : [0];
+      validGroupIndices = this._getGroupCount() ? groupIndices : [0];
     }
 
-    groupIndices.forEach(function (groupIndex) {
+    validGroupIndices.forEach(function (groupIndex) {
       var coordinates = _this13.getCoordinatesByDate(startDate, groupIndex, inAllDayRow);
 
       coordinates && result.push(coordinates);

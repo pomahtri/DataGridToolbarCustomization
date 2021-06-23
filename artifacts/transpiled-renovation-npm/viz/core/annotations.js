@@ -86,7 +86,9 @@ function coreAnnotation(options, contentTemplate) {
           target: options
         }, options.customizeTooltip, callback));
       } else {
-        tooltip.move(x, y);
+        if (!tooltip.isCursorOnTooltip(x, y)) {
+          tooltip.move(x, y);
+        }
       }
     }
   };
@@ -531,8 +533,10 @@ var corePlugin = {
         'class': "".concat(this._rootClassPrefix, "-annotations")
       }).css(this._getAnnotationStyles()).linkOn(this._renderer.root, 'annotations').linkAppend();
 
-      _events_engine.default.on(getDocument(), POINTER_ACTION, function () {
-        return _this2._annotations.hideTooltip();
+      _events_engine.default.on(getDocument(), POINTER_ACTION, function (e) {
+        if (!_this2._annotations.tooltip.isCursorOnTooltip(e.pageX, e.pageY)) {
+          _this2._annotations.hideTooltip();
+        }
       });
 
       _events_engine.default.on(getDocument(), POINTER_UP_EVENT_NAME, function (event) {

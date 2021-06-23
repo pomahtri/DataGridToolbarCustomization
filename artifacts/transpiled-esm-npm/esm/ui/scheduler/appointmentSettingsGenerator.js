@@ -4,6 +4,7 @@ import { isEmptyObject } from '../../core/utils/type';
 import { extend } from '../../core/utils/extend';
 import { getRecurrenceProcessor } from './recurrence';
 import timeZoneUtils from './utils.timeZone.js';
+import { createResourcesTree } from './resources/utils';
 import { getTimeZoneCalculator } from './instanceFactory';
 var toMs = dateUtils.dateToMilliseconds;
 export class AppointmentSettingsGenerator {
@@ -40,9 +41,11 @@ export class AppointmentSettingsGeneratorBaseStrategy {
     var resourceManager = this.scheduler.fire('getResourceManager');
     var itemResources = resourceManager.getResourcesFromItem(rawAppointment);
 
+    var itemGroupIndices = this._getGroupIndices(itemResources, resourceManager);
+
     var isAllDay = this._isAllDayAppointment(rawAppointment);
 
-    var appointmentList = this._createAppointments(appointment, itemResources);
+    var appointmentList = this._createAppointments(appointment, itemGroupIndices);
 
     appointmentList = this._getProcessedByAppointmentTimeZone(appointmentList, appointment); // T983264
 
@@ -54,7 +57,7 @@ export class AppointmentSettingsGeneratorBaseStrategy {
 
     gridAppointmentList = this._cropAppointmentsByStartDayHour(gridAppointmentList, rawAppointment, isAllDay);
     gridAppointmentList = this._getProcessedLongAppointmentsIfRequired(gridAppointmentList, appointment);
-    var appointmentInfos = this.createAppointmentInfos(gridAppointmentList, itemResources, isAllDay, appointment.isRecurrent);
+    var appointmentInfos = this.createAppointmentInfos(gridAppointmentList, itemGroupIndices, isAllDay, appointment.isRecurrent);
     return appointmentInfos;
   }
 
@@ -91,8 +94,8 @@ export class AppointmentSettingsGeneratorBaseStrategy {
     return this.scheduler.appointmentTakesAllDay(rawAppointment) && this.workspace.supportAllDayRow();
   }
 
-  _createAppointments(appointment, resources) {
-    var appointments = this._createRecurrenceAppointments(appointment, resources);
+  _createAppointments(appointment, groupIndices) {
+    var appointments = this._createRecurrenceAppointments(appointment, groupIndices);
 
     if (!appointment.isRecurrent && appointments.length === 0) {
       appointments.push({
@@ -293,7 +296,7 @@ export class AppointmentSettingsGeneratorBaseStrategy {
     };
   }
 
-  _createRecurrenceAppointments(appointment, resources) {
+  _createRecurrenceAppointments(appointment, groupIndices) {
     var {
       duration
     } = appointment;
@@ -363,7 +366,7 @@ export class AppointmentSettingsGeneratorBaseStrategy {
     return dateUtils.roundDateByStartDayHour(resultDate, startDayHour);
   }
 
-  createAppointmentInfos(gridAppointments, resources, isAllDay, recurrent) {
+  createAppointmentInfos(gridAppointments, groupIndices, isAllDay, recurrent) {
     var _this = this;
 
     var result = [];
@@ -373,7 +376,7 @@ export class AppointmentSettingsGeneratorBaseStrategy {
 
       var coordinates = _this.getCoordinates({
         appointment,
-        resources,
+        groupIndices,
         isAllDay,
         recurrent
       });
@@ -399,10 +402,10 @@ export class AppointmentSettingsGeneratorBaseStrategy {
   getCoordinates(options) {
     var {
       appointment,
-      resources,
+      groupIndices,
       isAllDay
     } = options;
-    return this.workspace.getCoordinatesByDateInGroup(appointment.startDate, resources, isAllDay);
+    return this.workspace.getCoordinatesByDateInGroup(appointment.startDate, groupIndices, isAllDay);
   }
 
   _getAppointmentFirstViewDate(appointment, rawAppointment) {
@@ -420,6 +423,17 @@ export class AppointmentSettingsGeneratorBaseStrategy {
     return viewDataProvider.findGroupCellStartDate(groupIndex, startDate, endDate, isAllDay);
   }
 
+  _getGroupIndices(appointmentResources, resourceManager) {
+    var result = [];
+
+    if (appointmentResources && resourceManager.loadedResources.length) {
+      var tree = createResourcesTree(resourceManager.loadedResources);
+      result = resourceManager.getResourceTreeLeaves(tree, appointmentResources);
+    }
+
+    return result;
+  }
+
 }
 export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSettingsGeneratorBaseStrategy {
   get viewDataProvider() {
@@ -430,7 +444,7 @@ export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSett
     return this.workspace._isVerticalGroupedWorkSpace();
   }
 
-  createAppointmentInfos(gridAppointments, resources, allDay, recurrent) {
+  createAppointmentInfos(gridAppointments, groupIndices, allDay, recurrent) {
     var appointments = allDay ? gridAppointments : gridAppointments.filter(_ref => {
       var {
         source,
@@ -444,17 +458,17 @@ export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSett
     });
 
     if (recurrent) {
-      return this._createRecurrentAppointmentInfos(appointments, resources, allDay);
+      return this._createRecurrentAppointmentInfos(appointments, groupIndices, allDay);
     }
 
-    return super.createAppointmentInfos(appointments, resources, allDay, recurrent);
+    return super.createAppointmentInfos(appointments, groupIndices, allDay, recurrent);
   }
 
   getCoordinates(options) {
     var {
       appointment,
       isAllDay,
-      resources,
+      groupIndices,
       recurrent
     } = options;
     var {
@@ -464,10 +478,10 @@ export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSett
       workspace
     } = this;
     var groupIndex = !recurrent ? appointment.source.groupIndex : undefined;
-    return workspace.getCoordinatesByDateInGroup(startDate, resources, isAllDay, groupIndex);
+    return workspace.getCoordinatesByDateInGroup(startDate, groupIndices, isAllDay, groupIndex);
   }
 
-  _createRecurrentAppointmentInfos(gridAppointments, resources, allDay) {
+  _createRecurrentAppointmentInfos(gridAppointments, groupIndices, allDay) {
     var result = [];
     gridAppointments.forEach(appointment => {
       var {
@@ -491,13 +505,13 @@ export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSett
     return result;
   }
 
-  _createRecurrenceAppointments(appointment, resources) {
+  _createRecurrenceAppointments(appointment, groupIndices) {
     var {
       duration
     } = appointment;
     var result = [];
-    var groupIndices = this.workspace._getGroupCount() ? this._getGroupIndices(resources) : [0];
-    groupIndices.forEach(groupIndex => {
+    var validGroupIndices = this.workspace._getGroupCount() ? groupIndices : [0];
+    validGroupIndices.forEach(groupIndex => {
       var option = this._createRecurrenceOptions(appointment, groupIndex);
 
       var generatedStartDates = getRecurrenceProcessor().generateDates(option);
@@ -521,9 +535,7 @@ export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSett
     return firstViewDate.getHours();
   }
 
-  _updateGroupIndices(appointments, itemResources) {
-    var groupIndices = this._getGroupIndices(itemResources);
-
+  _updateGroupIndices(appointments, groupIndices) {
     var result = [];
     groupIndices.forEach(groupIndex => {
       var groupStartDate = this.viewDataProvider.getGroupStartDate(groupIndex);
@@ -539,10 +551,10 @@ export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSett
     return result;
   }
 
-  _getGroupIndices(resources) {
+  _getGroupIndices(resources, resourceManager) {
     var _groupIndices;
 
-    var groupIndices = this.workspace._getGroupIndexes(resources);
+    var groupIndices = super._getGroupIndices(resources, resourceManager);
 
     var {
       viewDataProvider
@@ -556,10 +568,10 @@ export class AppointmentSettingsGeneratorVirtualStrategy extends AppointmentSett
     return groupIndices.filter(groupIndex => viewDataGroupIndices.indexOf(groupIndex) !== -1);
   }
 
-  _createAppointments(appointment, resources) {
-    var appointments = super._createAppointments(appointment, resources);
+  _createAppointments(appointment, groupIndices) {
+    var appointments = super._createAppointments(appointment, groupIndices);
 
-    return !appointment.isRecurrent ? this._updateGroupIndices(appointments, resources) : appointments;
+    return !appointment.isRecurrent ? this._updateGroupIndices(appointments, groupIndices) : appointments;
   }
 
 }

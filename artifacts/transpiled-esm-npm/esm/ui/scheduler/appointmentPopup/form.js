@@ -1,24 +1,16 @@
-/**
-* DevExtreme (esm/ui/scheduler/appointment_form.js)
-* Version: 21.2.0
-* Build date: Wed Jun 23 2021
-*
-* Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
-* Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
-*/
 import _extends from "@babel/runtime/helpers/esm/extends";
-import Form from '../form';
-import dateSerialization from '../../core/utils/date_serialization';
-import messageLocalization from '../../localization/message';
-import devices from '../../core/devices';
-import DataSource from '../../data/data_source';
-import timeZoneDataUtils from './timezones/utils.timezones_data';
-import { extend } from '../../core/utils/extend';
-import './recurrence_editor';
-import '../text_area';
-import '../tag_box';
-import '../switch';
-import '../select_box';
+import Form from '../../form';
+import dateSerialization from '../../../core/utils/date_serialization';
+import messageLocalization from '../../../localization/message';
+import devices from '../../../core/devices';
+import DataSource from '../../../data/data_source';
+import timeZoneDataUtils from '../timezones/utils.timezones_data';
+import { extend } from '../../../core/utils/extend';
+import '../recurrence_editor';
+import '../../text_area';
+import '../../tag_box';
+import '../../switch';
+import '../../select_box';
 var SCREEN_SIZE_OF_SINGLE_COLUMN = 600;
 export var APPOINTMENT_FORM_GROUP_NAMES = {
   Main: 'mainGroup',

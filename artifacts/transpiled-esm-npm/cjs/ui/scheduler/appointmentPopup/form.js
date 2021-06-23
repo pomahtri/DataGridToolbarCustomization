@@ -1,21 +1,41 @@
-import _extends from "@babel/runtime/helpers/esm/extends";
-import Form from '../form';
-import dateSerialization from '../../core/utils/date_serialization';
-import messageLocalization from '../../localization/message';
-import devices from '../../core/devices';
-import DataSource from '../../data/data_source';
-import timeZoneDataUtils from './timezones/utils.timezones_data';
-import { extend } from '../../core/utils/extend';
-import './recurrence_editor';
-import '../text_area';
-import '../tag_box';
-import '../switch';
-import '../select_box';
+"use strict";
+
+exports.AppointmentForm = exports.APPOINTMENT_FORM_GROUP_NAMES = void 0;
+
+var _form = _interopRequireDefault(require("../../form"));
+
+var _date_serialization = _interopRequireDefault(require("../../../core/utils/date_serialization"));
+
+var _message = _interopRequireDefault(require("../../../localization/message"));
+
+var _devices = _interopRequireDefault(require("../../../core/devices"));
+
+var _data_source = _interopRequireDefault(require("../../../data/data_source"));
+
+var _utils = _interopRequireDefault(require("../timezones/utils.timezones_data"));
+
+var _extend = require("../../../core/utils/extend");
+
+require("../recurrence_editor");
+
+require("../../text_area");
+
+require("../../tag_box");
+
+require("../../switch");
+
+require("../../select_box");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
 var SCREEN_SIZE_OF_SINGLE_COLUMN = 600;
-export var APPOINTMENT_FORM_GROUP_NAMES = {
+var APPOINTMENT_FORM_GROUP_NAMES = {
   Main: 'mainGroup',
   Recurrence: 'recurrenceGroup'
 };
+exports.APPOINTMENT_FORM_GROUP_NAMES = APPOINTMENT_FORM_GROUP_NAMES;
 var SchedulerAppointmentForm = {
   _appointmentForm: {},
   _lockDateShiftFlag: false,
@@ -37,7 +57,7 @@ var SchedulerAppointmentForm = {
     return new Date(new Date(startDate).setHours(startDayHour));
   },
   create: function create(componentCreator, $container, isReadOnly, formData) {
-    this._appointmentForm = componentCreator($container, Form, {
+    this._appointmentForm = componentCreator($container, _form.default, {
       items: this._editors,
       readOnly: isReadOnly,
       showValidationSummary: true,
@@ -50,8 +70,8 @@ var SchedulerAppointmentForm = {
       formData: formData,
       showColonAfterLabel: false,
       labelLocation: 'top',
-      screenByWidth: width => {
-        return width < SCREEN_SIZE_OF_SINGLE_COLUMN || devices.current().deviceType !== 'desktop' ? 'xs' : 'lg';
+      screenByWidth: function screenByWidth(width) {
+        return width < SCREEN_SIZE_OF_SINGLE_COLUMN || _devices.default.current().deviceType !== 'desktop' ? 'xs' : 'lg';
       }
     });
     return this._appointmentForm;
@@ -59,12 +79,13 @@ var SchedulerAppointmentForm = {
   _dateBoxValueChanged: function _dateBoxValueChanged(args, dateExpr, isNeedCorrect) {
     this._validateAppointmentFormDate(args.component, args.value, args.previousValue);
 
-    var value = dateSerialization.deserializeDate(args.value);
-    var previousValue = dateSerialization.deserializeDate(args.previousValue);
+    var value = _date_serialization.default.deserializeDate(args.value);
+
+    var previousValue = _date_serialization.default.deserializeDate(args.previousValue);
 
     var dateEditor = this._appointmentForm.getEditor(dateExpr);
 
-    var dateValue = dateSerialization.deserializeDate(dateEditor.option('value'));
+    var dateValue = _date_serialization.default.deserializeDate(dateEditor.option('value'));
 
     if (!this._appointmentForm._lockDateShiftFlag && dateValue && value && isNeedCorrect(dateValue, value)) {
       var duration = previousValue ? dateValue.getTime() - previousValue.getTime() : 0;
@@ -72,8 +93,12 @@ var SchedulerAppointmentForm = {
     }
   },
   _createTimezoneEditor: function _createTimezoneEditor(timeZoneExpr, secondTimeZoneExpr, visibleIndex, colSpan, isMainTimeZone) {
+    var _this = this;
+
     var isShow = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
-    var noTzTitle = messageLocalization.format('dxScheduler-noTimezoneTitle');
+
+    var noTzTitle = _message.default.format('dxScheduler-noTimezoneTitle');
+
     return {
       dataField: timeZoneExpr,
       editorType: 'dxSelectBox',
@@ -87,8 +112,8 @@ var SchedulerAppointmentForm = {
         valueExpr: 'id',
         placeholder: noTzTitle,
         searchEnabled: true,
-        onValueChanged: args => {
-          var form = this._appointmentForm;
+        onValueChanged: function onValueChanged(args) {
+          var form = _this._appointmentForm;
           var secondTimezoneEditor = form.getEditor(secondTimeZoneExpr);
 
           if (isMainTimeZone) {
@@ -105,7 +130,7 @@ var SchedulerAppointmentForm = {
       editorType: 'dxDateBox',
       colSpan: colSpan,
       label: {
-        text: messageLocalization.format(label)
+        text: _message.default.format(label)
       },
       validationRules: [{
         type: 'required'
@@ -120,14 +145,16 @@ var SchedulerAppointmentForm = {
     };
   },
   _createDateBoxItems: function _createDateBoxItems(dataExprs, schedulerInst, allowTimeZoneEditing) {
+    var _this2 = this;
+
     var colSpan = allowTimeZoneEditing ? 2 : 1;
     var firstDayOfWeek = schedulerInst.option('firstDayOfWeek');
-    return [this._createDateBoxEditor(dataExprs.startDateExpr, colSpan, firstDayOfWeek, 'dxScheduler-editorLabelStartDate', args => {
-      this._dateBoxValueChanged(args, dataExprs.endDateExpr, (endValue, startValue) => {
+    return [this._createDateBoxEditor(dataExprs.startDateExpr, colSpan, firstDayOfWeek, 'dxScheduler-editorLabelStartDate', function (args) {
+      _this2._dateBoxValueChanged(args, dataExprs.endDateExpr, function (endValue, startValue) {
         return endValue < startValue;
       });
-    }), this._createTimezoneEditor(dataExprs.startDateTimeZoneExpr, dataExprs.endDateTimeZoneExpr, 1, colSpan, true, allowTimeZoneEditing), this._createDateBoxEditor(dataExprs.endDateExpr, colSpan, firstDayOfWeek, 'dxScheduler-editorLabelEndDate', args => {
-      this._dateBoxValueChanged(args, dataExprs.startDateExpr, (startValue, endValue) => {
+    }), this._createTimezoneEditor(dataExprs.startDateTimeZoneExpr, dataExprs.endDateTimeZoneExpr, 1, colSpan, true, allowTimeZoneEditing), this._createDateBoxEditor(dataExprs.endDateExpr, colSpan, firstDayOfWeek, 'dxScheduler-editorLabelEndDate', function (args) {
+      _this2._dateBoxValueChanged(args, dataExprs.startDateExpr, function (startValue, endValue) {
         return endValue < startValue;
       });
     }), this._createTimezoneEditor(dataExprs.endDateTimeZoneExpr, dataExprs.startDateTimeZoneExpr, 3, colSpan, false, allowTimeZoneEditing)];
@@ -138,18 +165,20 @@ var SchedulerAppointmentForm = {
     var type = isAllDay ? 'date' : 'datetime';
 
     var newEditorOption = _extends({}, itemEditorOptions, {
-      type
+      type: type
     });
 
     this._appointmentForm.itemOption(itemPath, 'editorOptions', newEditorOption);
   },
   _createMainItems: function _createMainItems(dataExprs, schedulerInst, triggerResize, changeSize, allowTimeZoneEditing) {
+    var _this3 = this;
+
     return [{
       dataField: dataExprs.textExpr,
       editorType: 'dxTextBox',
       colSpan: 2,
       label: {
-        text: messageLocalization.format('dxScheduler-editorLabelTitle')
+        text: _message.default.format('dxScheduler-editorLabelTitle')
       }
     }, {
       itemType: 'group',
@@ -171,27 +200,27 @@ var SchedulerAppointmentForm = {
         cssClass: 'dx-appointment-form-switch',
         editorType: 'dxSwitch',
         label: {
-          text: messageLocalization.format('dxScheduler-allDay'),
+          text: _message.default.format('dxScheduler-allDay'),
           location: 'right'
         },
         editorOptions: {
-          onValueChanged: args => {
+          onValueChanged: function onValueChanged(args) {
             var value = args.value;
 
-            var startDateEditor = this._appointmentForm.getEditor(dataExprs.startDateExpr);
+            var startDateEditor = _this3._appointmentForm.getEditor(dataExprs.startDateExpr);
 
-            var endDateEditor = this._appointmentForm.getEditor(dataExprs.endDateExpr);
+            var endDateEditor = _this3._appointmentForm.getEditor(dataExprs.endDateExpr);
 
-            var startDate = dateSerialization.deserializeDate(startDateEditor.option('value'));
+            var startDate = _date_serialization.default.deserializeDate(startDateEditor.option('value'));
 
-            if (!this._appointmentForm._lockDateShiftFlag && startDate) {
+            if (!_this3._appointmentForm._lockDateShiftFlag && startDate) {
               if (value) {
-                var allDayStartDate = this._getAllDayStartDate(startDate);
+                var allDayStartDate = _this3._getAllDayStartDate(startDate);
 
                 startDateEditor.option('value', allDayStartDate);
-                endDateEditor.option('value', this._getAllDayEndDate(allDayStartDate));
+                endDateEditor.option('value', _this3._getAllDayEndDate(allDayStartDate));
               } else {
-                var startDateWithStartHour = this._getStartDateWithStartHour(startDate, schedulerInst.option('startDayHour'));
+                var startDateWithStartHour = _this3._getStartDateWithStartHour(startDate, schedulerInst.option('startDayHour'));
 
                 var endDate = schedulerInst._workSpace.calculateEndDate(startDateWithStartHour);
 
@@ -203,9 +232,9 @@ var SchedulerAppointmentForm = {
             var startDateItemPath = "".concat(APPOINTMENT_FORM_GROUP_NAMES.Main, ".").concat(dataExprs.startDateExpr);
             var endDateItemPath = "".concat(APPOINTMENT_FORM_GROUP_NAMES.Main, ".").concat(dataExprs.endDateExpr);
 
-            this._changeFormItemDateType(startDateItemPath, value);
+            _this3._changeFormItemDateType(startDateItemPath, value);
 
-            this._changeFormItemDateType(endDateItemPath, value);
+            _this3._changeFormItemDateType(endDateItemPath, value);
           }
         }
       }, {
@@ -214,17 +243,17 @@ var SchedulerAppointmentForm = {
         cssClass: 'dx-appointment-form-switch',
         name: 'visibilityChanged',
         label: {
-          text: messageLocalization.format('dxScheduler-editorLabelRecurrence'),
+          text: _message.default.format('dxScheduler-editorLabelRecurrence'),
           location: 'right'
         },
         editorOptions: {
-          onValueChanged: args => {
-            var form = this._appointmentForm;
+          onValueChanged: function onValueChanged(args) {
+            var form = _this3._appointmentForm;
             var colSpan = args.value ? 1 : 2;
             form.itemOption(APPOINTMENT_FORM_GROUP_NAMES.Main, 'colSpan', colSpan);
             form.itemOption(APPOINTMENT_FORM_GROUP_NAMES.Recurrence, 'colSpan', colSpan);
 
-            this._updateRecurrenceItemVisibility(dataExprs.recurrenceRuleExpr, args.value, form);
+            _this3._updateRecurrenceItemVisibility(dataExprs.recurrenceRuleExpr, args.value, form);
 
             changeSize(args.value);
             triggerResize();
@@ -239,7 +268,7 @@ var SchedulerAppointmentForm = {
       editorType: 'dxTextArea',
       colSpan: 2,
       label: {
-        text: messageLocalization.format('dxScheduler-editorLabelDescription')
+        text: _message.default.format('dxScheduler-editorLabelDescription')
       }
     }, {
       itemType: 'empty',
@@ -274,8 +303,7 @@ var SchedulerAppointmentForm = {
     }];
     return this._editors;
   },
-
-  _createRecurrenceEditor(dataExprs, schedulerInst, readOnly) {
+  _createRecurrenceEditor: function _createRecurrenceEditor(dataExprs, schedulerInst, readOnly) {
     return [{
       dataField: dataExprs.recurrenceRuleExpr,
       editorType: 'dxRecurrenceEditor',
@@ -289,11 +317,9 @@ var SchedulerAppointmentForm = {
       }
     }];
   },
-
-  getRecurrenceRule(data, dataExprs) {
+  getRecurrenceRule: function getRecurrenceRule(data, dataExprs) {
     return data[dataExprs.recurrenceRuleExpr];
   },
-
   concatResources: function concatResources(resources) {
     this._editors[0].items = this._editors[0].items.concat(resources);
   },
@@ -311,10 +337,9 @@ var SchedulerAppointmentForm = {
       form.itemOption(endDateItemPath, 'editorOptions', endDateEditorOptions);
     }
   },
-
-  updateTimeZoneEditorDataSource(date, expression) {
-    var timeZoneDataSource = new DataSource({
-      store: timeZoneDataUtils.getDisplayedTimeZones(date),
+  updateTimeZoneEditorDataSource: function updateTimeZoneEditorDataSource(date, expression) {
+    var timeZoneDataSource = new _data_source.default({
+      store: _utils.default.getDisplayedTimeZones(date),
       paginate: true,
       pageSize: 10
     });
@@ -323,22 +348,19 @@ var SchedulerAppointmentForm = {
     };
     this.setEditorOptions(expression, 'Main', options);
   },
-
-  updateRecurrenceEditorStartDate(date, expression) {
+  updateRecurrenceEditorStartDate: function updateRecurrenceEditorStartDate(date, expression) {
     var options = {
       startDate: date
     };
     this.setEditorOptions(expression, 'Recurrence', options);
   },
-
-  setEditorOptions(name, groupName, options) {
+  setEditorOptions: function setEditorOptions(name, groupName, options) {
     var editorPath = "".concat(APPOINTMENT_FORM_GROUP_NAMES.groupName, ".").concat(name);
 
     var editor = this._appointmentForm.itemOption(editorPath);
 
-    editor && this._appointmentForm.itemOption(editorPath, 'editorOptions', extend({}, editor.editorOptions, options));
+    editor && this._appointmentForm.itemOption(editorPath, 'editorOptions', (0, _extend.extend)({}, editor.editorOptions, options));
   },
-
   updateFormData: function updateFormData(appointmentForm, formData, dataExprs) {
     appointmentForm._lockDateShiftFlag = true;
     var startDate = new Date(formData[dataExprs.startDateExpr]);
@@ -350,4 +372,4 @@ var SchedulerAppointmentForm = {
     appointmentForm._lockDateShiftFlag = false;
   }
 };
-export { SchedulerAppointmentForm as AppointmentForm };
+exports.AppointmentForm = SchedulerAppointmentForm;

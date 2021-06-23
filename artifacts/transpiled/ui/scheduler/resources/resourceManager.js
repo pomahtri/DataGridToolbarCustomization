@@ -349,41 +349,6 @@ var ResourceManager = /*#__PURE__*/function () {
     return result;
   };
 
-  _proto.createResourcesTree = function createResourcesTree(groups) {
-    var leafIndex = 0;
-
-    function make(group, groupIndex, result, parent) {
-      result = result || [];
-
-      for (var i = 0; i < group.items.length; i++) {
-        var currentGroupItem = group.items[i];
-        var resultItem = {
-          name: group.name,
-          value: currentGroupItem.id,
-          title: currentGroupItem.text,
-          data: group.data && group.data[i],
-          children: [],
-          parent: parent ? parent : null
-        };
-        result.push(resultItem);
-        var nextGroupIndex = groupIndex + 1;
-
-        if (groups[nextGroupIndex]) {
-          make.call(this, groups[nextGroupIndex], nextGroupIndex, resultItem.children, resultItem);
-        }
-
-        if (!resultItem.children.length) {
-          resultItem.leafIndex = leafIndex;
-          leafIndex++;
-        }
-      }
-
-      return result;
-    }
-
-    return make.call(this, groups[0], 0);
-  };
-
   _proto._hasGroupItem = function _hasGroupItem(appointmentResources, groupName, itemValue) {
     var group = this.getDataAccessors(groupName, 'getter')(appointmentResources);
 
@@ -466,7 +431,7 @@ var ResourceManager = /*#__PURE__*/function () {
   };
 
   _proto.groupAppointmentsByResourcesCore = function groupAppointmentsByResourcesCore(appointments, resources) {
-    var tree = this.createResourcesTree(resources);
+    var tree = (0, _utils.createResourcesTree)(resources);
     var result = {};
     (0, _iterator.each)(appointments, function (_, appointment) {
       var appointmentResources = this.getResourcesFromItem(appointment);
@@ -493,7 +458,7 @@ var ResourceManager = /*#__PURE__*/function () {
       var field = (0, _utils.getFieldExpr)(resourceForPainting);
       var groupIndex = options.groupIndex,
           itemData = options.itemData;
-      var cellGroups = this.getCellGroups(groupIndex, this.loadedResources);
+      var cellGroups = (0, _utils.getCellGroups)(groupIndex, this.loadedResources);
       var resourceValues = (0, _array.wrapToArray)(this.getDataAccessors(field, 'getter')(itemData));
       var groupId = resourceValues.length ? resourceValues[0] : undefined;
 
@@ -508,38 +473,6 @@ var ResourceManager = /*#__PURE__*/function () {
     }
 
     return response;
-  };
-
-  _proto._getPathToLeaf = function _getPathToLeaf(leafIndex, groups) {
-    var tree = this.createResourcesTree(groups);
-
-    function findLeafByIndex(data, index) {
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].leafIndex === index) {
-          return data[i];
-        } else {
-          var _leaf = findLeafByIndex(data[i].children, index);
-
-          if (_leaf) {
-            return _leaf;
-          }
-        }
-      }
-    }
-
-    function makeBranch(leaf, result) {
-      result = result || [];
-      result.push(leaf.value);
-
-      if (leaf.parent) {
-        makeBranch(leaf.parent, result);
-      }
-
-      return result;
-    }
-
-    var leaf = findLeafByIndex(tree, leafIndex);
-    return makeBranch(leaf).reverse();
   };
 
   _proto.reduceResourcesTree = function reduceResourcesTree(tree, existingAppointments, _result) {
@@ -656,45 +589,8 @@ var ResourceManager = /*#__PURE__*/function () {
   };
 
   _proto.createReducedResourcesTree = function createReducedResourcesTree(appointments) {
-    var tree = this.createResourcesTree(this.loadedResources);
+    var tree = (0, _utils.createResourcesTree)(this.loadedResources);
     return this.reduceResourcesTree(tree, appointments);
-  } // TODO rework
-  ;
-
-  _proto.getCellGroups = function getCellGroups(groupIndex, groups) {
-    var result = [];
-
-    if (this.getGroupCount(groups)) {
-      if (groupIndex < 0) {
-        return;
-      }
-
-      var path = this._getPathToLeaf(groupIndex, groups);
-
-      for (var i = 0; i < groups.length; i++) {
-        result.push({
-          name: groups[i].name,
-          id: path[i]
-        });
-      }
-    }
-
-    return result;
-  };
-
-  _proto.getGroupCount = function getGroupCount(groups) {
-    // TODO replace with viewDataProvider method
-    var result = 0;
-
-    for (var i = 0, len = groups.length; i < len; i++) {
-      if (!i) {
-        result = groups[i].items.length;
-      } else {
-        result *= groups[i].items.length;
-      }
-    }
-
-    return result;
   };
 
   return ResourceManager;

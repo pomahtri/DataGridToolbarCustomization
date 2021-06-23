@@ -8,7 +8,7 @@
 */
 import registerComponent from "../../../../../../core/component_registrator";
 import BaseComponent from "../../../../../component_wrapper/common/component";
-import { TimePanelTableLayout as TimePanelTableLayoutComponent, defaultOptions } from "./layout";
+import { TimePanelTableLayout as TimePanelTableLayoutComponent } from "./layout";
 export default class TimePanelTableLayout extends BaseComponent {
   get _propsInfo() {
     return {
@@ -26,4 +26,3 @@ export default class TimePanelTableLayout extends BaseComponent {
 
 }
 registerComponent("dxTimePanelTableLayout", TimePanelTableLayout);
-TimePanelTableLayout.defaultOptions = defaultOptions;

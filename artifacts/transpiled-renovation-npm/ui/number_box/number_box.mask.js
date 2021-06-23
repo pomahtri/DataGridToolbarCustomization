@@ -73,7 +73,7 @@ var NumberBoxMask = _number_box2.default.inherit({
     if (!this._preventNestedFocusEvent(e)) {
       this.clearCaretTimeout();
       this._caretTimeout = setTimeout(function () {
-        this._caretTimeout = null;
+        this._caretTimeout = undefined;
 
         var caret = this._caret();
 
@@ -174,10 +174,8 @@ var NumberBoxMask = _number_box2.default.inherit({
     var decimalSeparator = _number.default.getDecimalSeparator();
 
     var isDecimalSeparatorNext = text.charAt(caret.end) === decimalSeparator;
-    var isZeroNext = text.charAt(caret.end) === '0';
     var moveToFloat = (this._lastKey === decimalSeparator || this._lastKey === '.') && isDecimalSeparatorNext;
-    var zeroToZeroReplace = this._lastKey === '0' && isZeroNext;
-    return moveToFloat || zeroToZeroReplace;
+    return moveToFloat;
   },
   _getInputVal: function _getInputVal() {
     return _number.default.convertDigits(this._input().val(), true);
@@ -577,6 +575,8 @@ var NumberBoxMask = _number_box2.default.inherit({
     _events_engine.default.on($input, (0, _index.addNamespace)('dxclick', NUMBER_FORMATTER_NAMESPACE), function () {
       if (!this._caretTimeout) {
         this._caretTimeout = setTimeout(function () {
+          this._caretTimeout = undefined;
+
           this._caret((0, _number_box.getCaretInBoundaries)(this._caret(), this._getInputVal(), this._getFormatPattern()));
         }.bind(this), CARET_TIMEOUT_DURATION);
       }
@@ -588,7 +588,7 @@ var NumberBoxMask = _number_box2.default.inherit({
   },
   clearCaretTimeout: function clearCaretTimeout() {
     clearTimeout(this._caretTimeout);
-    this._caretTimeout = null;
+    this._caretTimeout = undefined;
   },
   _forceRefreshInputValue: function _forceRefreshInputValue() {
     if (!this._useMaskBehavior()) {

@@ -8,7 +8,7 @@
 */
 import registerComponent from "../../../../../../core/component_registrator";
 import HeaderPanel from "../../../../../component_wrapper/scheduler_header_panel";
-import { TimelineHeaderPanelLayout as TimelineHeaderPanelLayoutComponent, defaultOptions } from "./layout";
+import { TimelineHeaderPanelLayout as TimelineHeaderPanelLayoutComponent } from "./layout";
 export default class TimelineHeaderPanelLayout extends HeaderPanel {
   get _propsInfo() {
     return {
@@ -26,4 +26,3 @@ export default class TimelineHeaderPanelLayout extends HeaderPanel {
 
 }
 registerComponent("dxTimelineHeaderPanelLayout", TimelineHeaderPanelLayout);
-TimelineHeaderPanelLayout.defaultOptions = defaultOptions;

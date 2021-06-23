@@ -14,6 +14,8 @@ var _type = require("../../../core/utils/type");
 
 var _data = require("../../../core/utils/data");
 
+var _extend = require("../../../core/utils/extend");
+
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -39,7 +41,11 @@ function cloneObjectProp(value, prevValue, fullNameParts) {
   if (fullNameParts.length > 1) {
     result[name] = cloneObjectProp(value[name], prevValue === null || prevValue === void 0 ? void 0 : prevValue[name], fullNameParts.slice(1));
   } else if (name) {
-    result[name] = value[name];
+    if ((0, _type.isPlainObject)(value[name])) {
+      result[name] = (0, _extend.extend)(true, {}, value[name]);
+    } else {
+      result[name] = value[name];
+    }
   }
 
   return result;

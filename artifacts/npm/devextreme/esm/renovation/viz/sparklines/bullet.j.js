@@ -8,7 +8,7 @@
 */
 import registerComponent from "../../../core/component_registrator";
 import BaseComponent from "../../component_wrapper/common/component";
-import { Bullet as BulletComponent, defaultOptions } from "./bullet";
+import { Bullet as BulletComponent } from "./bullet";
 export default class Bullet extends BaseComponent {
   _getActionConfigs() {
     return {
@@ -33,4 +33,3 @@ export default class Bullet extends BaseComponent {
 
 }
 registerComponent("dxBullet", Bullet);
-Bullet.defaultOptions = defaultOptions;

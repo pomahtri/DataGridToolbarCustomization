@@ -166,6 +166,15 @@ var DataGridWrapper = /*#__PURE__*/function (_Component) {
       };
     }
 
+    var onInitialized = options.onInitialized;
+
+    if (onInitialized) {
+      options.onInitialized = function (e) {
+        e.component = _this2;
+        onInitialized(e);
+      };
+    }
+
     return _Component.prototype._patchOptionValues.call(this, options);
   };
 

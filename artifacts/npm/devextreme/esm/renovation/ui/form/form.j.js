@@ -8,7 +8,7 @@
 */
 import registerComponent from "../../../core/component_registrator";
 import BaseComponent from "../../component_wrapper/common/component";
-import { Form as FormComponent, defaultOptions } from "./form";
+import { Form as FormComponent } from "./form";
 export default class Form extends BaseComponent {
   get _propsInfo() {
     return {
@@ -26,4 +26,3 @@ export default class Form extends BaseComponent {
 
 }
 registerComponent("dxForm", Form);
-Form.defaultOptions = defaultOptions;

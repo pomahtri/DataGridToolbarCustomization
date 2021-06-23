@@ -1,6 +1,6 @@
 import registerComponent from "../../../../../../core/component_registrator";
 import BaseComponent from "../../../../../component_wrapper/common/component";
-import { GroupPanel as GroupPanelComponent, defaultOptions } from "./group_panel";
+import { GroupPanel as GroupPanelComponent } from "./group_panel";
 export default class GroupPanel extends BaseComponent {
   get _propsInfo() {
     return {
@@ -18,4 +18,3 @@ export default class GroupPanel extends BaseComponent {
 
 }
 registerComponent("dxGroupPanel", GroupPanel);
-GroupPanel.defaultOptions = defaultOptions;

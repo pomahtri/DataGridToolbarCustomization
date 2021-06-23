@@ -57,6 +57,5 @@ var Pager = /*#__PURE__*/function (_GridPagerWrapper) {
 
 exports.default = Pager;
 (0, _component_registrator.default)("dxPager", Pager);
-Pager.defaultOptions = _pager.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

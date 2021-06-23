@@ -20,6 +20,8 @@ var _recurrence = require("./recurrence");
 
 var _utilsTimeZone = _interopRequireDefault(require("./utils.timeZone.js"));
 
+var _utils = require("./resources/utils");
+
 var _instanceFactory = require("./instanceFactory");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -88,9 +90,11 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
     var resourceManager = this.scheduler.fire('getResourceManager');
     var itemResources = resourceManager.getResourcesFromItem(rawAppointment);
 
+    var itemGroupIndices = this._getGroupIndices(itemResources, resourceManager);
+
     var isAllDay = this._isAllDayAppointment(rawAppointment);
 
-    var appointmentList = this._createAppointments(appointment, itemResources);
+    var appointmentList = this._createAppointments(appointment, itemGroupIndices);
 
     appointmentList = this._getProcessedByAppointmentTimeZone(appointmentList, appointment); // T983264
 
@@ -102,7 +106,7 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
 
     gridAppointmentList = this._cropAppointmentsByStartDayHour(gridAppointmentList, rawAppointment, isAllDay);
     gridAppointmentList = this._getProcessedLongAppointmentsIfRequired(gridAppointmentList, appointment);
-    var appointmentInfos = this.createAppointmentInfos(gridAppointmentList, itemResources, isAllDay, appointment.isRecurrent);
+    var appointmentInfos = this.createAppointmentInfos(gridAppointmentList, itemGroupIndices, isAllDay, appointment.isRecurrent);
     return appointmentInfos;
   };
 
@@ -141,8 +145,8 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
     return this.scheduler.appointmentTakesAllDay(rawAppointment) && this.workspace.supportAllDayRow();
   };
 
-  _proto2._createAppointments = function _createAppointments(appointment, resources) {
-    var appointments = this._createRecurrenceAppointments(appointment, resources);
+  _proto2._createAppointments = function _createAppointments(appointment, groupIndices) {
+    var appointments = this._createRecurrenceAppointments(appointment, groupIndices);
 
     if (!appointment.isRecurrent && appointments.length === 0) {
       appointments.push({
@@ -365,7 +369,7 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
     };
   };
 
-  _proto2._createRecurrenceAppointments = function _createRecurrenceAppointments(appointment, resources) {
+  _proto2._createRecurrenceAppointments = function _createRecurrenceAppointments(appointment, groupIndices) {
     var duration = appointment.duration;
 
     var option = this._createRecurrenceOptions(appointment);
@@ -434,7 +438,7 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
     return _date.default.roundDateByStartDayHour(resultDate, startDayHour);
   };
 
-  _proto2.createAppointmentInfos = function createAppointmentInfos(gridAppointments, resources, isAllDay, recurrent) {
+  _proto2.createAppointmentInfos = function createAppointmentInfos(gridAppointments, groupIndices, isAllDay, recurrent) {
     var _this7 = this;
 
     var result = [];
@@ -444,7 +448,7 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
 
       var coordinates = _this7.getCoordinates({
         appointment: appointment,
-        resources: resources,
+        groupIndices: groupIndices,
         isAllDay: isAllDay,
         recurrent: recurrent
       });
@@ -469,9 +473,9 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
 
   _proto2.getCoordinates = function getCoordinates(options) {
     var appointment = options.appointment,
-        resources = options.resources,
+        groupIndices = options.groupIndices,
         isAllDay = options.isAllDay;
-    return this.workspace.getCoordinatesByDateInGroup(appointment.startDate, resources, isAllDay);
+    return this.workspace.getCoordinatesByDateInGroup(appointment.startDate, groupIndices, isAllDay);
   };
 
   _proto2._getAppointmentFirstViewDate = function _getAppointmentFirstViewDate(appointment, rawAppointment) {
@@ -485,6 +489,17 @@ var AppointmentSettingsGeneratorBaseStrategy = /*#__PURE__*/function () {
     var isAllDay = this._isAllDayAppointment(rawAppointment);
 
     return viewDataProvider.findGroupCellStartDate(groupIndex, startDate, endDate, isAllDay);
+  };
+
+  _proto2._getGroupIndices = function _getGroupIndices(appointmentResources, resourceManager) {
+    var result = [];
+
+    if (appointmentResources && resourceManager.loadedResources.length) {
+      var tree = (0, _utils.createResourcesTree)(resourceManager.loadedResources);
+      result = resourceManager.getResourceTreeLeaves(tree, appointmentResources);
+    }
+
+    return result;
   };
 
   _createClass(AppointmentSettingsGeneratorBaseStrategy, [{
@@ -513,7 +528,7 @@ var AppointmentSettingsGeneratorVirtualStrategy = /*#__PURE__*/function (_Appoin
 
   var _proto3 = AppointmentSettingsGeneratorVirtualStrategy.prototype;
 
-  _proto3.createAppointmentInfos = function createAppointmentInfos(gridAppointments, resources, allDay, recurrent) {
+  _proto3.createAppointmentInfos = function createAppointmentInfos(gridAppointments, groupIndices, allDay, recurrent) {
     var _this8 = this;
 
     var appointments = allDay ? gridAppointments : gridAppointments.filter(function (_ref) {
@@ -525,24 +540,24 @@ var AppointmentSettingsGeneratorVirtualStrategy = /*#__PURE__*/function (_Appoin
     });
 
     if (recurrent) {
-      return this._createRecurrentAppointmentInfos(appointments, resources, allDay);
+      return this._createRecurrentAppointmentInfos(appointments, groupIndices, allDay);
     }
 
-    return _AppointmentSettingsG.prototype.createAppointmentInfos.call(this, appointments, resources, allDay, recurrent);
+    return _AppointmentSettingsG.prototype.createAppointmentInfos.call(this, appointments, groupIndices, allDay, recurrent);
   };
 
   _proto3.getCoordinates = function getCoordinates(options) {
     var appointment = options.appointment,
         isAllDay = options.isAllDay,
-        resources = options.resources,
+        groupIndices = options.groupIndices,
         recurrent = options.recurrent;
     var startDate = appointment.startDate;
     var workspace = this.workspace;
     var groupIndex = !recurrent ? appointment.source.groupIndex : undefined;
-    return workspace.getCoordinatesByDateInGroup(startDate, resources, isAllDay, groupIndex);
+    return workspace.getCoordinatesByDateInGroup(startDate, groupIndices, isAllDay, groupIndex);
   };
 
-  _proto3._createRecurrentAppointmentInfos = function _createRecurrentAppointmentInfos(gridAppointments, resources, allDay) {
+  _proto3._createRecurrentAppointmentInfos = function _createRecurrentAppointmentInfos(gridAppointments, groupIndices, allDay) {
     var _this9 = this;
 
     var result = [];
@@ -565,13 +580,13 @@ var AppointmentSettingsGeneratorVirtualStrategy = /*#__PURE__*/function (_Appoin
     return result;
   };
 
-  _proto3._createRecurrenceAppointments = function _createRecurrenceAppointments(appointment, resources) {
+  _proto3._createRecurrenceAppointments = function _createRecurrenceAppointments(appointment, groupIndices) {
     var _this10 = this;
 
     var duration = appointment.duration;
     var result = [];
-    var groupIndices = this.workspace._getGroupCount() ? this._getGroupIndices(resources) : [0];
-    groupIndices.forEach(function (groupIndex) {
+    var validGroupIndices = this.workspace._getGroupCount() ? groupIndices : [0];
+    validGroupIndices.forEach(function (groupIndex) {
       var option = _this10._createRecurrenceOptions(appointment, groupIndex);
 
       var generatedStartDates = (0, _recurrence.getRecurrenceProcessor)().generateDates(option);
@@ -599,10 +614,8 @@ var AppointmentSettingsGeneratorVirtualStrategy = /*#__PURE__*/function (_Appoin
     return firstViewDate.getHours();
   };
 
-  _proto3._updateGroupIndices = function _updateGroupIndices(appointments, itemResources) {
+  _proto3._updateGroupIndices = function _updateGroupIndices(appointments, groupIndices) {
     var _this11 = this;
-
-    var groupIndices = this._getGroupIndices(itemResources);
 
     var result = [];
     groupIndices.forEach(function (groupIndex) {
@@ -619,10 +632,10 @@ var AppointmentSettingsGeneratorVirtualStrategy = /*#__PURE__*/function (_Appoin
     return result;
   };
 
-  _proto3._getGroupIndices = function _getGroupIndices(resources) {
+  _proto3._getGroupIndices = function _getGroupIndices(resources, resourceManager) {
     var _groupIndices;
 
-    var groupIndices = this.workspace._getGroupIndexes(resources);
+    var groupIndices = _AppointmentSettingsG.prototype._getGroupIndices.call(this, resources, resourceManager);
 
     var viewDataProvider = this.workspace.viewDataProvider;
     var viewDataGroupIndices = viewDataProvider.getGroupIndices();
@@ -636,10 +649,10 @@ var AppointmentSettingsGeneratorVirtualStrategy = /*#__PURE__*/function (_Appoin
     });
   };
 
-  _proto3._createAppointments = function _createAppointments(appointment, resources) {
-    var appointments = _AppointmentSettingsG.prototype._createAppointments.call(this, appointment, resources);
+  _proto3._createAppointments = function _createAppointments(appointment, groupIndices) {
+    var appointments = _AppointmentSettingsG.prototype._createAppointments.call(this, appointment, groupIndices);
 
-    return !appointment.isRecurrent ? this._updateGroupIndices(appointments, resources) : appointments;
+    return !appointment.isRecurrent ? this._updateGroupIndices(appointments, groupIndices) : appointments;
   };
 
   _createClass(AppointmentSettingsGeneratorVirtualStrategy, [{

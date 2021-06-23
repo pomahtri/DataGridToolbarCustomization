@@ -48,6 +48,5 @@ var HeaderPanelLayout = /*#__PURE__*/function (_HeaderPanel) {
 
 exports.default = HeaderPanelLayout;
 (0, _component_registrator.default)("dxHeaderPanelLayout", HeaderPanelLayout);
-HeaderPanelLayout.defaultOptions = _layout.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

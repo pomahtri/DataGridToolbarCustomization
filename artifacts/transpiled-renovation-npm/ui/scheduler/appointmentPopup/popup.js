@@ -2,31 +2,31 @@
 
 exports.default = void 0;
 
-var _devices = _interopRequireDefault(require("../../core/devices"));
+var _devices = _interopRequireDefault(require("../../../core/devices"));
 
-var _renderer = _interopRequireDefault(require("../../core/renderer"));
+var _renderer = _interopRequireDefault(require("../../../core/renderer"));
 
-var _date = _interopRequireDefault(require("../../core/utils/date"));
+var _date = _interopRequireDefault(require("../../../core/utils/date"));
 
-var _deferred = require("../../core/utils/deferred");
+var _deferred = require("../../../core/utils/deferred");
 
-var _extend = require("../../core/utils/extend");
+var _extend = require("../../../core/utils/extend");
 
-var _iterator = require("../../core/utils/iterator");
+var _iterator = require("../../../core/utils/iterator");
 
-var _type = require("../../core/utils/type");
+var _type = require("../../../core/utils/type");
 
-var _window = require("../../core/utils/window");
+var _window = require("../../../core/utils/window");
 
-var _visibility_change = require("../../events/visibility_change");
+var _visibility_change = require("../../../events/visibility_change");
 
-var _message = _interopRequireDefault(require("../../localization/message"));
+var _message = _interopRequireDefault(require("../../../localization/message"));
 
-var _popup = _interopRequireDefault(require("../popup"));
+var _popup = _interopRequireDefault(require("../../popup"));
 
-var _appointment_form = require("./appointment_form");
+var _form = require("./form");
 
-var _loading = require("./loading");
+var _loading = require("../loading");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -187,15 +187,15 @@ var AppointmentPopup = /*#__PURE__*/function () {
 
     var readOnly = this._isReadOnly(rawAppointment);
 
-    _appointment_form.AppointmentForm.prepareAppointmentFormEditors(expr, this.scheduler, this.triggerResize.bind(this), this.changeSize.bind(this), formData, allowTimeZoneEditing, readOnly);
+    _form.AppointmentForm.prepareAppointmentFormEditors(expr, this.scheduler, this.triggerResize.bind(this), this.changeSize.bind(this), formData, allowTimeZoneEditing, readOnly);
 
     if (resources && resources.length) {
       var resourceManager = this.scheduler.fire('getResourceManager');
 
-      _appointment_form.AppointmentForm.concatResources(resourceManager.getEditors());
+      _form.AppointmentForm.concatResources(resourceManager.getEditors());
     }
 
-    return _appointment_form.AppointmentForm.create(this.scheduler._createComponent.bind(this.scheduler), element, readOnly, formData);
+    return _form.AppointmentForm.create(this.scheduler._createComponent.bind(this.scheduler), element, readOnly, formData);
   };
 
   _proto._getAllowTimeZoneEditing = function _getAllowTimeZoneEditing() {
@@ -258,9 +258,9 @@ var AppointmentPopup = /*#__PURE__*/function () {
 
     this._appointmentForm.option('readOnly', this._isReadOnly(data));
 
-    _appointment_form.AppointmentForm.updateFormData(this._appointmentForm, formData, this.scheduler._dataAccessors.expr);
+    _form.AppointmentForm.updateFormData(this._appointmentForm, formData, this.scheduler._dataAccessors.expr);
 
-    _appointment_form.AppointmentForm.setEditorsType(this._appointmentForm, startDateExpr, endDateExpr, allDay);
+    _form.AppointmentForm.setEditorsType(this._appointmentForm, startDateExpr, endDateExpr, allDay);
   };
 
   _proto._isDeviceMobile = function _isDeviceMobile() {
@@ -310,7 +310,7 @@ var AppointmentPopup = /*#__PURE__*/function () {
       return;
     }
 
-    var isRecurrence = _appointment_form.AppointmentForm.getRecurrenceRule(this._appointmentForm.option('formData'), this.scheduler._dataAccessors.expr);
+    var isRecurrence = _form.AppointmentForm.getRecurrenceRule(this._appointmentForm.option('formData'), this.scheduler._dataAccessors.expr);
 
     if (this.isVisible()) {
       this.changeSize(isRecurrence);

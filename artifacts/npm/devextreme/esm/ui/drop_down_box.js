@@ -8,8 +8,8 @@
 */
 import DropDownEditor from './drop_down_editor/ui.drop_down_editor';
 import DataExpressionMixin from './editor/ui.data_expression';
-import { ensureDefined, noop, grep } from '../core/utils/common';
-import { isObject } from '../core/utils/type';
+import { noop, grep } from '../core/utils/common';
+import { isDefined, isObject } from '../core/utils/type';
 import { map } from '../core/utils/iterator';
 import { tabbable } from './widget/selectors';
 import { when, Deferred } from '../core/utils/deferred';
@@ -125,13 +125,15 @@ var DropDownBox = DropDownEditor.inherit({
 
     var currentValue = this._getCurrentValue();
 
-    var keys = ensureDefined(currentValue, []);
+    var keys = currentValue !== null && currentValue !== void 0 ? currentValue : [];
     keys = Array.isArray(keys) ? keys : [keys];
     var itemLoadDeferreds = map(keys, function (key) {
       return this._loadItem(key).always(function (item) {
         var displayValue = this._displayGetter(item);
 
-        values.push(ensureDefined(displayValue, key));
+        if (isDefined(displayValue)) {
+          values.push(displayValue);
+        }
       }.bind(this));
     }.bind(this));
     return when.apply(this, itemLoadDeferreds).always(function () {

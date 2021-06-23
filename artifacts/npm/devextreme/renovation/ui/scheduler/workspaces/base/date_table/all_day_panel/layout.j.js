@@ -56,6 +56,5 @@ var AllDayPanelLayout = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = AllDayPanelLayout;
 (0, _component_registrator.default)("dxAllDayPanelLayout", AllDayPanelLayout);
-AllDayPanelLayout.defaultOptions = _layout.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;

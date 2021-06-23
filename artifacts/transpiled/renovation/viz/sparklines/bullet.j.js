@@ -57,6 +57,5 @@ var Bullet = /*#__PURE__*/function (_BaseComponent) {
 
 exports.default = Bullet;
 (0, _component_registrator.default)("dxBullet", Bullet);
-Bullet.defaultOptions = _bullet.defaultOptions;
 module.exports = exports.default;
 module.exports.default = exports.default;
