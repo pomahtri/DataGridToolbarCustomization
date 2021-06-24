@@ -1212,4 +1212,9 @@
  * @typedef {string} Enums.GridDataChangeType
  * @enum {'insert' | 'update' | 'remove'}
  */
+
+/**
+ * @typedef {string} Enums.GridToolbarItemName
+ * @enum {'addRowButton' | 'applyFilterButton' | 'columnChooserButton' | 'exportButton' | 'groupPanel' | 'revertButton' | 'saveButton' | 'searchPanel'}
+ */
 "use strict";

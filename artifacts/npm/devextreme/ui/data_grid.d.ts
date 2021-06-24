@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/data_grid.d.ts)
 * Version: 21.2.0
-* Build date: Wed Jun 23 2021
+* Build date: Thu Jun 24 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -4150,7 +4150,7 @@ export interface ToolbarItem extends dxToolbarItem {
 export interface Toolbar {
   /**
    * @docid
-   * @type Array<ToolbarItem,Enums.DataGridToolbarItem>
+   * @type Array<ToolbarItem,Enums.GridToolbarItemName>
    * @public
    */
   items?: (DefaultToolbarItemName | ToolbarItem)[];

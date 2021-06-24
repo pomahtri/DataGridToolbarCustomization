@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/docEnums.js)
 * Version: 21.2.0
-* Build date: Wed Jun 23 2021
+* Build date: Thu Jun 24 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -1219,4 +1219,9 @@
 /**
  * @typedef {string} Enums.GridDataChangeType
  * @enum {'insert' | 'update' | 'remove'}
+ */
+
+/**
+ * @typedef {string} Enums.GridToolbarItemName
+ * @enum {'addRowButton' | 'applyFilterButton' | 'columnChooserButton' | 'exportButton' | 'groupPanel' | 'revertButton' | 'saveButton' | 'searchPanel'}
  */
