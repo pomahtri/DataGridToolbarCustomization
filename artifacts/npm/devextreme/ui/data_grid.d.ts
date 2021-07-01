@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/data_grid.d.ts)
 * Version: 21.2.0
-* Build date: Thu Jun 24 2021
+* Build date: Thu Jul 01 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -1039,12 +1039,6 @@ export interface GridBaseOptions<TComponent extends GridBase> extends WidgetOpti
      * @public
      */
     stateStoring?: StateStoring;
-    /**
-     * @docid
-     * @default undefined
-     * @public
-     */
-    toolbar?: Toolbar;
     /**
      * @docid
      * @default true
@@ -3696,6 +3690,12 @@ export interface dxDataGridOptions extends GridBaseOptions<dxDataGrid> {
      * @public
      */
     summary?: Summary;
+    /**
+     * @docid
+     * @default undefined
+     * @public
+     */
+    toolbar?: dxDataGridToolbar;
 }
 
 export interface ExcelCellInfo {
@@ -4130,16 +4130,20 @@ export interface SummaryTexts {
     sumOtherColumn?: string
 }
 
-
-type DefaultToolbarItemName = 'addRowButton' | 'applyFilterButton' | 'columnChooserButton' | 'exportButton' | 'groupPanel' | 'revertButton' | 'saveButton' | 'searchPanel';
+type dxDataGridDefaultToolbarItemName = 'addRowButton' | 'applyFilterButton' | 'columnChooserButton' | 'exportButton' | 'groupPanel' | 'revertButton' | 'saveButton' | 'searchPanel';
 
 /**
  * @docid
  * @type object
  * @namespace DevExpress.ui
  */
-export interface ToolbarItem extends dxToolbarItem {
-  name?: DefaultToolbarItemName
+export interface dxDataGridToolbarItem extends dxToolbarItem {
+  /**
+   * @docid
+   * @type Enums.GridToolbarItemName|string
+   * @public
+  */
+  name?: dxDataGridDefaultToolbarItemName | string
 }
 
 /**
@@ -4147,13 +4151,13 @@ export interface ToolbarItem extends dxToolbarItem {
  * @type object
  * @namespace DevExpress.ui
  */
-export interface Toolbar {
+export interface dxDataGridToolbar {
   /**
    * @docid
-   * @type Array<ToolbarItem,Enums.GridToolbarItemName>
+   * @type Array<dxDataGridToolbarItem,Enums.GridToolbarItemName>
    * @public
    */
-  items?: (DefaultToolbarItemName | ToolbarItem)[];
+  items?: Array<dxDataGridDefaultToolbarItemName | dxDataGridToolbarItem>;
 }
 
 /**

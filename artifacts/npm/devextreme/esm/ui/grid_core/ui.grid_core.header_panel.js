@@ -1,7 +1,7 @@
 /**
 * DevExtreme (esm/ui/grid_core/ui.grid_core.header_panel.js)
 * Version: 21.2.0
-* Build date: Thu Jun 24 2021
+* Build date: Thu Jul 01 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -145,8 +145,6 @@ var HeaderPanel = ColumnsView.inherit({
     return this.getElementHeight();
   },
   optionChanged: function optionChanged(args) {
-    var parts = getPathParts(args.fullName);
-
     if (args.name === 'onToolbarPreparing') {
       this._invalidate();
 
@@ -154,6 +152,9 @@ var HeaderPanel = ColumnsView.inherit({
     }
 
     if (args.name === 'toolbar') {
+      var parts = getPathParts(args.fullName);
+      var optionName = args.fullName.replace(/^toolbar\./, '');
+
       if (parts.length <= 2) {
         // toolbar and toolbar.items case
         var toolbarOptions = this._getToolbarOptions();
@@ -163,14 +164,10 @@ var HeaderPanel = ColumnsView.inherit({
         // toolbar.items[i] case
         var normalizedItem = this._normalizeToolbarItems(this._getToolbarItems(), args.value);
 
-        var optionName = args.fullName.replace(/^toolbar./, '');
-
         this._toolbar.option(optionName, normalizedItem);
       } else if (parts.length >= 4) {
         // toolbar.items[i].prop case
-        var _optionName = args.fullName.replace(/^toolbar./, '');
-
-        this._toolbar.option(_optionName, args.value);
+        this._toolbar.option(optionName, args.value);
       }
     }
 

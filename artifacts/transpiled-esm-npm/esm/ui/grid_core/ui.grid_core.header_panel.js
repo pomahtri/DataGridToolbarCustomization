@@ -137,8 +137,6 @@ var HeaderPanel = ColumnsView.inherit({
     return this.getElementHeight();
   },
   optionChanged: function optionChanged(args) {
-    var parts = getPathParts(args.fullName);
-
     if (args.name === 'onToolbarPreparing') {
       this._invalidate();
 
@@ -146,6 +144,9 @@ var HeaderPanel = ColumnsView.inherit({
     }
 
     if (args.name === 'toolbar') {
+      var parts = getPathParts(args.fullName);
+      var optionName = args.fullName.replace(/^toolbar\./, '');
+
       if (parts.length <= 2) {
         // toolbar and toolbar.items case
         var toolbarOptions = this._getToolbarOptions();
@@ -155,14 +156,10 @@ var HeaderPanel = ColumnsView.inherit({
         // toolbar.items[i] case
         var normalizedItem = this._normalizeToolbarItems(this._getToolbarItems(), args.value);
 
-        var optionName = args.fullName.replace(/^toolbar./, '');
-
         this._toolbar.option(optionName, normalizedItem);
       } else if (parts.length >= 4) {
         // toolbar.items[i].prop case
-        var _optionName = args.fullName.replace(/^toolbar./, '');
-
-        this._toolbar.option(_optionName, args.value);
+        this._toolbar.option(optionName, args.value);
       }
     }
 

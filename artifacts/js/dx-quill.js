@@ -1,5 +1,5 @@
 /*!
- * DevExtreme-Quill Editor v.1.1.2
+ * DevExtreme-Quill Editor v.1.1.4
  * https://js.devexpress.com/
  * Copyright (c) 2020, Developer Express Inc.
  * Copyright (c) 2017, Slab
@@ -1137,7 +1137,7 @@ Quill.DEFAULTS = {
 Quill.events = _emitter__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"].events;
 Quill.sources = _emitter__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"].sources; // eslint-disable-next-line no-undef
 
-Quill.version =  false ? undefined : "1.1.2";
+Quill.version =  false ? undefined : "1.1.4";
 Quill.imports = {
   delta: quill_delta__WEBPACK_IMPORTED_MODULE_0___default.a,
   parchment: parchment__WEBPACK_IMPORTED_MODULE_3__,
@@ -14146,6 +14146,7 @@ var debug = Object(_core_logger__WEBPACK_IMPORTED_MODULE_4__[/* default */ "a"])
 var ELEMENT_NODE = 1;
 var TEXT_NODE = 3;
 var CLIPBOARD_CONFIG = [[TEXT_NODE, matchText], [TEXT_NODE, matchNewline], ['br', matchBreak], [ELEMENT_NODE, matchNewline], [ELEMENT_NODE, matchBlot], [ELEMENT_NODE, matchAttributor], [ELEMENT_NODE, matchStyles], ['li', matchIndent], ['ol, ul', matchList], ['pre', matchCodeBlock], ['tr', matchTable], ['b', matchAlias.bind(matchAlias, 'bold')], ['i', matchAlias.bind(matchAlias, 'italic')], ['strike', matchAlias.bind(matchAlias, 'strike')], ['style', matchIgnore]];
+var HTML_TEXT_MATCHERS = [matchText, matchNewline];
 var ATTRIBUTE_ATTRIBUTORS = [_formats_align__WEBPACK_IMPORTED_MODULE_6__[/* AlignAttribute */ "a"], _formats_direction__WEBPACK_IMPORTED_MODULE_10__[/* DirectionAttribute */ "a"]].reduce(function (memo, attr) {
   memo[attr.keyName] = attr;
   return memo;
@@ -14401,13 +14402,13 @@ var Clipboard = /*#__PURE__*/function (_Module) {
   }, {
     key: "prepareTextMatching",
     value: function prepareTextMatching() {
-      var textMatchers = [];
+      var textMatchers = [matchPlainText];
       this.matchers.forEach(function (pair) {
         var _pair2 = _slicedToArray(pair, 2),
             selector = _pair2[0],
             matcher = _pair2[1];
 
-        if (selector === TEXT_NODE) {
+        if (HTML_TEXT_MATCHERS.indexOf(matcher) === -1 && selector === TEXT_NODE) {
           textMatchers.push(matcher);
         }
       });
@@ -14683,6 +14684,12 @@ function matchTable(node, delta) {
   var rows = Array.from(table.querySelectorAll('tr'));
   var row = rows.indexOf(node) + 1;
   return applyFormat(delta, 'table', row);
+}
+
+function matchPlainText(node, delta) {
+  var text = node.data || '';
+  text = text.replace(/\r\n/g, '\n');
+  return delta.insert(text);
 }
 
 function matchText(node, delta) {

@@ -1,7 +1,7 @@
 /**
 * DevExtreme (ui/tree_list.d.ts)
 * Version: 21.2.0
-* Build date: Thu Jun 24 2021
+* Build date: Thu Jul 01 2021
 *
 * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -62,6 +62,8 @@ import {
     ToolbarPreparingInfo,
     RowDraggingTemplateDataModel
 } from './data_grid';
+
+import { dxToolbarItem } from './toolbar';
 
 import dxScrollable from './scroll_view/ui.scrollable';
 
@@ -850,6 +852,12 @@ export interface dxTreeListOptions extends GridBaseOptions<dxTreeList> {
      * @type object
      */
     selection?: Selection;
+    /**
+     * @docid
+     * @default undefined
+     * @public
+     */
+     toolbar?: dxTreeListToolbar;
 }
 
 /**
@@ -1190,6 +1198,36 @@ export default class dxTreeList extends Widget<dxTreeListOptions> implements Gri
     state(state: any): void;
     undeleteRow(rowIndex: number): void;
     updateDimensions(): void;
+}
+
+type dxTreeListDefaultToolbarItemName = 'addRowButton' | 'applyFilterButton' | 'columnChooserButton' | 'revertButton' | 'saveButton' | 'searchPanel';
+
+/**
+ * @docid
+ * @type object
+ * @namespace DevExpress.ui
+ */
+export interface dxTreeListToolbarItem extends dxToolbarItem {
+  /**
+   * @docid
+   * @type Enums.TreeListToolbarItemName|string
+   * @public
+  */
+  name?: dxTreeListDefaultToolbarItemName | string
+}
+
+/**
+ * @docid
+ * @type object
+ * @namespace DevExpress.ui
+ */
+export interface dxTreeListToolbar {
+  /**
+   * @docid
+   * @type Array<dxTreeListToolbarItem,Enums.TreeListToolbarItemName>
+   * @public
+   */
+  items?: (dxTreeListDefaultToolbarItemName | dxTreeListToolbarItem)[];
 }
 
 /**
